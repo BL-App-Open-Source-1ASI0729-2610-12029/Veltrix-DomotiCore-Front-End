@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BusinessDevicesStore } from '../../../application/business-devices.store';
 import {
@@ -10,6 +10,7 @@ import {
 import { BusinessDevicesNavComponent } from '../../components/business-devices-nav/business-devices-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { matchesSearchQuery } from '../../../../shared/utils/text-search.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -25,12 +26,17 @@ export class BusinessDeviceManagementComponent implements OnInit {
 
   readonly showAddEnvironmentModal = signal(false);
   readonly newEnvironmentName = signal('');
+  readonly searchQuery = signal('');
 
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      this.searchQuery.set(params.get('q') ?? '');
+    });
     this.store.load().subscribe();
   }
 
@@ -54,13 +60,50 @@ export class BusinessDeviceManagementComponent implements OnInit {
   }
 
   onTurnAllOff(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('businessDevices.confirm.turnAllOff'))) return;
     this.store.turnAllOff();
     this.feedback.showToast(this.translate.instant('businessDevices.toast.turnAllOff'), 'info');
   }
 
   onTurnAllOn(): void {
-    this.store.turnAllOn();
+    if (!this.feedback.confirmAction(this.translate.instant('businessDevices.confirm.turnAllOn'))) return;
+    const failed = this.store.turnAllOn();
+    if (failed.length) {
+      this.feedback.showToast(
+        this.translate.instant('businessDevices.toast.turnAllOnPartial', { devices: failed.join(', ') }),
+        'warning',
+      );
+      return;
+    }
     this.feedback.showToast(this.translate.instant('businessDevices.toast.turnAllOn'), 'success');
+  }
+
+  zoneVisible(zoneName: string, deviceNames: string[]): boolean {
+    const query = this.searchQuery().trim();
+    if (!query) return true;
+    if (matchesSearchQuery(zoneName, query)) return true;
+    return deviceNames.some(name => matchesSearchQuery(name, query));
+  }
+
+  zoneDeviceNames(zone: BusinessZoneResponse): string[] {
+    const names: string[] = [];
+    zone.cards?.forEach(card => names.push(card.name));
+    zone.tableRows?.forEach(row => names.push(row.name));
+    return names;
+  }
+
+  filterCards(zone: BusinessZoneResponse) {
+    const cards = zone.cards ?? [];
+    const query = this.searchQuery().trim();
+    if (!query) return cards;
+    return cards.filter(card => matchesSearchQuery(card.name, query));
+  }
+
+  filterTableRows(zone: BusinessZoneResponse) {
+    const rows = zone.tableRows ?? [];
+    const query = this.searchQuery().trim();
+    if (!query) return rows;
+    return rows.filter(row => matchesSearchQuery(row.name, query));
   }
 
   onTogglePriority(zoneId: string, deviceId: string, event: Event): void {

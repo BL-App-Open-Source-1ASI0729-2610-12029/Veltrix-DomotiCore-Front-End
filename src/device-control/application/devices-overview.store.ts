@@ -44,14 +44,19 @@ export class DevicesOverviewStore {
     return this.loadOverview();
   }
 
-  turnOnAll(): void {
+  turnOnAll(): string[] {
     const current = this.overview();
-    if (!current) return;
+    if (!current) return [];
+
+    const failed: string[] = [];
 
     const rooms = current.rooms.map(room => ({
       ...room,
       devices: room.devices.map(device => {
-        if (device.connection === 'offline') return device;
+        if (device.connection === 'offline') {
+          failed.push(device.name);
+          return device;
+        }
         return {
           ...device,
           active: true,
@@ -75,6 +80,26 @@ export class DevicesOverviewStore {
     });
 
     const updated = { ...current, rooms: roomsWithPower };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+    return failed;
+  }
+
+  renameDevice(roomId: string, deviceId: string, name: string): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => {
+      if (room.id !== roomId) return room;
+      return {
+        ...room,
+        devices: room.devices.map(device =>
+          device.id === deviceId ? { ...device, name } : device,
+        ),
+      };
+    });
+
+    const updated = { ...current, rooms };
     this.overview.set(updated);
     this.saveOverview(updated);
   }

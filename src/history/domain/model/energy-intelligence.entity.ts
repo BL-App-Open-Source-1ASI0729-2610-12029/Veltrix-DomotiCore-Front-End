@@ -2,6 +2,21 @@ import { ConsumptionDataPoint } from './consumption-data-point.entity';
 import { DeviceConsumption } from './device-consumption.entity';
 import { EnergyPeriod } from './energy-period.entity';
 
+export interface SavingsSuggestion {
+  id: string;
+  title: string;
+  description: string;
+  estimatedSavingKwh: number;
+}
+
+export interface ConsumptionAnomaly {
+  id: string;
+  deviceName: string;
+  severity: 'low' | 'medium' | 'high';
+  message: string;
+  detectedAt: string;
+}
+
 export interface EnergyIntelligence {
   period: EnergyPeriod;
   totalConsumptionKwh: number;
@@ -20,4 +35,6 @@ export interface EnergyIntelligence {
   dailyAverageBars: number[];
   ecoTip: string;
   devices: DeviceConsumption[];
+  savingsSuggestions: SavingsSuggestion[];
+  anomalies: ConsumptionAnomaly[];
 }

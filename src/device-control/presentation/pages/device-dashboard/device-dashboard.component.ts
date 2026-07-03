@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DevicesOverviewStore, NewDeviceType } from '../../../application/devices-overview.store';
 import { Room } from '../../../domain/model/room.entity';
 import { SmartDevice } from '../../../domain/model/smart-device.entity';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { matchesSearchQuery } from '../../../../shared/utils/text-search.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -23,6 +24,7 @@ export class DeviceDashboardComponent implements OnInit {
 
   readonly showAddModal = signal(false);
   readonly showCategoryModal = signal(false);
+  readonly searchQuery = signal('');
   readonly categoryDeviceRoomId = signal('');
   readonly categoryDeviceId = signal('');
   readonly selectedCategory = signal<SmartDevice['usageCategory']>('generic');
@@ -31,10 +33,14 @@ export class DeviceDashboardComponent implements OnInit {
   selectedDeviceType: NewDeviceType = 'generic';
 
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
   private readonly feedback = inject(UiFeedbackService);
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      this.searchQuery.set(params.get('q') ?? '');
+    });
     this.store.loadOverview().subscribe();
   }
 
@@ -46,13 +52,36 @@ export class DeviceDashboardComponent implements OnInit {
   }
 
   onTurnOnAll(): void {
-    this.store.turnOnAll();
+    if (!this.feedback.confirmAction(this.translate.instant('myDevices.confirm.turnOnAll'))) return;
+
+    const failed = this.store.turnOnAll();
+    if (failed.length) {
+      this.feedback.showToast(
+        this.translate.instant('myDevices.toast.turnOnAllPartial', { devices: failed.join(', ') }),
+        'warning',
+      );
+      return;
+    }
     this.feedback.showToast(this.translate.instant('myDevices.toast.turnOnAll'), 'success');
   }
 
   onEcoMode(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('myDevices.confirm.ecoMode'))) return;
     this.store.applyEcoMode();
     this.feedback.showToast(this.translate.instant('myDevices.toast.ecoMode'), 'info');
+  }
+
+  roomMatchesSearch(room: Room): boolean {
+    const query = this.searchQuery().trim();
+    if (!query) return true;
+    if (matchesSearchQuery(room.name, query)) return true;
+    return room.devices.some(device => matchesSearchQuery(device.name, query));
+  }
+
+  filterDevices(devices: SmartDevice[]): SmartDevice[] {
+    const query = this.searchQuery().trim();
+    if (!query) return devices;
+    return devices.filter(device => matchesSearchQuery(device.name, query));
   }
 
   onTogglePriority(roomId: string, device: SmartDevice, event: Event): void {

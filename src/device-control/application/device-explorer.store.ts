@@ -43,6 +43,7 @@ export class DeviceExplorerStore {
   readonly firmwareOutdated = signal(false);
   readonly currentPage = signal(1);
   readonly viewMode = signal<'list' | 'grid'>('list');
+  readonly nameQuery = signal('');
 
   readonly filteredDevices = computed(() => {
     const payload = this.data();
@@ -54,8 +55,10 @@ export class DeviceExplorerStore {
     const protocol = this.protocol();
     const onlineOnly = this.onlineOnly();
     const outdatedOnly = this.firmwareOutdated();
+    const nameQuery = this.nameQuery().trim().toLowerCase();
 
     return payload.devices.filter(device => {
+      const matchesName = !nameQuery || device.name.toLowerCase().includes(nameQuery);
       const matchesZone = zone === 'all' || device.facilityZone === zone;
       const matchesCategory =
         !categories.length || categories.includes(device.category);
@@ -64,6 +67,7 @@ export class DeviceExplorerStore {
       const matchesOnline = !onlineOnly || device.online;
       const matchesOutdated = !outdatedOnly || device.firmwareOutdated;
       return (
+        matchesName &&
         matchesZone &&
         matchesCategory &&
         matchesProtocol &&
@@ -116,6 +120,11 @@ export class DeviceExplorerStore {
 
   setFacilityZone(zone: string): void {
     this.facilityZone.set(zone);
+    this.currentPage.set(1);
+  }
+
+  setNameQuery(query: string): void {
+    this.nameQuery.set(query);
     this.currentPage.set(1);
   }
 

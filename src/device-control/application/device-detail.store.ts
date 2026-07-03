@@ -13,6 +13,8 @@ export class DeviceDetailStore {
   readonly loading = signal(false);
   readonly saving = signal(false);
 
+  private realtimeIntervalId: ReturnType<typeof setInterval> | null = null;
+
   loadDetail(deviceId: string, roomId?: string): void {
     this.loading.set(true);
     this.api.getById(deviceId).subscribe({
@@ -53,6 +55,9 @@ export class DeviceDetailStore {
     detail.active = device.active;
     detail.connection = device.connection;
     detail.powerLoadKw = device.active ? (device.powerUsageW ?? 0) / 1000 : 0;
+    detail.batteryPercent = device.batteryPercent ?? null;
+    detail.lastStateAt = new Date().toISOString();
+    detail.lastStateLabel = device.active ? 'On' : 'Off';
 
     this.api.create(detail).subscribe({
       next: data => {
@@ -85,6 +90,8 @@ export class DeviceDetailStore {
       active,
       powerLoadKw,
       powerChartPoints: this.updateChartTail(current.powerChartPoints, powerLoadKw),
+      lastStateAt: new Date().toISOString(),
+      lastStateLabel: active ? 'On' : 'Off',
     };
     this.detail.set(updated);
     this.persist(updated);
@@ -236,6 +243,49 @@ export class DeviceDetailStore {
     };
     this.detail.set(updated);
     this.persist(updated);
+
+    if (period === 'realtime') {
+      this.startRealtimeUpdates();
+    } else {
+      this.stopRealtimeUpdates();
+    }
+  }
+
+  renameDevice(name: string): void {
+    const current = this.detail();
+    const trimmed = name.trim();
+    if (!current || !trimmed) return;
+
+    const updated = { ...current, name: trimmed };
+    this.detail.set(updated);
+    this.persist(updated);
+    this.overviewStore.renameDevice(current.roomId, current.id, trimmed);
+  }
+
+  startRealtimeUpdates(): void {
+    this.stopRealtimeUpdates();
+    this.realtimeIntervalId = setInterval(() => {
+      const current = this.detail();
+      if (!current || current.powerChartPeriod !== 'realtime') return;
+
+      const jitter = current.active
+        ? Math.max(0.1, current.powerLoadKw + (Math.random() - 0.5) * 0.15)
+        : 0;
+      const rounded = Math.round(jitter * 100) / 100;
+      const updated = {
+        ...current,
+        powerLoadKw: rounded,
+        powerChartPoints: this.updateChartTail(current.powerChartPoints, rounded),
+      };
+      this.detail.set(updated);
+    }, 3000);
+  }
+
+  stopRealtimeUpdates(): void {
+    if (this.realtimeIntervalId) {
+      clearInterval(this.realtimeIntervalId);
+      this.realtimeIntervalId = null;
+    }
   }
 
   createDetail(

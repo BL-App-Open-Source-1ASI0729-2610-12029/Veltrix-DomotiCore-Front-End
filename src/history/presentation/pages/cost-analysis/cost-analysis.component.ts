@@ -6,7 +6,7 @@ import { BillingBarResponse, RoiUpgradeStatus } from '../../../infrastructure/co
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -188,6 +188,24 @@ export class CostAnalysisComponent implements OnInit {
 
     downloadTextFile('domoticore-cost-analysis.txt', lines.join('\n'));
     this.feedback.showToast(this.translate.instant('costAnalysis.toast.exportPdf'), 'success');
+  }
+
+  onExportExcel(): void {
+    const rows: string[][] = [
+      [
+        this.translate.instant('costAnalysis.audit.columns.period'),
+        this.translate.instant('costAnalysis.audit.columns.netAmount'),
+        this.translate.instant('costAnalysis.audit.columns.status'),
+      ],
+      ...this.store.filteredBillingAudit().map(row => [
+        row.period,
+        this.formatCurrency(row.netAmount),
+        row.status,
+      ]),
+    ];
+
+    downloadExcelFile('domoticore-cost-analysis', rows);
+    this.feedback.showToast(this.translate.instant('costAnalysis.toast.exportExcel'), 'success');
   }
 
   onRecalculateRoi(): void {

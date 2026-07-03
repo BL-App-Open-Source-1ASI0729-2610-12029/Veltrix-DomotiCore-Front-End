@@ -118,7 +118,8 @@
             "icon": "airPurifier",
             "connection": "online",
             "active": true,
-            "powerUsageW": null
+            "powerUsageW": null,
+            "batteryPercent": 54
           },
           {
             "id": "bedside-speaker",
@@ -126,7 +127,8 @@
             "icon": "speaker",
             "connection": "online",
             "active": false,
-            "powerUsageW": 0
+            "powerUsageW": 0,
+            "batteryPercent": 76
           }
         ]
       }

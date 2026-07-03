@@ -31,4 +31,21 @@ export interface EnergyIntelligenceResponse {
   dailyAverageBars: number[];
   ecoTip: string;
   devices: DeviceConsumptionResponse[];
+  savingsSuggestions?: SavingsSuggestionResponse[];
+  anomalies?: ConsumptionAnomalyResponse[];
+}
+
+export interface SavingsSuggestionResponse {
+  id: string;
+  title: string;
+  description: string;
+  estimatedSavingKwh: number;
+}
+
+export interface ConsumptionAnomalyResponse {
+  id: string;
+  deviceName: string;
+  severity: 'low' | 'medium' | 'high';
+  message: string;
+  detectedAt: string;
 }

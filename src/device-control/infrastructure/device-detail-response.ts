@@ -35,6 +35,9 @@ export interface DeviceDetailResponse {
   humidityPercent?: number;
   scheduledTimer?: string | null;
   alerts: DeviceAlertResponse[];
+  lastStateAt?: string;
+  lastStateLabel?: string;
+  batteryPercent?: number | null;
 }
 
 export const FAN_SPEED_OPTIONS = ['Low', 'Medium', 'High', 'Auto', 'Auto High'] as const;

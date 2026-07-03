@@ -15,7 +15,7 @@ import { BusinessReportsNavComponent } from '../../components/business-reports-n
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 interface ChartCoordinate {
@@ -176,6 +176,31 @@ export class BusinessReportsComponent implements OnInit {
 
     downloadCsvFile(`domoticore-reports-${this.store.selectedPeriod()}.csv`, rows);
     this.feedback.showToast(this.translate.instant('businessReports.toast.exportCsv'), 'success');
+  }
+
+  onExportExcel(): void {
+    const report = this.store.report();
+    if (!report) return;
+
+    const rows: string[][] = [
+      [
+        this.translate.instant('businessReports.table.deviceName'),
+        this.translate.instant('businessReports.table.zone'),
+        this.translate.instant('businessReports.table.consumption'),
+        this.translate.instant('businessReports.table.trend'),
+        this.translate.instant('businessReports.table.status'),
+      ],
+      ...report.devices.map(device => [
+        device.name,
+        device.zone,
+        `${device.consumptionKwh}`,
+        `${device.trend === 'stable' ? '0.0' : (device.trend === 'up' ? '+' : '-') + device.trendPercent}%`,
+        device.status,
+      ]),
+    ];
+
+    downloadExcelFile(`domoticore-reports-${this.store.selectedPeriod()}`, rows);
+    this.feedback.showToast(this.translate.instant('businessReports.toast.exportExcel'), 'success');
   }
 
   onSelectPeriod(event: Event): void {

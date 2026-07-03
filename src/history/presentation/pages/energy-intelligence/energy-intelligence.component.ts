@@ -43,6 +43,17 @@ export class EnergyIntelligenceComponent implements OnInit {
     this.store.loadEnergyIntelligence();
   }
 
+  onToggleAutoOptimization(event: Event): void {
+    const enabled = (event.target as HTMLInputElement).checked;
+    this.store.toggleAutoOptimization(enabled);
+    const key = enabled ? 'history.autoOptimization.enabled' : 'history.autoOptimization.disabled';
+    this.feedback.showToast(this.translate.instant(key), 'success');
+  }
+
+  anomalyClass(severity: 'low' | 'medium' | 'high'): string {
+    return `anomaly-card anomaly-card--${severity}`;
+  }
+
   selectPeriod(period: EnergyPeriod): void {
     this.store.setPeriod(period);
   }

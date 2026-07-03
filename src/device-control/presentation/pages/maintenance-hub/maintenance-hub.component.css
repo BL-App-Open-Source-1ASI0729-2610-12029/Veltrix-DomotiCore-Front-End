@@ -1,0 +1,39 @@
+.maintenance-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.panel {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.records {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.record {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: var(--surface-soft, #f8fafc);
+}
+
+.record p,
+.empty {
+  margin: 0.35rem 0 0;
+  color: var(--gray-500, #6b7a94);
+}
