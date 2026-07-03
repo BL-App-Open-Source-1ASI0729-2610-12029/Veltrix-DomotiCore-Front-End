@@ -130,4 +130,17 @@ export class LocalAuthRepository {
     const url = `${environment.apiUrl.replace(/\/$/, '')}/${AuthApiEndpoint.users}/${userId}`;
     return this.http.get<AuthUser>(url).pipe(catchError(() => of(null)));
   }
+
+  changePassword(
+    userId: string | number,
+    currentPassword: string,
+    newPassword: string,
+  ): Observable<void> {
+    if (!this.api.hasApi()) {
+      return of(undefined);
+    }
+
+    const url = `${environment.apiUrl.replace(/\/$/, '')}/${AuthApiEndpoint.users}/${userId}/change-password`;
+    return this.http.post<void>(url, { currentPassword, newPassword });
+  }
 }

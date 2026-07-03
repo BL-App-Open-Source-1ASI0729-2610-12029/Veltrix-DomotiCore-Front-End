@@ -5,20 +5,26 @@ import { EnergyIntelligence } from '../domain/model/energy-intelligence.entity';
 import { EnergyPeriod } from '../domain/model/energy-period.entity';
 import { ActivityStreamStore } from './activity-stream.store';
 import { HistoryApiService } from '../infrastructure/history-api.service';
+import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class HistoryStore {
   private readonly api = inject(HistoryApiService);
+  private readonly automationApi = inject(AutomationApiService);
   private readonly activityStore = inject(ActivityStreamStore);
 
   readonly selectedPeriod = signal<EnergyPeriod>('week');
   readonly energyIntelligence = signal<EnergyIntelligence | null>(null);
   readonly loading = signal(false);
-  readonly autoOptimizationEnabled = signal(this.readAutoOptimization());
+  readonly autoOptimizationEnabled = signal(false);
 
   loadEnergyIntelligence(): void {
     const period = this.selectedPeriod();
     this.loading.set(true);
+
+    this.automationApi.getHomePreferences().subscribe(prefs => {
+      this.autoOptimizationEnabled.set(prefs.autoOptimizationEnabled);
+    });
 
     this.api.getEnergyIntelligence(period).subscribe({
       next: data => {
@@ -91,9 +97,6 @@ export class HistoryStore {
   toggleAutoOptimization(enabled: boolean): void {
     this.autoOptimizationEnabled.set(enabled);
     localStorage.setItem('domoticore-auto-optimization', enabled ? '1' : '0');
-  }
-
-  private readAutoOptimization(): boolean {
-    return localStorage.getItem('domoticore-auto-optimization') === '1';
+    this.automationApi.patchHomePreferences({ autoOptimizationEnabled: enabled }).subscribe();
   }
 }

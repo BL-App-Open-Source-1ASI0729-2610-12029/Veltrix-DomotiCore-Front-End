@@ -101,3 +101,9 @@ export interface SmartSuggestionResponse {
   messageKey?: string;
   visible: boolean;
 }
+
+export interface AutomationHomePreferencesResponse {
+  inactivityAutoOffEnabled: boolean;
+  inactivityMinutes: number;
+  autoOptimizationEnabled: boolean;
+}

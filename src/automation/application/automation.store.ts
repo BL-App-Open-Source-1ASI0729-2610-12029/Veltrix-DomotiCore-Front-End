@@ -148,6 +148,10 @@ export class AutomationStore {
 
     this.api.getSmartSuggestion().subscribe(suggestion => this.smartSuggestion.set(suggestion));
 
+    this.api.getHomePreferences().subscribe(prefs => {
+      this.inactivityAutoOffEnabled.set(prefs.inactivityAutoOffEnabled);
+      this.inactivityMinutes.set(prefs.inactivityMinutes);
+    });
   }
 
 
@@ -533,12 +537,14 @@ export class AutomationStore {
   toggleInactivityAutoOff(enabled: boolean): void {
     this.inactivityAutoOffEnabled.set(enabled);
     localStorage.setItem('domoticore-inactivity-enabled', enabled ? '1' : '0');
+    this.api.patchHomePreferences({ inactivityAutoOffEnabled: enabled }).subscribe();
   }
 
   setInactivityMinutes(minutes: number): void {
     const safe = Math.min(180, Math.max(5, minutes));
     this.inactivityMinutes.set(safe);
     localStorage.setItem('domoticore-inactivity-minutes', String(safe));
+    this.api.patchHomePreferences({ inactivityMinutes: safe }).subscribe();
   }
 
   private readInactivityEnabled(): boolean {

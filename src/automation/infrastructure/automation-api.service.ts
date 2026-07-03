@@ -16,6 +16,7 @@ import {
   ShutdownProtocolResponse,
   SmartSuggestionResponse,
   UpcomingEventResponse,
+  AutomationHomePreferencesResponse,
 } from './automation-response';
 
 const MOCK_RULES: AutomationRuleResponse[] = [
@@ -141,6 +142,38 @@ export class AutomationApiService {
 
   getSmartSuggestion(): Observable<SmartSuggestionResponse> {
     return this.getObject<SmartSuggestionResponse>('automation/smart-suggestion', MOCK_SUGGESTION);
+  }
+
+  getHomePreferences(): Observable<AutomationHomePreferencesResponse> {
+    return this.getObject<AutomationHomePreferencesResponse>('automation/home-preferences', {
+      inactivityAutoOffEnabled: false,
+      inactivityMinutes: 30,
+      autoOptimizationEnabled: false,
+    });
+  }
+
+  patchHomePreferences(
+    patch: Partial<AutomationHomePreferencesResponse>,
+  ): Observable<AutomationHomePreferencesResponse> {
+    if (!this.api.hasApi()) {
+      return of({
+        inactivityAutoOffEnabled: patch.inactivityAutoOffEnabled ?? false,
+        inactivityMinutes: patch.inactivityMinutes ?? 30,
+        autoOptimizationEnabled: patch.autoOptimizationEnabled ?? false,
+      });
+    }
+
+    return this.http
+      .patch<AutomationHomePreferencesResponse>(`${this.baseUrl()}/automation/home-preferences`, patch)
+      .pipe(
+        catchError(() =>
+          of({
+            inactivityAutoOffEnabled: patch.inactivityAutoOffEnabled ?? false,
+            inactivityMinutes: patch.inactivityMinutes ?? 30,
+            autoOptimizationEnabled: patch.autoOptimizationEnabled ?? false,
+          }),
+        ),
+      );
   }
 
   private getArray<T>(path: string, fallback: T[]): Observable<T[]> {

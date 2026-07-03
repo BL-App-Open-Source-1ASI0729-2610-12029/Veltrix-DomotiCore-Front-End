@@ -15,6 +15,7 @@ import { SecurityStore } from '../../../security/application/security.store';
 import { AuthorizedUser } from '../../../security/domain/model/authorized-user.entity';
 import { AccessLevel } from '../../../security/infrastructure/security-response';
 import { AuthService } from '../../../iam/application/auth.service';
+import { LocalAuthRepository } from '../../../iam/infrastructure/local-auth.repository';
 import { downloadTextFile } from '../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../shared/material';
 
@@ -47,6 +48,7 @@ export class SettingsComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly theme = inject(ThemeService);
   private readonly auth = inject(AuthService);
+  private readonly authRepository = inject(LocalAuthRepository);
 
   readonly settings = this.settingsStore.settings;
   readonly loading = this.settingsStore.loading;
@@ -408,13 +410,26 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.formData = {
-      ...this.formData,
-      passwordUpdatedAt: new Date().toISOString(),
-    };
-    this.closeChangePassword();
-    this.dirty = true;
-    this.feedback.showToast(this.translate.instant('settings.toast.passwordUpdated'), 'success');
+    const userId = this.auth.currentUser?.id;
+    if (!userId) {
+      this.feedback.showToast(this.translate.instant('settings.toast.passwordUpdateFailed'), 'error');
+      return;
+    }
+
+    this.authRepository.changePassword(userId, this.currentPassword, this.newPassword).subscribe({
+      next: () => {
+        this.formData = {
+          ...this.formData,
+          passwordUpdatedAt: new Date().toISOString(),
+        };
+        this.closeChangePassword();
+        this.dirty = true;
+        this.feedback.showToast(this.translate.instant('settings.toast.passwordUpdated'), 'success');
+      },
+      error: () => {
+        this.feedback.showToast(this.translate.instant('settings.toast.passwordCurrentInvalid'), 'error');
+      },
+    });
   }
 
   manageAllHubs(): void {
