@@ -31,7 +31,7 @@
     <div class="loading-bar__fill"></div>
   </div>
 
-  <section class="zone-section" *ngFor="let zone of overview.zones">
+  <section class="zone-section" *ngFor="let zone of overview.zones" [hidden]="!zoneVisible(zone.name, zoneDeviceNames(zone))">
     <div class="zone-section__head">
       <h2>{{ zoneTitle(zone) }}</h2>
       <button
@@ -51,7 +51,7 @@
     <div class="cards-grid" *ngSwitchCase="'cards'">
       <article
         class="device-card device-card--clickable"
-        *ngFor="let device of zone.cards"
+        *ngFor="let device of filterCards(zone)"
         [class.device-card--offline]="device.status === 'offline'"
         (click)="onOpenDevice(zone.id, device.id)"
       >
@@ -117,7 +117,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of zone.tableRows" (click)="onOpenDevice(zone.id, row.id)" class="devices-table__row--clickable">
+          <tr *ngFor="let row of filterTableRows(zone)" (click)="onOpenDevice(zone.id, row.id)" class="devices-table__row--clickable">
             <td>{{ row.name }}</td>
             <td>
               <span [class]="tableStatusClass(row.status)">{{ tableStatusKey(row.status) | translate }}</span>

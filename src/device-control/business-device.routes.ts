@@ -22,6 +22,13 @@ export const businessDeviceRoutes: Routes = [
       ),
   },
   {
+    path: 'maintenance',
+    loadComponent: () =>
+      import('./presentation/pages/maintenance-hub/maintenance-hub.component').then(
+        m => m.MaintenanceHubComponent,
+      ),
+  },
+  {
     path: 'explorer',
     loadComponent: () =>
       import('./presentation/pages/device-explorer/device-explorer.component').then(

@@ -166,10 +166,15 @@
       "refreshed": "Device status refreshed.",
       "refreshFailed": "Could not refresh devices. Check your connection.",
       "turnOnAll": "All online devices were turned on.",
+      "turnOnAllPartial": "Some devices stayed offline: {{devices}}",
       "ecoMode": "Eco mode reduced high-consumption devices.",
       "prioritySet": "{{name}} marked as priority.",
       "priorityRemoved": "{{name}} is no longer priority.",
       "categorySaved": "Device category updated."
+    },
+    "confirm": {
+      "turnOnAll": "Turn on all online devices now?",
+      "ecoMode": "Apply eco mode to reduce high-consumption devices?"
     }
   },
   "deviceDetail": {
@@ -194,6 +199,11 @@
     "swing": "Swing",
     "humidity": "Humidity",
     "deleteDevice": "Delete Device",
+    "renameDevice": "Rename Device",
+    "renamePlaceholder": "New device name",
+    "lastState": "Last state: {{label}} at {{when}}",
+    "lastStateUnknown": "Last state unavailable",
+    "battery": "Battery",
     "confirmDelete": "Delete this device?",
     "powerOnToAdjust": "Turn on the device to adjust temperature.",
     "tapToCycle": "Tap to change",
@@ -222,7 +232,8 @@
       "title": "Schedule Maintenance",
       "description": "Choose a date for the next service visit.",
       "date": "Service date",
-      "confirm": "Schedule service"
+      "confirm": "Schedule service",
+      "scheduledNote": "Preventive maintenance scheduled from device alert"
     },
     "toast": {
       "timerSet": "Temperature timer set for {{time}}.",
@@ -231,7 +242,25 @@
       "swingSet": "Swing set to {{swing}}.",
       "alertDismissed": "Alert dismissed.",
       "ecoEnabled": "Eco mode enabled to save energy.",
-      "maintenanceScheduled": "Maintenance scheduled for {{date}}."
+      "maintenanceScheduled": "Maintenance scheduled for {{date}}.",
+      "renamed": "Device renamed to {{name}}."
+    }
+  },
+  "maintenance": {
+    "nav": "Maintenance",
+    "title": "Maintenance Hub",
+    "subtitle": "Review service history and register completed maintenance.",
+    "registerTitle": "Register maintenance",
+    "historyTitle": "Maintenance history",
+    "deviceName": "Device name",
+    "date": "Service date",
+    "description": "Work performed",
+    "technician": "Technician (optional)",
+    "save": "Save record",
+    "empty": "No maintenance records yet.",
+    "toast": {
+      "required": "Device name, date, and description are required.",
+      "saved": "Maintenance record saved."
     }
   },
   "history": {
@@ -263,6 +292,14 @@
       "day": "Day",
       "week": "Week",
       "month": "Month"
+    },
+    "savingsSuggestions": "Personalized savings suggestions",
+    "anomalies": "Consumption anomalies",
+    "autoOptimization": {
+      "title": "Automatic optimization",
+      "description": "Apply adaptive load balancing when unusual consumption is detected.",
+      "enabled": "Automatic optimization enabled.",
+      "disabled": "Automatic optimization disabled."
     }
   },
   "historyNotifications": {
@@ -692,6 +729,7 @@
     "toast": {
       "turnAllOff": "All devices were turned off.",
       "turnAllOn": "All online devices were turned on.",
+      "turnAllOnPartial": "Some devices stayed offline: {{devices}}",
       "priorityUpdated": "Device priority updated.",
       "ecoEnabled": "Smart Eco enabled for {{zone}}.",
       "ecoAlreadyEnabled": "Smart Eco is already active in {{zone}}.",
@@ -699,6 +737,10 @@
       "addEnvironment": "Opening environment assistant...",
       "environmentAdded": "Zone \"{{name}}\" created successfully.",
       "environmentNameRequired": "Enter a name for the zone."
+    },
+    "confirm": {
+      "turnAllOff": "Turn off all devices in every zone?",
+      "turnAllOn": "Turn on all online devices now?"
     }
   },
   "deviceExplorer": {
@@ -811,6 +853,7 @@
     "strategyApplied": "Strategy Applied",
     "exportPdf": "Export PDF",
     "exportCsv": "Export CSV",
+    "exportExcel": "Export Excel",
     "deviceReports": "Device-Specific Reports",
     "viewAllDevices": "View All Devices",
     "footer": "© {{year}} DomotiCore Enterprise Energy Management. All systems operational.",
@@ -854,6 +897,7 @@
     "toast": {
       "exportPdf": "Report downloaded successfully.",
       "exportCsv": "CSV exported successfully.",
+      "exportExcel": "Excel file exported successfully.",
       "periodSelected": "Loaded data for {{period}}.",
       "strategyApplied": "Peak reduction strategy applied.",
       "strategyAlreadyApplied": "Strategy is already active.",
@@ -867,6 +911,7 @@
     "title": "Cost Analysis Details",
     "subtitle": "A detailed audit of energy expenditure, peak-load performance, and strategic ROI modeling for Smart Enterprise infrastructure.",
     "exportPdf": "Export PDF",
+    "exportExcel": "Export Excel",
     "recalculateRoi": "Recalculate ROI",
     "totalBilling": "Total Energy Billing",
     "billingCycle": "Billing Cycle",
@@ -924,6 +969,7 @@
     },
     "toast": {
       "exportPdf": "Cost analysis report downloaded.",
+      "exportExcel": "Excel file exported successfully.",
       "recalculateRoi": "ROI model recalculated successfully.",
       "filterSelected": "Filter applied: {{filter}}"
     }
@@ -1045,6 +1091,13 @@
     "activeScenes": "Active Scenes",
     "upcoming": "Upcoming",
     "viewMoreEvents": "View {{count}} more events",
+    "inactivity": {
+      "title": "Inactivity auto-shutdown",
+      "description": "Automatically turn off devices that stay idle longer than the configured threshold.",
+      "minutes": "Inactivity threshold (minutes)",
+      "toastEnabled": "Inactivity auto-shutdown enabled.",
+      "toastDisabled": "Inactivity auto-shutdown disabled."
+    },
     "buildCustomLogic": "Build Custom Logic",
     "buildCustomLogicDesc": "Create complex \"If This Then That\" chains to link any device, sensor, or time trigger in your home.",
     "openBuilder": "Open Builder",

@@ -81,4 +81,9 @@ export class UiFeedbackService {
   unreadCount(): number {
     return this.notifications().filter(item => !item.read).length;
   }
+
+  confirmAction(message: string): boolean {
+    if (typeof window === 'undefined') return true;
+    return window.confirm(message);
+  }
 }

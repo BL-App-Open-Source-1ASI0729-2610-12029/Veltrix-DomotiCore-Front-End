@@ -82,6 +82,11 @@ export class DeviceExplorerComponent implements OnInit, AfterViewInit, OnDestroy
         this.store.setFacilityZone(zone);
       }
 
+      const query = params.get('q');
+      if (query) {
+        this.store.setNameQuery(query);
+      }
+
       if (params.get('scan') === '1') {
         this.triggerNetworkScan();
       }

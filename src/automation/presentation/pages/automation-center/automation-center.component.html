@@ -105,6 +105,36 @@
     </section>
   </div>
 
+  <section class="panel inactivity-panel">
+    <div class="panel__header">
+      <img [src]="icons.powerSettings" alt="" class="ui-icon ui-icon--sm panel__icon" />
+      <h2>{{ 'automation.inactivity.title' | translate }}</h2>
+    </div>
+    <p>{{ 'automation.inactivity.description' | translate }}</p>
+    <div class="inactivity-controls">
+      <label class="toggle-switch">
+        <input
+          type="checkbox"
+          [checked]="store.inactivityAutoOffEnabled()"
+          (change)="onToggleInactivity($event)"
+        />
+        <span class="toggle-slider"></span>
+      </label>
+      <mat-form-field appearance="outline" class="inactivity-minutes">
+        <mat-label>{{ 'automation.inactivity.minutes' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          min="5"
+          max="180"
+          [ngModel]="store.inactivityMinutes()"
+          (ngModelChange)="onInactivityMinutes($event)"
+          name="inactivityMinutes"
+        />
+      </mat-form-field>
+    </div>
+  </section>
+
   <section class="builder-banner">
     <div class="builder-banner__content">
       <h2>{{ 'automation.buildCustomLogic' | translate }}</h2>

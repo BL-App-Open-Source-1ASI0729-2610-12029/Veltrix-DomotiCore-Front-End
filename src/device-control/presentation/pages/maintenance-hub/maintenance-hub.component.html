@@ -1,0 +1,49 @@
+<div class="maintenance-page">
+  <app-business-devices-nav />
+
+  <header>
+    <h1>{{ 'maintenance.title' | translate }}</h1>
+    <p>{{ 'maintenance.subtitle' | translate }}</p>
+  </header>
+
+  <section class="panel">
+    <h2>{{ 'maintenance.registerTitle' | translate }}</h2>
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.deviceName' | translate }}</mat-label>
+        <input matInput [ngModel]="deviceName()" (ngModelChange)="deviceName.set($event)" name="deviceName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.date' | translate }}</mat-label>
+        <input matInput type="date" [ngModel]="performedAt()" (ngModelChange)="performedAt.set($event)" name="performedAt" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'maintenance.description' | translate }}</mat-label>
+        <textarea matInput rows="3" [ngModel]="description()" (ngModelChange)="description.set($event)" name="description"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'maintenance.technician' | translate }}</mat-label>
+        <input matInput [ngModel]="technician()" (ngModelChange)="technician.set($event)" name="technician" />
+      </mat-form-field>
+      <button type="button" mat-flat-button color="primary" (click)="onSubmit()">
+        {{ 'maintenance.save' | translate }}
+      </button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>{{ 'maintenance.historyTitle' | translate }}</h2>
+    <div class="records" *ngIf="store.records().length; else empty">
+      <article class="record" *ngFor="let record of store.records()">
+        <div>
+          <strong>{{ record.deviceName }}</strong>
+          <p>{{ record.description }}</p>
+          <small>{{ record.performedAt | date:'medium' }}<span *ngIf="record.technician"> • {{ record.technician }}</span></small>
+        </div>
+      </article>
+    </div>
+    <ng-template #empty>
+      <p class="empty">{{ 'maintenance.empty' | translate }}</p>
+    </ng-template>
+  </section>
+</div>

@@ -14,6 +14,7 @@ export class HistoryStore {
   readonly selectedPeriod = signal<EnergyPeriod>('week');
   readonly energyIntelligence = signal<EnergyIntelligence | null>(null);
   readonly loading = signal(false);
+  readonly autoOptimizationEnabled = signal(this.readAutoOptimization());
 
   loadEnergyIntelligence(): void {
     const period = this.selectedPeriod();
@@ -85,5 +86,14 @@ export class HistoryStore {
     };
 
     this.activityStore.addEntry(activityEntry);
+  }
+
+  toggleAutoOptimization(enabled: boolean): void {
+    this.autoOptimizationEnabled.set(enabled);
+    localStorage.setItem('domoticore-auto-optimization', enabled ? '1' : '0');
+  }
+
+  private readAutoOptimization(): boolean {
+    return localStorage.getItem('domoticore-auto-optimization') === '1';
   }
 }

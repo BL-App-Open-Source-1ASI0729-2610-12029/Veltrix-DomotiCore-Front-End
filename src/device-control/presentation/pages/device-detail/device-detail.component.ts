@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DeviceDetailStore } from '../../../application/device-detail.store';
 import { DevicesOverviewStore } from '../../../application/devices-overview.store';
+import { MaintenanceStore } from '../../../application/maintenance.store';
 import { OperationMode, PowerChartPeriod } from '../../../infrastructure/device-detail-response';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
@@ -23,18 +24,21 @@ interface ChartPoint {
   templateUrl: './device-detail.component.html',
   styleUrl: './device-detail.component.css',
 })
-export class DeviceDetailComponent implements OnInit {
+export class DeviceDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   readonly store = inject(DeviceDetailStore);
   readonly overviewStore = inject(DevicesOverviewStore);
+  readonly maintenanceStore = inject(MaintenanceStore);
   readonly icons = GOOGLE_ICONS;
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
 
   readonly showTimerModal = signal(false);
   readonly showMaintenanceModal = signal(false);
+  readonly showRenameModal = signal(false);
+  readonly renameValue = signal('');
   readonly hoveredChartIndex = signal<number | null>(null);
   timerHour = 22;
   timerMinute = 0;
@@ -52,7 +56,12 @@ export class DeviceDetailComponent implements OnInit {
     this.deviceId = this.route.snapshot.paramMap.get('deviceId') ?? '';
     this.overviewStore.loadOverview().subscribe(() => {
       this.store.loadDetail(this.deviceId, this.roomId);
+      this.store.startRealtimeUpdates();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.store.stopRealtimeUpdates();
   }
 
   getIcon(iconKey: string): string {
@@ -138,11 +147,37 @@ export class DeviceDetailComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (!confirm(this.translate.instant('deviceDetail.confirmDelete'))) return;
+    if (!this.feedback.confirmAction(this.translate.instant('deviceDetail.confirmDelete'))) return;
 
     this.overviewStore.removeDevice(this.roomId, this.deviceId).subscribe({
       next: () => this.router.navigate(['/app/devices']),
     });
+  }
+
+  openRenameModal(): void {
+    const detail = this.store.detail();
+    if (!detail) return;
+    this.renameValue.set(detail.name);
+    this.showRenameModal.set(true);
+  }
+
+  closeRenameModal(): void {
+    this.showRenameModal.set(false);
+  }
+
+  submitRename(): void {
+    const name = this.renameValue().trim();
+    if (!name) return;
+    this.store.renameDevice(name);
+    this.closeRenameModal();
+    this.feedback.showToast(this.translate.instant('deviceDetail.toast.renamed', { name }), 'success');
+  }
+
+  formatLastState(detail: { lastStateAt?: string; lastStateLabel?: string }): string {
+    if (!detail.lastStateAt) return this.translate.instant('deviceDetail.lastStateUnknown');
+    const when = new Date(detail.lastStateAt).toLocaleString();
+    const label = detail.lastStateLabel ?? this.translate.instant('deviceDetail.standby');
+    return this.translate.instant('deviceDetail.lastState', { label, when });
   }
 
   selectPeriod(period: PowerChartPeriod): void {
@@ -228,6 +263,16 @@ export class DeviceDetailComponent implements OnInit {
 
   confirmMaintenanceSchedule(): void {
     if (!this.maintenanceAlertId || !this.maintenanceDate) return;
+
+    const detail = this.store.detail();
+    if (detail) {
+      this.maintenanceStore.register({
+        deviceId: detail.id,
+        deviceName: detail.name,
+        performedAt: new Date(this.maintenanceDate).toISOString(),
+        description: this.translate.instant('deviceDetail.maintenanceModal.scheduledNote'),
+      });
+    }
 
     this.dismissAlert(this.maintenanceAlertId);
     this.closeMaintenanceModal();

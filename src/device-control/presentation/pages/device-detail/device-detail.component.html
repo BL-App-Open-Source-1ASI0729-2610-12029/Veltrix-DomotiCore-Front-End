@@ -40,6 +40,10 @@
           {{ detail.connection === 'online' ? ('deviceDetail.online' | translate) : ('deviceDetail.offline' | translate) }}
           • {{ detail.powerLoadKw }} kW
         </p>
+        <p class="last-state-line">{{ formatLastState(detail) }}</p>
+        <p class="battery-line" *ngIf="detail.batteryPercent != null">
+          {{ 'deviceDetail.battery' | translate }}: {{ detail.batteryPercent }}%
+        </p>
       </div>
     </div>
     <div class="status-header__power">
@@ -301,6 +305,9 @@
       </div>
 
       <div class="page-actions">
+        <button type="button" mat-stroked-button (click)="openRenameModal()">
+          {{ 'deviceDetail.renameDevice' | translate }}
+        </button>
         <button type="button" mat-flat-button color="warn" class="btn-delete" (click)="onDelete()">
           {{ 'deviceDetail.deleteDevice' | translate }}
         </button>
@@ -370,6 +377,27 @@
       <div class="timer-modal__actions">
         <button type="button" mat-stroked-button class="btn-secondary" (click)="closeMaintenanceModal()">{{ 'common.cancel' | translate }}</button>
         <button type="submit" mat-flat-button color="primary" class="btn-primary" [disabled]="!maintenanceDate">{{ 'deviceDetail.maintenanceModal.confirm' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showRenameModal()" (click)="closeRenameModal()">
+  <div class="timer-modal" (click)="$event.stopPropagation()">
+    <div class="timer-modal__header">
+      <h3>{{ 'deviceDetail.renameDevice' | translate }}</h3>
+      <button type="button" mat-icon-button class="timer-close" (click)="closeRenameModal()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <form (ngSubmit)="submitRename()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'deviceDetail.renamePlaceholder' | translate }}</mat-label>
+        <input matInput type="text" [ngModel]="renameValue()" (ngModelChange)="renameValue.set($event)" name="renameValue" required />
+      </mat-form-field>
+      <div class="timer-modal__actions">
+        <button type="button" mat-stroked-button class="btn-secondary" (click)="closeRenameModal()">{{ 'common.cancel' | translate }}</button>
+        <button type="submit" mat-flat-button color="primary" class="btn-primary" [disabled]="!renameValue().trim()">{{ 'common.save' | translate }}</button>
       </div>
     </form>
   </div>

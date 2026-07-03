@@ -17,6 +17,44 @@ const SHARED_DEVICES: EnergyIntelligenceResponse['devices'] = [
   { id: 'other', name: 'Other Devices', consumptionKwh: 1.8, sharePercent: 5, icon: 'moreHoriz' },
 ];
 
+const SHARED_SAVINGS = [
+  {
+    id: 'save-thermostat',
+    title: 'Lower thermostat by 2°C',
+    description: 'Shift HVAC setpoint during peak hours to reduce HVAC load.',
+    estimatedSavingKwh: 4.2,
+  },
+  {
+    id: 'save-standby',
+    title: 'Disable standby devices overnight',
+    description: 'Entertainment and office peripherals still draw power when idle.',
+    estimatedSavingKwh: 1.8,
+  },
+  {
+    id: 'save-lighting',
+    title: 'Dim non-priority lighting 30%',
+    description: 'Apply scene-based dimming in low-traffic areas after 10 PM.',
+    estimatedSavingKwh: 0.9,
+  },
+];
+
+const SHARED_ANOMALIES = [
+  {
+    id: 'anom-hvac',
+    deviceName: 'HVAC System',
+    severity: 'high' as const,
+    message: 'Consumption 38% above the 7-day average between 2–4 PM.',
+    detectedAt: new Date(Date.now() - 3600000).toISOString(),
+  },
+  {
+    id: 'anom-fridge',
+    deviceName: 'Refrigerator',
+    severity: 'medium' as const,
+    message: 'Compressor cycles are unusually frequent overnight.',
+    detectedAt: new Date(Date.now() - 7200000).toISOString(),
+  },
+];
+
 const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
   day: {
     period: 'day',
@@ -47,6 +85,11 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
       ...device,
       consumptionKwh: +(device.consumptionKwh / 7).toFixed(1),
     })),
+    savingsSuggestions: SHARED_SAVINGS.map(item => ({
+      ...item,
+      estimatedSavingKwh: +(item.estimatedSavingKwh / 7).toFixed(1),
+    })),
+    anomalies: SHARED_ANOMALIES,
   },
   week: {
     period: 'week',
@@ -74,6 +117,8 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
     dailyAverageBars: [42, 55, 48, 62, 58, 70, 65],
     ecoTip: 'Lowering your thermostat by just 2°C could save you 4.2 kWh this week.',
     devices: SHARED_DEVICES,
+    savingsSuggestions: SHARED_SAVINGS,
+    anomalies: SHARED_ANOMALIES,
   },
   month: {
     period: 'month',
@@ -101,6 +146,11 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
       ...device,
       consumptionKwh: +(device.consumptionKwh * 4.3).toFixed(1),
     })),
+    savingsSuggestions: SHARED_SAVINGS.map(item => ({
+      ...item,
+      estimatedSavingKwh: +(item.estimatedSavingKwh * 4.3).toFixed(1),
+    })),
+    anomalies: SHARED_ANOMALIES,
   },
 };
 

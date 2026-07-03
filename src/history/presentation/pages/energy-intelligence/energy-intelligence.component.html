@@ -137,8 +137,39 @@
         <img [src]="icons.energySavingsLeaf" alt="" class="ui-icon insight-card__icon insight-card__icon--eco" />
         <p class="insight-card__eco-text">{{ data.ecoTip }}</p>
       </article>
+
+      <article class="insight-card insight-card--animate">
+        <h3>{{ 'history.autoOptimization.title' | translate }}</h3>
+        <label class="toggle-switch">
+          <input
+            type="checkbox"
+            [checked]="store.autoOptimizationEnabled()"
+            (change)="onToggleAutoOptimization($event)"
+          />
+          <span class="toggle-slider"></span>
+        </label>
+        <p>{{ 'history.autoOptimization.description' | translate }}</p>
+      </article>
     </aside>
   </div>
+
+  <section class="insights-grid card" *ngIf="data.savingsSuggestions.length">
+    <h2 class="section-title">{{ 'history.savingsSuggestions' | translate }}</h2>
+    <article class="savings-card" *ngFor="let suggestion of data.savingsSuggestions">
+      <h3>{{ suggestion.title }}</h3>
+      <p>{{ suggestion.description }}</p>
+      <strong>{{ suggestion.estimatedSavingKwh }} kWh</strong>
+    </article>
+  </section>
+
+  <section class="insights-grid card" *ngIf="data.anomalies.length">
+    <h2 class="section-title">{{ 'history.anomalies' | translate }}</h2>
+    <article *ngFor="let anomaly of data.anomalies" [ngClass]="anomalyClass(anomaly.severity)">
+      <strong>{{ anomaly.deviceName }}</strong>
+      <p>{{ anomaly.message }}</p>
+      <small>{{ anomaly.detectedAt | date:'medium' }}</small>
+    </article>
+  </section>
 
   <section class="devices-section card">
     <div class="devices-section__header">

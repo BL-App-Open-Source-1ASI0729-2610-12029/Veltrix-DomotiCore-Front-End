@@ -526,6 +526,30 @@ export class AutomationStore {
 
   }
 
+  readonly inactivityAutoOffEnabled = signal<boolean>(this.readInactivityEnabled());
+
+  readonly inactivityMinutes = signal<number>(this.readInactivityMinutes());
+
+  toggleInactivityAutoOff(enabled: boolean): void {
+    this.inactivityAutoOffEnabled.set(enabled);
+    localStorage.setItem('domoticore-inactivity-enabled', enabled ? '1' : '0');
+  }
+
+  setInactivityMinutes(minutes: number): void {
+    const safe = Math.min(180, Math.max(5, minutes));
+    this.inactivityMinutes.set(safe);
+    localStorage.setItem('domoticore-inactivity-minutes', String(safe));
+  }
+
+  private readInactivityEnabled(): boolean {
+    return localStorage.getItem('domoticore-inactivity-enabled') === '1';
+  }
+
+  private readInactivityMinutes(): number {
+    const raw = Number(localStorage.getItem('domoticore-inactivity-minutes'));
+    return Number.isFinite(raw) ? raw : 30;
+  }
+
 }
 
 

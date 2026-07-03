@@ -27,6 +27,9 @@ export interface DeviceDetail {
   humidityPercent: number;
   scheduledTimer: string | null;
   alerts: DeviceAlertResponse[];
+  lastStateAt?: string;
+  lastStateLabel?: string;
+  batteryPercent?: number | null;
 }
 
 export function createDefaultDeviceDetail(
@@ -68,5 +71,7 @@ export function createDefaultDeviceDetail(
     humidityPercent: isClimate ? 45 : 0,
     scheduledTimer: null,
     alerts: [],
+    lastStateAt: new Date().toISOString(),
+    lastStateLabel: 'Standby',
   };
 }

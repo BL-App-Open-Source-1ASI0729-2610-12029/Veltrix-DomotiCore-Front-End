@@ -166,10 +166,15 @@
       "refreshed": "Estado de dispositivos actualizado.",
       "refreshFailed": "No se pudo actualizar. Verifica tu conexión.",
       "turnOnAll": "Todos los dispositivos en línea fueron encendidos.",
+      "turnOnAllPartial": "Algunos dispositivos siguieron desconectados: {{devices}}",
       "ecoMode": "El modo ahorro redujo dispositivos de alto consumo.",
       "prioritySet": "{{name}} marcado como prioritario.",
       "priorityRemoved": "{{name}} ya no es prioritario.",
       "categorySaved": "Categoría del dispositivo actualizada."
+    },
+    "confirm": {
+      "turnOnAll": "¿Encender todos los dispositivos en línea ahora?",
+      "ecoMode": "¿Aplicar modo ahorro para reducir dispositivos de alto consumo?"
     }
   },
   "deviceDetail": {
@@ -194,6 +199,11 @@
     "swing": "Oscilación",
     "humidity": "Humedad",
     "deleteDevice": "Eliminar dispositivo",
+    "renameDevice": "Renombrar dispositivo",
+    "renamePlaceholder": "Nuevo nombre del dispositivo",
+    "lastState": "Último estado: {{label}} el {{when}}",
+    "lastStateUnknown": "Último estado no disponible",
+    "battery": "Batería",
     "confirmDelete": "¿Eliminar este dispositivo?",
     "powerOnToAdjust": "Enciende el dispositivo para ajustar la temperatura.",
     "tapToCycle": "Toca para cambiar",
@@ -222,7 +232,8 @@
       "title": "Programar mantenimiento",
       "description": "Elige una fecha para la próxima visita de servicio.",
       "date": "Fecha de servicio",
-      "confirm": "Programar servicio"
+      "confirm": "Programar servicio",
+      "scheduledNote": "Mantenimiento preventivo programado desde alerta del dispositivo"
     },
     "toast": {
       "timerSet": "Temporizador configurado para las {{time}}.",
@@ -231,7 +242,25 @@
       "swingSet": "Oscilación: {{swing}}.",
       "alertDismissed": "Alerta descartada.",
       "ecoEnabled": "Modo Eco activado para ahorrar energía.",
-      "maintenanceScheduled": "Mantenimiento programado para {{date}}."
+      "maintenanceScheduled": "Mantenimiento programado para {{date}}.",
+      "renamed": "Dispositivo renombrado a {{name}}."
+    }
+  },
+  "maintenance": {
+    "nav": "Mantenimiento",
+    "title": "Centro de Mantenimiento",
+    "subtitle": "Consulta el historial de servicio y registra mantenimientos completados.",
+    "registerTitle": "Registrar mantenimiento",
+    "historyTitle": "Historial de mantenimiento",
+    "deviceName": "Nombre del dispositivo",
+    "date": "Fecha de servicio",
+    "description": "Trabajo realizado",
+    "technician": "Técnico (opcional)",
+    "save": "Guardar registro",
+    "empty": "Aún no hay registros de mantenimiento.",
+    "toast": {
+      "required": "Nombre, fecha y descripción son obligatorios.",
+      "saved": "Registro de mantenimiento guardado."
     }
   },
   "history": {
@@ -263,6 +292,14 @@
       "day": "Día",
       "week": "Semana",
       "month": "Mes"
+    },
+    "savingsSuggestions": "Sugerencias de ahorro personalizadas",
+    "anomalies": "Anomalías de consumo",
+    "autoOptimization": {
+      "title": "Optimización automática",
+      "description": "Aplica balanceo adaptativo de carga cuando se detecta consumo inusual.",
+      "enabled": "Optimización automática activada.",
+      "disabled": "Optimización automática desactivada."
     }
   },
   "historyNotifications": {
@@ -692,6 +729,7 @@
     "toast": {
       "turnAllOff": "Todos los dispositivos fueron apagados.",
       "turnAllOn": "Todos los dispositivos en línea fueron encendidos.",
+      "turnAllOnPartial": "Algunos dispositivos siguieron desconectados: {{devices}}",
       "priorityUpdated": "Prioridad del dispositivo actualizada.",
       "ecoEnabled": "Smart Eco activado en {{zone}}.",
       "ecoAlreadyEnabled": "Smart Eco ya está activo en {{zone}}.",
@@ -699,6 +737,10 @@
       "addEnvironment": "Abriendo asistente de ambiente...",
       "environmentAdded": "Zona \"{{name}}\" creada correctamente.",
       "environmentNameRequired": "Ingresa un nombre para la zona."
+    },
+    "confirm": {
+      "turnAllOff": "¿Apagar todos los dispositivos en cada zona?",
+      "turnAllOn": "¿Encender todos los dispositivos en línea ahora?"
     }
   },
   "deviceExplorer": {
@@ -811,6 +853,7 @@
     "strategyApplied": "Estrategia Aplicada",
     "exportPdf": "Exportar PDF",
     "exportCsv": "Exportar CSV",
+    "exportExcel": "Exportar Excel",
     "deviceReports": "Reportes por Dispositivo",
     "viewAllDevices": "Ver Todos los Dispositivos",
     "footer": "© {{year}} DomotiCore Enterprise Energy Management. Todos los sistemas operativos.",
@@ -854,6 +897,7 @@
     "toast": {
       "exportPdf": "Reporte descargado correctamente.",
       "exportCsv": "CSV exportado correctamente.",
+      "exportExcel": "Archivo Excel exportado correctamente.",
       "periodSelected": "Datos cargados para {{period}}.",
       "strategyApplied": "Estrategia de reducción de pico aplicada.",
       "strategyAlreadyApplied": "La estrategia ya está activa.",
@@ -867,6 +911,7 @@
     "title": "Detalle de Análisis de Costos",
     "subtitle": "Auditoría detallada del gasto energético, rendimiento en picos de demanda y modelado estratégico de ROI para infraestructura empresarial inteligente.",
     "exportPdf": "Exportar PDF",
+    "exportExcel": "Exportar Excel",
     "recalculateRoi": "Recalcular ROI",
     "totalBilling": "Facturación Energética Total",
     "billingCycle": "Ciclo de Facturación",
@@ -924,6 +969,7 @@
     },
     "toast": {
       "exportPdf": "Reporte de análisis de costos descargado.",
+      "exportExcel": "Archivo Excel exportado correctamente.",
       "recalculateRoi": "Modelo ROI recalculado correctamente.",
       "filterSelected": "Filtro aplicado: {{filter}}"
     }
@@ -1045,6 +1091,13 @@
     "activeScenes": "Escenas Activas",
     "upcoming": "Próximos",
     "viewMoreEvents": "Ver {{count}} eventos más",
+    "inactivity": {
+      "title": "Apagado por inactividad",
+      "description": "Apaga automáticamente dispositivos que permanezcan inactivos más del umbral configurado.",
+      "minutes": "Umbral de inactividad (minutos)",
+      "toastEnabled": "Apagado por inactividad activado.",
+      "toastDisabled": "Apagado por inactividad desactivado."
+    },
     "buildCustomLogic": "Crear Lógica Personalizada",
     "buildCustomLogicDesc": "Crea cadenas complejas de \"Si Esto Entonces Aquello\" para vincular cualquier dispositivo, sensor o disparador de tiempo en tu hogar.",
     "openBuilder": "Abrir Constructor",

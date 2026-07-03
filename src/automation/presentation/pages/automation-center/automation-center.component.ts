@@ -53,6 +53,17 @@ export class AutomationCenterComponent implements OnInit {
     this.store.setSearchQuery(value);
   }
 
+  onToggleInactivity(event: Event): void {
+    const enabled = (event.target as HTMLInputElement).checked;
+    this.store.toggleInactivityAutoOff(enabled);
+    const key = enabled ? 'automation.inactivity.toastEnabled' : 'automation.inactivity.toastDisabled';
+    this.feedback.showToast(this.translate.instant(key), 'success');
+  }
+
+  onInactivityMinutes(value: number): void {
+    this.store.setInactivityMinutes(Number(value) || 30);
+  }
+
   getSceneIcon(icon: string): string {
     const map: Record<string, string> = {
       dark_mode:  GOOGLE_ICONS.darkMode,

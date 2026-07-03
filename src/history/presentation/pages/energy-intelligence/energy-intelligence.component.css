@@ -631,8 +631,27 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-:root[data-theme='dark'] .btn-secondary {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: var(--surface-soft);
-  color: var(--gray-200);
+.insights-grid {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.savings-card,
+.anomaly-card {
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--surface-soft, #f8fafc);
+}
+
+.anomaly-card--high {
+  border-left: 4px solid #dc2626;
+}
+
+.anomaly-card--medium {
+  border-left: 4px solid #f59e0b;
+}
+
+.anomaly-card--low {
+  border-left: 4px solid #0d9488;
 }

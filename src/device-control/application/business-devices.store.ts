@@ -274,86 +274,63 @@ export class BusinessDevicesStore {
 
 
 
-  turnAllOff(): void {
+  turnAllOff(): string[] {
+    const failed: string[] = [];
 
     this.overview.update(current => {
-
       if (!current) return current;
 
-
-
       const zones = current.zones.map(zone => ({
-
         ...zone,
-
         cards: zone.cards?.map(card => ({ ...card, active: false })),
-
         tableRows: zone.tableRows?.map(row => ({ ...row, active: false })),
-
         lightingGroup: zone.lightingGroup
-
           ? { ...zone.lightingGroup, active: false, activeUnits: 0 }
-
           : zone.lightingGroup,
-
       }));
 
-
-
       return this.withRecalculatedTotals({ ...current, zones });
-
     });
 
+    return failed;
   }
 
-
-
-  turnAllOn(): void {
+  turnAllOn(): string[] {
+    const failed: string[] = [];
 
     this.overview.update(current => {
-
       if (!current) return current;
 
+      const zones = current.zones.map(zone => {
+        zone.cards?.forEach(card => {
+          if (card.status === 'offline') failed.push(card.name);
+        });
+        zone.tableRows?.forEach(row => {
+          if (row.status === 'OFFLINE') failed.push(row.name);
+        });
 
-
-      const zones = current.zones.map(zone => ({
-
-        ...zone,
-
-        cards: zone.cards?.map(card =>
-
-          card.status === 'offline' ? card : { ...card, active: true },
-
-        ),
-
-        tableRows: zone.tableRows?.map(row =>
-
-          row.status === 'OFFLINE' ? row : { ...row, active: true, status: 'ACTIVE' as const },
-
-        ),
-
-        lightingGroup: zone.lightingGroup
-
-          ? {
-
-              ...zone.lightingGroup,
-
-              active: true,
-
-              activeUnits: zone.lightingGroup.totalUnits,
-
-            }
-
-          : zone.lightingGroup,
-
-      }));
-
-
+        return {
+          ...zone,
+          cards: zone.cards?.map(card =>
+            card.status === 'offline' ? card : { ...card, active: true },
+          ),
+          tableRows: zone.tableRows?.map(row =>
+            row.status === 'OFFLINE' ? row : { ...row, active: true, status: 'ACTIVE' as const },
+          ),
+          lightingGroup: zone.lightingGroup
+            ? {
+                ...zone.lightingGroup,
+                active: true,
+                activeUnits: zone.lightingGroup.totalUnits,
+              }
+            : zone.lightingGroup,
+        };
+      });
 
       return this.withRecalculatedTotals({ ...current, zones });
-
     });
 
+    return [...new Set(failed)];
   }
 
 
