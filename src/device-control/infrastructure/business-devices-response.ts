@@ -9,6 +9,8 @@ export interface BusinessDeviceCardResponse {
   active: boolean;
   loadKw: number;
   metricLabel: string;
+  isPriority?: boolean;
+  batteryPercent?: number | null;
 }
 
 export interface BusinessDeviceTableRowResponse {

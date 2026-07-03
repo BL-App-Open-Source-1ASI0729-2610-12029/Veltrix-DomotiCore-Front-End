@@ -7,10 +7,23 @@
         {{ 'myDevices.subtitle' | translate:{ devices: overview.totalDevices, rooms: overview.totalRooms } }}
       </p>
     </div>
-    <button type="button" mat-flat-button color="primary" class="btn-add-device" (click)="openAddModal()">
-      <img [src]="icons.add" alt="" class="ui-icon ui-icon--sm" />
-      {{ 'myDevices.addDevice' | translate }}
-    </button>
+    <div class="page-header__actions">
+      <button type="button" mat-stroked-button (click)="onRefresh()" [disabled]="store.loading()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'myDevices.refresh' | translate }}
+      </button>
+      <button type="button" mat-stroked-button (click)="onTurnOnAll()">
+        {{ 'myDevices.turnOnAll' | translate }}
+      </button>
+      <button type="button" mat-stroked-button (click)="onEcoMode()">
+        {{ 'myDevices.ecoMode' | translate }}
+      </button>
+      <a mat-stroked-button routerLink="/app/devices/gateway">{{ 'myDevices.gateway' | translate }}</a>
+      <button type="button" mat-flat-button color="primary" class="btn-add-device" (click)="openAddModal()">
+        <img [src]="icons.add" alt="" class="ui-icon ui-icon--sm" />
+        {{ 'myDevices.addDevice' | translate }}
+      </button>
+    </div>
   </header>
 
   <div *ngIf="store.loading()" class="loading-bar">
@@ -58,11 +71,32 @@
               </label>
             </div>
             <h3>{{ device.name }}</h3>
+            <p class="device-meta" *ngIf="device.usageCategory">
+              {{ categoryLabelKey(device.usageCategory) | translate }}
+            </p>
             <p class="device-status" [class.device-status--online]="device.connection === 'online'">
-              <span class="status-dot"></span>
+              <span class="status-dot" [class.status-dot--warning]="device.connection === 'offline'"></span>
               {{ getConnectionLabel(device) }}
             </p>
             <p class="device-power">{{ 'myDevices.powerUsage' | translate }}: {{ getPowerLabel(device) }}</p>
+            <p class="device-battery" *ngIf="getBatteryLabel(device) as battery">
+              {{ 'myDevices.battery' | translate }}: {{ battery }}
+            </p>
+            <p class="device-battery device-battery--missing" *ngIf="device.batteryPercent == null && device.icon === 'sensor'">
+              {{ 'myDevices.batteryUnavailable' | translate }}
+            </p>
+            <div class="device-tile__actions" (click)="$event.stopPropagation()">
+              <button type="button" mat-button (click)="onTogglePriority(room.id, device, $event)">
+                {{
+                  device.isPriority
+                    ? ('myDevices.priorityOn' | translate)
+                    : ('myDevices.priorityOff' | translate)
+                }}
+              </button>
+              <button type="button" mat-button (click)="openCategoryModal(room.id, device, $event)">
+                {{ 'myDevices.classify' | translate }}
+              </button>
+            </div>
           </article>
         </div>
       </section>
@@ -231,5 +265,30 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showCategoryModal()" (click)="closeCategoryModal()">
+  <div class="add-modal" (click)="$event.stopPropagation()">
+    <div class="add-modal__header">
+      <h3>{{ 'myDevices.classifyTitle' | translate }}</h3>
+      <button type="button" mat-icon-button class="add-modal__close" (click)="closeCategoryModal()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'myDevices.classifyLabel' | translate }}</mat-label>
+      <mat-select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)" name="usageCategory">
+        <mat-option value="lighting">{{ 'myDevices.categories.lighting' | translate }}</mat-option>
+        <mat-option value="climate">{{ 'myDevices.categories.climate' | translate }}</mat-option>
+        <mat-option value="security">{{ 'myDevices.categories.security' | translate }}</mat-option>
+        <mat-option value="entertainment">{{ 'myDevices.categories.entertainment' | translate }}</mat-option>
+        <mat-option value="generic">{{ 'myDevices.categories.generic' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="add-modal__actions">
+      <button type="button" mat-stroked-button (click)="closeCategoryModal()">{{ 'myDevices.cancel' | translate }}</button>
+      <button type="button" mat-flat-button color="primary" (click)="saveCategory()">{{ 'myDevices.saveCategory' | translate }}</button>
+    </div>
   </div>
 </div>

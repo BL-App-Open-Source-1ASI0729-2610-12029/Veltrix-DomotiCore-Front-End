@@ -6,6 +6,9 @@ export interface SmartDeviceResponse {
   active: boolean;
   powerUsageW: number | null;
   statusLabel?: string;
+  batteryPercent?: number | null;
+  usageCategory?: 'lighting' | 'climate' | 'security' | 'entertainment' | 'generic';
+  isPriority?: boolean;
 }
 
 export interface RoomResponse {

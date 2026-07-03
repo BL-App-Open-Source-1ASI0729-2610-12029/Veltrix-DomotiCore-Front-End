@@ -15,6 +15,13 @@ export const businessDeviceRoutes: Routes = [
       ),
   },
   {
+    path: 'gateway',
+    loadChildren: () =>
+      import('../gateway-management/presentation/gateway-management.routes').then(
+        m => m.gatewayManagementRoutes,
+      ),
+  },
+  {
     path: 'explorer',
     loadComponent: () =>
       import('./presentation/pages/device-explorer/device-explorer.component').then(

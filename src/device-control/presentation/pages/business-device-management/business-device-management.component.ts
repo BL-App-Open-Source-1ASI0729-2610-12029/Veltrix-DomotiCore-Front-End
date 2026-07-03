@@ -58,6 +58,17 @@ export class BusinessDeviceManagementComponent implements OnInit {
     this.feedback.showToast(this.translate.instant('businessDevices.toast.turnAllOff'), 'info');
   }
 
+  onTurnAllOn(): void {
+    this.store.turnAllOn();
+    this.feedback.showToast(this.translate.instant('businessDevices.toast.turnAllOn'), 'success');
+  }
+
+  onTogglePriority(zoneId: string, deviceId: string, event: Event): void {
+    event.stopPropagation();
+    this.store.toggleDevicePriority(zoneId, deviceId);
+    this.feedback.showToast(this.translate.instant('businessDevices.toast.priorityUpdated'), 'success');
+  }
+
   onEnableEco(zone: BusinessZoneResponse): void {
     if (zone.ecoModeEnabled) {
       this.feedback.showToast(

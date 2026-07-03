@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
@@ -7,10 +8,15 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 @Component({
   selector: 'app-connected-services',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, RouterLink, TranslateModule, ...MATERIAL_IMPORTS],
   template: `
     <div class="devices">
-      <h1>{{ 'navigation.connectedServices' | translate }}</h1>
+      <div class="devices-header">
+        <h1>{{ 'navigation.connectedServices' | translate }}</h1>
+        <a mat-stroked-button routerLink="/app/smart-integrations/compatibility">
+          {{ 'compatibility.title' | translate }}
+        </a>
+      </div>
       <div class="devices-grid">
         <div class="device-card" *ngFor="let service of services()">
           <div class="device-header">
@@ -34,9 +40,17 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
       padding: 2rem;
       animation: fadeIn 0.6s ease-in;
     }
+    .devices-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
     .devices h1 {
       color: var(--gray-900);
-      margin-bottom: 1.75rem;
+      margin: 0;
       font-size: 2.5rem;
       font-weight: 700;
       text-align: center;

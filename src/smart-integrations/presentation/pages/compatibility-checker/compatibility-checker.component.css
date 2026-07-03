@@ -1,0 +1,46 @@
+.compatibility-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-color, #1a3b8b);
+}
+
+.panel {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result--ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.supported-list ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+}
