@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../iam/application/auth.service';
+import { RolePermissionService } from '../../../iam/application/role-permission.service';
+import { AccountType } from '../../../iam/domain/model/account-type.entity';
 import { SettingsStore } from '../../../settings/application/settings.store';
 import { GOOGLE_ICONS } from '../../constants/google-icons';
 import { GlobalSearchService } from '../../services/global-search.service';
@@ -20,6 +22,27 @@ import { MATERIAL_IMPORTS } from '../../material';
         <button mat-icon-button type="button" class="hamburger-btn" (click)="toggleSidebar.emit()" [attr.aria-label]="'navigation.menu' | translate">
           <mat-icon>menu</mat-icon>
         </button>
+
+        @if (auth.canAccessBothSegments()) {
+          <div class="segment-switcher" role="group" [attr.aria-label]="'navbar.segmentSwitcher' | translate">
+            <button
+              type="button"
+              class="segment-switcher__btn"
+              [class.segment-switcher__btn--active]="auth.getEffectiveAccountType() === 'smart-home'"
+              (click)="switchSegment('smart-home')"
+            >
+              {{ 'navbar.segmentSmartHome' | translate }}
+            </button>
+            <button
+              type="button"
+              class="segment-switcher__btn"
+              [class.segment-switcher__btn--active]="auth.getEffectiveAccountType() === 'small-business'"
+              (click)="switchSegment('small-business')"
+            >
+              {{ 'navbar.segmentSmallBusiness' | translate }}
+            </button>
+          </div>
+        }
       </div>
 
       <div class="navbar-center">
@@ -64,8 +87,9 @@ export class NavbarComponent implements OnInit {
   @Input() sidebarOpen = true;
   readonly icons = GOOGLE_ICONS;
   readonly settingsStore = inject(SettingsStore);
+  readonly auth = inject(AuthService);
 
-  private readonly auth = inject(AuthService);
+  private readonly permissions = inject(RolePermissionService);
   private readonly feedback = inject(UiFeedbackService);
   private readonly globalSearch = inject(GlobalSearchService);
   private readonly router = inject(Router);
@@ -79,18 +103,21 @@ export class NavbarComponent implements OnInit {
 
   searchPlaceholder(): string {
     const key =
-      this.auth.getAccountType() === 'small-business'
+      this.auth.getEffectiveAccountType() === 'small-business'
         ? 'navbar.searchPlaceholderBusiness'
         : 'navbar.searchPlaceholder';
     return this.translate.instant(key);
   }
 
   roleLabel(): string {
-    if (this.auth.getAccountType() === 'small-business') {
+    if (this.auth.getEffectiveAccountType() === 'small-business') {
       return this.translate.instant('navbar.facilityManager');
     }
-    const key = this.settingsStore.settings().roleKey ?? 'settings.administrator';
-    return this.translate.instant(key);
+    return this.translate.instant(this.permissions.roleLabelKey());
+  }
+
+  switchSegment(segment: AccountType): void {
+    this.auth.switchSegment(segment);
   }
 
   onNotifications(): void {
@@ -110,7 +137,7 @@ export class NavbarComponent implements OnInit {
     const value = input.value.trim();
     if (!value) return;
 
-    const accountType = this.auth.getAccountType() === 'small-business' ? 'small-business' : 'smart-home';
+    const accountType = this.auth.getEffectiveAccountType() === 'small-business' ? 'small-business' : 'smart-home';
     const route = this.globalSearch.resolveRoute(value, accountType);
     if (!route.length) return;
 

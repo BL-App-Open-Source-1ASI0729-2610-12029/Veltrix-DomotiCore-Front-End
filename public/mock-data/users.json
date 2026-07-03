@@ -5,6 +5,34 @@
     "email": "admin@domoticore.local",
     "password": "SecurePass123",
     "role": "Admin",
+    "onboardingCompleted": true,
     "avatar": "assets/icons/shared/profile-admin.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Home Demo",
+    "email": "home@domoticore.local",
+    "password": "SecurePass123",
+    "role": "User",
+    "accountType": "smart-home",
+    "onboardingCompleted": true
+  },
+  {
+    "id": 3,
+    "name": "Business Demo",
+    "email": "business@domoticore.local",
+    "password": "SecurePass123",
+    "role": "User",
+    "accountType": "small-business",
+    "onboardingCompleted": true
+  },
+  {
+    "id": 4,
+    "name": "Moderator Demo",
+    "email": "mod@domoticore.local",
+    "password": "SecurePass123",
+    "role": "Moderator",
+    "accountType": "small-business",
+    "onboardingCompleted": true
   }
 ]

@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const VERSION_KEY = 'domoticore-cache:__version__';
 
 @Injectable({ providedIn: 'root' })
 export class LocalDataCacheService {
   private readonly prefix = 'domoticore-cache:';
+  private userScope: string | null = null;
 
   constructor() {
     this.bustIfStale();
+  }
+
+  setUserScope(userId: string | number | null): void {
+    this.userScope = userId != null ? String(userId) : null;
   }
 
   getCollection<T>(key: string): T[] | null {
@@ -29,7 +34,15 @@ export class LocalDataCacheService {
 
   clear(key: string): void {
     if (typeof localStorage === 'undefined') return;
-    localStorage.removeItem(this.prefix + key);
+    localStorage.removeItem(this.prefix + this.scopedKey(key));
+  }
+
+  clearUserScope(): void {
+    if (typeof localStorage === 'undefined' || !this.userScope) return;
+    const scopePrefix = `${this.prefix}${this.userScope}:`;
+    Object.keys(localStorage)
+      .filter(k => k.startsWith(scopePrefix))
+      .forEach(k => localStorage.removeItem(k));
   }
 
   clearAll(): void {
@@ -47,9 +60,13 @@ export class LocalDataCacheService {
     }
   }
 
+  private scopedKey(key: string): string {
+    return this.userScope ? `${this.userScope}:${key}` : key;
+  }
+
   private read<T>(key: string): T | null {
     if (typeof localStorage === 'undefined') return null;
-    const raw = localStorage.getItem(this.prefix + key);
+    const raw = localStorage.getItem(this.prefix + this.scopedKey(key));
     if (!raw) return null;
     try {
       return JSON.parse(raw) as T;
@@ -60,6 +77,6 @@ export class LocalDataCacheService {
 
   private write<T>(key: string, data: T): void {
     if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(this.prefix + key, JSON.stringify(data));
+    localStorage.setItem(this.prefix + this.scopedKey(key), JSON.stringify(data));
   }
 }

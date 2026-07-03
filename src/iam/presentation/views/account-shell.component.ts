@@ -13,7 +13,7 @@ import { SmallBusinessShellComponent } from './small-business/small-business-she
   standalone: true,
   imports: [CommonModule, RouterModule, SmartHomeShellComponent, SmallBusinessShellComponent],
   template: `
-    @if (auth.getAccountType() === 'small-business') {
+    @if (auth.getEffectiveAccountType() === 'small-business') {
       <app-small-business-shell
         [sidebarOpen]="sidebarOpen"
         (toggleSidebar)="onToggleSidebar()"

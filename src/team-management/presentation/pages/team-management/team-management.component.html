@@ -16,7 +16,7 @@
 
     </div>
 
-    <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onAddMember()">
+    <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onAddMember()" *ngIf="permissions.canInviteTeamMembers()">
 
       <img [src]="icons.add" alt="" class="ui-icon ui-icon--sm" />
 
@@ -332,7 +332,7 @@
 
         <p>{{ 'teamManagement.empty.description' | translate }}</p>
 
-        <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onAddMember()">
+        <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onAddMember()" *ngIf="permissions.canInviteTeamMembers()">
 
           {{ 'teamManagement.addMember' | translate }}
 
@@ -518,7 +518,7 @@
 
   </button>
 
-  <button type="button" mat-button color="warn" role="menuitem" class="member-actions-flyout__danger" (click)="onRemoveMember(member)">
+  <button type="button" mat-button color="warn" role="menuitem" class="member-actions-flyout__danger" (click)="onRemoveMember(member)" *ngIf="permissions.canDeleteTeamMembers()">
 
     {{ 'teamManagement.actions.remove' | translate }}
 

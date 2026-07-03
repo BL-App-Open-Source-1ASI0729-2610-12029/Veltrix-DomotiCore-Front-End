@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../../application/auth.service';
+import { RolePermissionService } from '../../../../application/role-permission.service';
 import { SMALL_BUSINESS_NAV_ITEMS } from '../../../../domain/model/account-navigation.entity';
 import { GOOGLE_ICONS } from '../../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../../shared/services/ui-feedback.service';
@@ -30,7 +31,7 @@ import { MATERIAL_IMPORTS } from '../../../../../shared/material';
 
         <mat-nav-list class="view-sidebar__nav">
           <div mat-subheader>{{ 'views.smallBusiness.section' | translate }}</div>
-          @for (item of navItems; track item.route) {
+          @for (item of visibleNavItems(); track item.route) {
             <a mat-list-item [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar.emit()">
               <img matListItemIcon [src]="item.icon" alt="" class="ui-icon ui-icon--sm" />
               <span matListItemTitle>{{ item.labelKey | translate }}</span>
@@ -39,7 +40,7 @@ import { MATERIAL_IMPORTS } from '../../../../../shared/material';
         </mat-nav-list>
 
         <div class="view-sidebar__footer">
-          <button mat-flat-button color="primary" type="button" class="add-device-btn full-width" (click)="onAddDevice()">
+          <button mat-flat-button color="primary" type="button" class="add-device-btn full-width" (click)="onAddDevice()" *ngIf="permissions.canDeleteDevices()">
             <mat-icon>add</mat-icon>
             {{ 'views.smallBusiness.addDevice' | translate }}
           </button>
@@ -61,7 +62,16 @@ export class SmallBusinessSidebarComponent {
   @Input() isOpen = false;
   @Output() closeSidebar = new EventEmitter<void>();
 
-  readonly navItems = SMALL_BUSINESS_NAV_ITEMS;
+  readonly permissions = inject(RolePermissionService);
+
+  readonly visibleNavItems = computed(() =>
+    SMALL_BUSINESS_NAV_ITEMS.filter(item => {
+      if (item.route === '/app/users') {
+        return this.permissions.canManageTeam();
+      }
+      return true;
+    }),
+  );
   readonly icons = GOOGLE_ICONS;
 
   private readonly auth = inject(AuthService);

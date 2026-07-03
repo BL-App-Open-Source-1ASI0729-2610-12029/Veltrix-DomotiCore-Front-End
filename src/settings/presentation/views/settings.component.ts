@@ -15,6 +15,7 @@ import { SecurityStore } from '../../../security/application/security.store';
 import { AuthorizedUser } from '../../../security/domain/model/authorized-user.entity';
 import { AccessLevel } from '../../../security/infrastructure/security-response';
 import { AuthService } from '../../../iam/application/auth.service';
+import { RolePermissionService } from '../../../iam/application/role-permission.service';
 import { LocalAuthRepository } from '../../../iam/infrastructure/local-auth.repository';
 import { downloadTextFile } from '../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../shared/material';
@@ -49,13 +50,27 @@ export class SettingsComponent implements OnInit {
   private readonly theme = inject(ThemeService);
   private readonly auth = inject(AuthService);
   private readonly authRepository = inject(LocalAuthRepository);
+  private readonly permissions = inject(RolePermissionService);
 
   readonly settings = this.settingsStore.settings;
   readonly loading = this.settingsStore.loading;
   readonly saving = this.settingsStore.saving;
   readonly authorizedUsers = this.securityStore.authorizedUsers;
 
-  readonly isBusinessMode = computed(() => this.auth.getAccountType() === 'small-business');
+  readonly isBusinessMode = computed(() => this.auth.getEffectiveAccountType() === 'small-business');
+
+  readonly visibleTabs = computed(() =>
+    this.tabItems.filter(tab => {
+      if (tab.id === 'profile') return true;
+      if (tab.id === 'access') return this.permissions.canManageAuthorizedUsers();
+      if (tab.id === 'privacy') return this.permissions.canAccessSystemSettings();
+      if (tab.id === 'devices') {
+        return this.permissions.canManageIntegrations() || !this.isBusinessMode();
+      }
+      if (tab.id === 'system') return this.permissions.canAccessSystemSettings();
+      return true;
+    }),
+  );
 
   activeTab: 'profile' | 'access' | 'privacy' | 'devices' | 'system' = 'profile';
   formData: SettingsState = { ...this.settings() };
@@ -135,7 +150,14 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsStore.fetchSettings();
-    this.securityStore.loadAuthorizedUsers();
+    if (this.permissions.canManageAuthorizedUsers()) {
+      this.securityStore.loadAuthorizedUsers();
+    }
+
+    const allowedTabs = this.visibleTabs().map(tab => tab.id);
+    if (!allowedTabs.includes(this.activeTab)) {
+      this.activeTab = 'profile';
+    }
   }
 
   @HostListener('document:keydown.escape')

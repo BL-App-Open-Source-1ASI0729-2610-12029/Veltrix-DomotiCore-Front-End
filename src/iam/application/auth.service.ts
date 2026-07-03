@@ -8,7 +8,8 @@ import { SettingsStore } from '../../settings/application/settings.store';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { AccountType, getAccountTypeRoute, isOnboardingComplete } from '../domain/model/account-type.entity';
 import { AuthUser, createLocalUser, stripPassword } from '../domain/model/auth-user.entity';
-import { AUTH_SESSION_KEY, AUTH_TOKEN_KEY } from '../infrastructure/auth-api-endpoint';
+import { normalizePlatformRole } from '../domain/model/platform-role.entity';
+import { AUTH_SESSION_KEY, AUTH_TOKEN_KEY, ACTIVE_SEGMENT_KEY } from '../infrastructure/auth-api-endpoint';
 import { LocalAuthRepository } from '../infrastructure/local-auth.repository';
 
 export type { AuthUser };
@@ -35,23 +36,40 @@ export class AuthService {
 
     try {
       this.currentUser = JSON.parse(raw) as AuthUser;
+      this.cache.setUserScope(this.currentUser.id);
     } catch {
       this.currentUser = null;
+      this.cache.setUserScope(null);
     }
   }
 
   private persistSession(user: AuthUser): void {
     this.currentUser = user;
     localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(user));
+    this.cache.setUserScope(user.id);
   }
 
   private clearUserScopedCache(): void {
+    this.cache.clearUserScope();
     this.cache.clear('user-profile');
     this.cache.clear('users');
     this.cache.clear('business-profile');
     this.cache.clear('zone-configuration');
     this.cache.clear('team-management');
     this.cache.clear('cost-analysis');
+    this.cache.clear('devices-overview');
+    this.cache.clear('maintenance-records');
+    this.cache.clear('gateways');
+  }
+
+  private clearSegmentScopedCache(): void {
+    this.cache.clear('devices-overview');
+    this.cache.clear('business-profile');
+    this.cache.clear('zone-configuration');
+    this.cache.clear('team-management');
+    this.cache.clear('cost-analysis');
+    this.cache.clear('maintenance-records');
+    this.cache.clear('gateways');
   }
 
   private afterAuthenticated(user: AuthUser): Observable<AuthUser> {
@@ -101,17 +119,62 @@ export class AuthService {
   }
 
   hasCompletedOnboarding(): boolean {
-    return isOnboardingComplete(this.currentUser?.accountType, this.currentUser?.onboardingCompleted);
+    return isOnboardingComplete(
+      this.currentUser?.accountType,
+      this.currentUser?.onboardingCompleted,
+      this.currentUser?.role,
+    );
+  }
+
+  getPlatformRole(): string {
+    return normalizePlatformRole(this.currentUser?.role);
+  }
+
+  canAccessBothSegments(): boolean {
+    return normalizePlatformRole(this.currentUser?.role) === 'Admin';
   }
 
   getAccountType(): AccountType | null {
     return this.currentUser?.accountType ?? null;
   }
 
+  getActiveSegment(): AccountType {
+    if (!this.canAccessBothSegments()) {
+      return this.currentUser?.accountType ?? 'smart-home';
+    }
+
+    const stored = localStorage.getItem(ACTIVE_SEGMENT_KEY) as AccountType | null;
+    if (stored === 'smart-home' || stored === 'small-business') {
+      return stored;
+    }
+
+    return 'smart-home';
+  }
+
+  getEffectiveAccountType(): AccountType {
+    return this.getActiveSegment();
+  }
+
+  switchSegment(segment: AccountType): void {
+    if (!this.canAccessBothSegments()) {
+      return;
+    }
+
+    if (this.getActiveSegment() === segment) {
+      return;
+    }
+
+    localStorage.setItem(ACTIVE_SEGMENT_KEY, segment);
+    this.clearSegmentScopedCache();
+    this.settingsStore.reset();
+    this.settingsStore.fetchSettings();
+    this.router.navigateByUrl(getAccountTypeRoute(segment));
+  }
+
   getDefaultRoute(): string {
     if (!this.isAuthenticated()) return '/auth/login';
     if (!this.hasCompletedOnboarding()) return '/auth/onboarding';
-    return getAccountTypeRoute(this.currentUser!.accountType!);
+    return getAccountTypeRoute(this.getEffectiveAccountType());
   }
 
   login(email: string, password: string): Observable<AuthLoginResult> {
@@ -208,6 +271,8 @@ export class AuthService {
     this.currentUser = null;
     localStorage.removeItem(AUTH_SESSION_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(ACTIVE_SEGMENT_KEY);
+    this.cache.setUserScope(null);
     this.clearUserScopedCache();
     this.settingsStore.reset();
     this.router.navigate(['/auth/login']);

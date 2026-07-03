@@ -49,7 +49,17 @@
     "searchPlaceholder": "Buscar eventos o usuarios...",
     "searchPlaceholderBusiness": "Buscar instalaciones o dispositivos...",
     "facilityManager": "GERENTE DE INSTALACIÓN",
-    "searchNavigating": "Buscando \"{{query}}\"..."
+    "searchNavigating": "Buscando \"{{query}}\"...",
+    "segmentSwitcher": "Cambiar segmento de cuenta",
+    "segmentSmartHome": "Hogar Inteligente",
+    "segmentSmallBusiness": "Pequeño Negocio"
+  },
+  "roles": {
+    "platform": {
+      "admin": "Administrador",
+      "moderator": "Moderador",
+      "user": "Usuario estándar"
+    }
   },
   "security": {
     "title": "Seguridad y Acceso",

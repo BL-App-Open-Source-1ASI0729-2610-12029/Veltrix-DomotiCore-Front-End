@@ -49,7 +49,17 @@
     "searchPlaceholder": "Search events or users...",
     "searchPlaceholderBusiness": "Search facilities or devices...",
     "facilityManager": "FACILITY MANAGER",
-    "searchNavigating": "Searching for \"{{query}}\"..."
+    "searchNavigating": "Searching for \"{{query}}\"...",
+    "segmentSwitcher": "Switch account segment",
+    "segmentSmartHome": "Smart Home",
+    "segmentSmallBusiness": "Small Business"
+  },
+  "roles": {
+    "platform": {
+      "admin": "Administrator",
+      "moderator": "Moderator",
+      "user": "Standard User"
+    }
   },
   "security": {
     "title": "Security & Access",

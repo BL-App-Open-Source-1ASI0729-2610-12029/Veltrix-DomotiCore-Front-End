@@ -13,7 +13,7 @@ export const onboardingGuard: CanActivateFn = () => {
   }
 
   const user = auth.currentUser;
-  if (isOnboardingComplete(user?.accountType, user?.onboardingCompleted)) {
+  if (isOnboardingComplete(user?.accountType, user?.onboardingCompleted, user?.role)) {
     return true;
   }
 

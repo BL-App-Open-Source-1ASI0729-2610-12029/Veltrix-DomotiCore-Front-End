@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { getAccountTypeRoute, isOnboardingComplete } from '../domain/model/account-type.entity';
+import { isOnboardingComplete } from '../domain/model/account-type.entity';
 import { AuthService } from './auth.service';
 
 /** Protects /auth/onboarding — requires login, redirects if already completed. */
@@ -13,8 +13,8 @@ export const onboardingRouteGuard: CanActivateFn = () => {
   }
 
   const user = auth.currentUser;
-  if (isOnboardingComplete(user?.accountType, user?.onboardingCompleted) && user?.accountType) {
-    return router.createUrlTree([getAccountTypeRoute(user.accountType)]);
+  if (isOnboardingComplete(user?.accountType, user?.onboardingCompleted, user?.role)) {
+    return router.createUrlTree([auth.getDefaultRoute()]);
   }
 
   return true;

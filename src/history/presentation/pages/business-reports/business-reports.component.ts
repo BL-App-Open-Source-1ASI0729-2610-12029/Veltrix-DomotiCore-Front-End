@@ -16,6 +16,7 @@ import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google
 import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 interface ChartCoordinate {
@@ -35,6 +36,7 @@ const DEVICE_MENU_HEIGHT = 132;
 })
 export class BusinessReportsComponent implements OnInit {
   readonly store = inject(BusinessReportsStore);
+  readonly permissions = inject(RolePermissionService);
   readonly icons = GOOGLE_ICONS;
   readonly currentYear = APP_CURRENT_YEAR;
 

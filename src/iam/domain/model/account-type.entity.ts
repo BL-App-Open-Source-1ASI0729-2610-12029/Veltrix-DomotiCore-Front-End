@@ -33,6 +33,14 @@ export function getAccountTypeRoute(type: AccountType): string {
     : '/app/operations-hub';
 }
 
-export function isOnboardingComplete(accountType?: AccountType, onboardingCompleted?: boolean): boolean {
+export function isOnboardingComplete(
+  accountType?: AccountType,
+  onboardingCompleted?: boolean,
+  role?: string,
+): boolean {
+  const normalizedRole = (role ?? '').trim().toLowerCase();
+  if (normalizedRole === 'admin') {
+    return true;
+  }
   return !!accountType && onboardingCompleted !== false;
 }

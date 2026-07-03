@@ -8,15 +8,15 @@
       <p>{{ 'businessReports.subtitle' | translate }}</p>
     </div>
     <div class="biz-reports__header-actions">
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportPdf()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportPdf()" *ngIf="permissions.canExportData()">
         <img [src]="icons.receipt" alt="" class="ui-icon ui-icon--sm" />
         {{ 'businessReports.exportPdf' | translate }}
       </button>
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportCsv()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportCsv()" *ngIf="permissions.canExportData()">
         <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
         {{ 'businessReports.exportCsv' | translate }}
       </button>
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportExcel()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportExcel()" *ngIf="permissions.canExportData()">
         <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
         {{ 'businessReports.exportExcel' | translate }}
       </button>

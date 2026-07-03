@@ -5,11 +5,13 @@ import { isSmartHomeAccount } from '../../../application/account-type.guard';
 export const smartHomeRoutes: Routes = [
   {
     path: 'dashboard',
+    canMatch: [isSmartHomeAccount],
     loadChildren: () =>
       import('../../../../dashboard/presentation/dashboard.routes').then(m => m.dashboardRoutes),
   },
   {
     path: 'security',
+    canMatch: [isSmartHomeAccount],
     loadChildren: () =>
       import('../../../../security/presentation/routes/security.routes').then(m => m.securityRoutes),
   },
@@ -21,16 +23,19 @@ export const smartHomeRoutes: Routes = [
   },
   {
     path: 'automation',
+    canMatch: [isSmartHomeAccount],
     loadChildren: () =>
       import('../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
   },
   {
     path: 'history',
+    canMatch: [isSmartHomeAccount],
     loadChildren: () =>
       import('../../../../history/presentation/history.routes').then(m => m.historyRoutes),
   },
   {
     path: 'settings',
+    canMatch: [isSmartHomeAccount],
     loadChildren: () =>
       import('../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
   },

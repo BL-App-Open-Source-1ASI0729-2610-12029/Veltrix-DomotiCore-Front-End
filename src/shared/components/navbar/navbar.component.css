@@ -19,7 +19,42 @@
 .navbar-start {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
   flex-shrink: 0;
+}
+
+.segment-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: rgba(52, 85, 209, 0.08);
+  border: 1px solid rgba(52, 85, 209, 0.12);
+}
+
+.segment-switcher__btn {
+  border: 0;
+  background: transparent;
+  color: var(--gray-600);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.segment-switcher__btn--active {
+  background: #fff;
+  color: var(--primary-600, #3455d1);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+.segment-switcher__btn:hover:not(.segment-switcher__btn--active) {
+  color: var(--primary-600, #3455d1);
 }
 
 .navbar-center {

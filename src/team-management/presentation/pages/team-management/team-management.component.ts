@@ -28,6 +28,7 @@ import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 
@@ -55,6 +56,7 @@ const MEMBER_MENU_HEIGHT = 168;
 export class TeamManagementComponent implements OnInit {
 
   readonly store = inject(TeamManagementStore);
+  readonly permissions = inject(RolePermissionService);
 
   readonly icons = GOOGLE_ICONS;
 

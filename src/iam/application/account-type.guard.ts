@@ -3,7 +3,7 @@ import { CanMatchFn } from '@angular/router';
 import { AuthService } from './auth.service';
 
 export const isSmartHomeAccount: CanMatchFn = () =>
-  inject(AuthService).getAccountType() !== 'small-business';
+  inject(AuthService).getEffectiveAccountType() === 'smart-home';
 
 export const isSmallBusinessAccount: CanMatchFn = () =>
-  inject(AuthService).getAccountType() === 'small-business';
+  inject(AuthService).getEffectiveAccountType() === 'small-business';

@@ -12,7 +12,7 @@
 
   <nav class="settings-tabs" [attr.aria-label]="'common.a11y.settingsSections' | translate">
     <button
-      *ngFor="let tab of tabItems"
+      *ngFor="let tab of visibleTabs()"
       mat-button
       [class.active]="activeTab === tab.id"
       class="settings-tab"
