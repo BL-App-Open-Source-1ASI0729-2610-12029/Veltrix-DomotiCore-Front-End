@@ -142,7 +142,35 @@
     "deviceType": "Device type",
     "typeClimate": "Climate (AC / Thermostat)",
     "typeGeneric": "Generic device",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "refresh": "Refresh",
+    "turnOnAll": "Turn ON All",
+    "ecoMode": "Eco Mode",
+    "gateway": "Gateway",
+    "battery": "Battery",
+    "batteryUnavailable": "Battery data unavailable",
+    "classify": "Classify",
+    "classifyTitle": "Classify device by usage",
+    "classifyLabel": "Usage category",
+    "saveCategory": "Save category",
+    "priorityOn": "Priority",
+    "priorityOff": "Mark priority",
+    "categories": {
+      "lighting": "Lighting",
+      "climate": "Climate",
+      "security": "Security",
+      "entertainment": "Entertainment",
+      "generic": "General"
+    },
+    "toast": {
+      "refreshed": "Device status refreshed.",
+      "refreshFailed": "Could not refresh devices. Check your connection.",
+      "turnOnAll": "All online devices were turned on.",
+      "ecoMode": "Eco mode reduced high-consumption devices.",
+      "prioritySet": "{{name}} marked as priority.",
+      "priorityRemoved": "{{name}} is no longer priority.",
+      "categorySaved": "Device category updated."
+    }
   },
   "deviceDetail": {
     "breadcrumbDevices": "Devices",
@@ -611,6 +639,11 @@
     "subtitle": "Manage {{count}} active devices across {{zones}} primary zones.",
     "totalConsumption": "TOTAL CONSUMPTION",
     "turnAllOff": "Turn All OFF",
+    "turnAllOn": "Turn All ON",
+    "priority": "Priority",
+    "battery": "Battery {{value}}%",
+    "setPriority": "Mark priority",
+    "removePriority": "Remove priority",
     "zoneDevices": "{{name}} ({{count}} Devices)",
     "viewAll": "View All {{count}} Devices",
     "lightingGroup": "Lighting Group",
@@ -658,6 +691,8 @@
     },
     "toast": {
       "turnAllOff": "All devices were turned off.",
+      "turnAllOn": "All online devices were turned on.",
+      "priorityUpdated": "Device priority updated.",
       "ecoEnabled": "Smart Eco enabled for {{zone}}.",
       "ecoAlreadyEnabled": "Smart Eco is already active in {{zone}}.",
       "viewAll": "Showing all {{count}} devices...",
@@ -1269,6 +1304,68 @@
     "requestsUsed": "requests of",
     "usageAmount": "{{used}} / {{total}}",
     "usageSummary": "{{amount}} enterprise quota used this billing cycle."
+  },
+  "gateway": {
+    "nav": "Gateway",
+    "eyebrow": "Gateway Management",
+    "title": "Veltrix Gateway",
+    "subtitle": "Link your physical gateway and register smart nodes for DomotiCore.",
+    "backToDevices": "Back to devices",
+    "linkTitle": "Link gateway",
+    "linkHint": "Enter the MAC address or gateway ID printed on your Veltrix device.",
+    "codeLabel": "MAC / Gateway ID",
+    "labelField": "Gateway label",
+    "linkAction": "Link gateway",
+    "unlink": "Unlink gateway",
+    "linkedId": "ID: {{id}}",
+    "linkedAt": "Linked on {{date}}",
+    "demoCodes": "Demo codes: VELTRIX-GW-DEMO, AA:BB:CC:DD:EE:01",
+    "nodesTitle": "Register nodes",
+    "nodesSubtitle": "Add compatible smart devices discovered through the gateway.",
+    "nodeName": "Device name",
+    "nodeType": "Device type",
+    "nodeTypes": {
+      "bulb": "Smart bulb",
+      "plug": "Smart plug",
+      "sensor": "Sensor",
+      "switch": "Switch"
+    },
+    "registerNode": "Register node",
+    "noNodes": "No nodes registered yet.",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "unlinked": "Not linked"
+    },
+    "nodeStatus": {
+      "registered": "Registered",
+      "failed": "Not detected"
+    },
+    "toast": {
+      "codeRequired": "Enter a gateway code before linking.",
+      "linkedOnline": "Gateway linked successfully. Status: Online.",
+      "notDetected": "Device not detected. Check the code and internet connection.",
+      "unlinked": "Gateway unlinked.",
+      "nodeNameRequired": "Enter a device name.",
+      "nodeRegistered": "Device registered successfully.",
+      "nodeFailed": "The device could not be registered.",
+      "gatewayOffline": "Gateway is offline. Link a gateway first."
+    }
+  },
+  "compatibility": {
+    "eyebrow": "Smart Integrations",
+    "title": "Compatibility checker",
+    "subtitle": "Verify if your device can be linked to DomotiCore before pairing.",
+    "deviceModel": "Device model or type",
+    "checkAction": "Check compatibility",
+    "supportedTitle": "Supported examples",
+    "result": {
+      "compatible": "This device is compatible and can be linked to DomotiCore.",
+      "incompatible": "This device is not compatible yet. Review the official supported list."
+    },
+    "toast": {
+      "queryRequired": "Enter a device model or type."
+    }
   },
   "buttons": {
     "saveConfiguration": "Save Configuration",

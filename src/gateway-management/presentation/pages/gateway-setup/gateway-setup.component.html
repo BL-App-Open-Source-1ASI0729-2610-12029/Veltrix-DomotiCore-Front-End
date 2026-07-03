@@ -1,0 +1,110 @@
+<div class="gateway-page">
+  <header class="gateway-page__header">
+    <div>
+      <p class="gateway-page__eyebrow">{{ 'gateway.eyebrow' | translate }}</p>
+      <h1>{{ 'gateway.title' | translate }}</h1>
+      <p class="gateway-page__subtitle">{{ 'gateway.subtitle' | translate }}</p>
+    </div>
+    <a mat-stroked-button routerLink="/app/devices">{{ 'gateway.backToDevices' | translate }}</a>
+  </header>
+
+  <div *ngIf="store.loading()" class="loading-bar">
+    <div class="loading-bar__fill"></div>
+  </div>
+
+  <section class="gateway-card" *ngIf="store.gateway() as gateway; else linkGateway">
+    <div class="gateway-card__status">
+      <span class="status-pill" [class.status-pill--online]="gateway.status === 'online'">
+        {{ statusLabelKey() | translate }}
+      </span>
+      <h2>{{ gateway.label }}</h2>
+      <p>{{ 'gateway.linkedId' | translate:{ id: gateway.macOrId } }}</p>
+      <p class="gateway-card__meta" *ngIf="gateway.linkedAt">
+        {{ 'gateway.linkedAt' | translate:{ date: (gateway.linkedAt | date:'short') } }}
+      </p>
+    </div>
+    <button type="button" mat-stroked-button color="warn" (click)="onUnlinkGateway()">
+      {{ 'gateway.unlink' | translate }}
+    </button>
+  </section>
+
+  <ng-template #linkGateway>
+    <section class="gateway-card">
+      <h2>{{ 'gateway.linkTitle' | translate }}</h2>
+      <p>{{ 'gateway.linkHint' | translate }}</p>
+      <div class="gateway-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'gateway.codeLabel' | translate }}</mat-label>
+          <input matInput [ngModel]="gatewayCode()" (ngModelChange)="gatewayCode.set($event)" name="gatewayCode" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'gateway.labelField' | translate }}</mat-label>
+          <input matInput [ngModel]="gatewayLabel()" (ngModelChange)="gatewayLabel.set($event)" name="gatewayLabel" />
+        </mat-form-field>
+        <button
+          type="button"
+          mat-flat-button
+          color="primary"
+          [disabled]="store.linking()"
+          (click)="onLinkGateway()"
+        >
+          {{ 'gateway.linkAction' | translate }}
+        </button>
+      </div>
+      <p class="gateway-demo-hint">{{ 'gateway.demoCodes' | translate }}</p>
+    </section>
+  </ng-template>
+
+  <section class="gateway-card" *ngIf="store.gateway()?.status === 'online'">
+    <h2>{{ 'gateway.nodesTitle' | translate }}</h2>
+    <p>{{ 'gateway.nodesSubtitle' | translate }}</p>
+
+    <div class="gateway-form gateway-form--inline">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'gateway.nodeName' | translate }}</mat-label>
+        <input matInput [ngModel]="nodeName()" (ngModelChange)="nodeName.set($event)" name="nodeName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'gateway.nodeType' | translate }}</mat-label>
+        <mat-select [ngModel]="nodeType()" (ngModelChange)="nodeType.set($event)" name="nodeType">
+          <mat-option value="smart-bulb">{{ 'gateway.nodeTypes.bulb' | translate }}</mat-option>
+          <mat-option value="smart-plug">{{ 'gateway.nodeTypes.plug' | translate }}</mat-option>
+          <mat-option value="sensor">{{ 'gateway.nodeTypes.sensor' | translate }}</mat-option>
+          <mat-option value="switch">{{ 'gateway.nodeTypes.switch' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button
+        type="button"
+        mat-flat-button
+        color="primary"
+        [disabled]="store.registeringNode()"
+        (click)="onRegisterNode()"
+      >
+        {{ 'gateway.registerNode' | translate }}
+      </button>
+    </div>
+
+    <div class="nodes-list" *ngIf="store.nodes().length; else emptyNodes">
+      <article class="node-item" *ngFor="let node of store.nodes()">
+        <div>
+          <strong>{{ node.name }}</strong>
+          <p>{{ node.type }}</p>
+        </div>
+        <span
+          class="status-pill"
+          [class.status-pill--online]="node.status === 'registered'"
+          [class.status-pill--offline]="node.status === 'failed'"
+        >
+          {{
+            node.status === 'registered'
+              ? ('gateway.nodeStatus.registered' | translate)
+              : ('gateway.nodeStatus.failed' | translate)
+          }}
+        </span>
+      </article>
+    </div>
+    <ng-template #emptyNodes>
+      <p class="empty-state">{{ 'gateway.noNodes' | translate }}</p>
+    </ng-template>
+  </section>
+</div>

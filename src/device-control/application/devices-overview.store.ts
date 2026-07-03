@@ -40,6 +40,122 @@ export class DevicesOverviewStore {
     );
   }
 
+  refreshOverview(): Observable<DevicesOverview> {
+    return this.loadOverview();
+  }
+
+  turnOnAll(): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => ({
+      ...room,
+      devices: room.devices.map(device => {
+        if (device.connection === 'offline') return device;
+        return {
+          ...device,
+          active: true,
+          powerUsageW: this.resolvePowerUsage(device, true),
+          statusLabel: `Online • ${this.resolvePowerUsage(device, true)}W`,
+        };
+      }),
+      totalPowerW: room.layout === 'featured' ? undefined : room.totalPowerW,
+      activeDeviceCount:
+        room.layout === 'featured'
+          ? room.devices.filter(device => device.connection === 'online').length
+          : room.activeDeviceCount,
+    }));
+
+    const roomsWithPower = rooms.map(room => {
+      if (room.layout !== 'featured') return room;
+      return {
+        ...room,
+        totalPowerW: this.sumRoomPower(room.devices),
+      };
+    });
+
+    const updated = { ...current, rooms: roomsWithPower };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+  }
+
+  applyEcoMode(): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => ({
+      ...room,
+      devices: room.devices.map(device => {
+        if (device.connection === 'offline' || device.isPriority) return device;
+        const isHighConsumer = (device.powerUsageW ?? 0) >= 500 || device.icon === 'acUnit' || device.icon === 'oven';
+        if (!device.active || !isHighConsumer) return device;
+        return { ...device, active: false, powerUsageW: 0, statusLabel: 'Online • 0W' };
+      }),
+      totalPowerW:
+        room.layout === 'featured'
+          ? this.sumRoomPower(
+              room.devices.map(device => {
+                if (device.connection === 'offline' || device.isPriority) return device;
+                const isHighConsumer =
+                  (device.powerUsageW ?? 0) >= 500 || device.icon === 'acUnit' || device.icon === 'oven';
+                if (!device.active || !isHighConsumer) return device;
+                return { ...device, active: false, powerUsageW: 0 };
+              }),
+            )
+          : room.totalPowerW,
+      activeDeviceCount:
+        room.layout === 'featured'
+          ? room.devices.filter(device => device.active && device.connection === 'online').length
+          : room.activeDeviceCount,
+    }));
+
+    const updated = { ...current, rooms };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+  }
+
+  toggleDevicePriority(roomId: string, deviceId: string): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => {
+      if (room.id !== roomId) return room;
+      return {
+        ...room,
+        devices: room.devices.map(device =>
+          device.id === deviceId ? { ...device, isPriority: !device.isPriority } : device,
+        ),
+      };
+    });
+
+    const updated = { ...current, rooms };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+  }
+
+  setDeviceCategory(
+    roomId: string,
+    deviceId: string,
+    usageCategory: SmartDevice['usageCategory'],
+  ): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => {
+      if (room.id !== roomId) return room;
+      return {
+        ...room,
+        devices: room.devices.map(device =>
+          device.id === deviceId ? { ...device, usageCategory } : device,
+        ),
+      };
+    });
+
+    const updated = { ...current, rooms };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+  }
+
   private saveOverview(overview: DevicesOverview): void {
     this.api.saveOverview(overview).subscribe({
       next: data => this.overview.set(data),

@@ -308,6 +308,94 @@ export class BusinessDevicesStore {
 
 
 
+  turnAllOn(): void {
+
+    this.overview.update(current => {
+
+      if (!current) return current;
+
+
+
+      const zones = current.zones.map(zone => ({
+
+        ...zone,
+
+        cards: zone.cards?.map(card =>
+
+          card.status === 'offline' ? card : { ...card, active: true },
+
+        ),
+
+        tableRows: zone.tableRows?.map(row =>
+
+          row.status === 'OFFLINE' ? row : { ...row, active: true, status: 'ACTIVE' as const },
+
+        ),
+
+        lightingGroup: zone.lightingGroup
+
+          ? {
+
+              ...zone.lightingGroup,
+
+              active: true,
+
+              activeUnits: zone.lightingGroup.totalUnits,
+
+            }
+
+          : zone.lightingGroup,
+
+      }));
+
+
+
+      return this.withRecalculatedTotals({ ...current, zones });
+
+    });
+
+  }
+
+
+
+  toggleDevicePriority(zoneId: string, deviceId: string): void {
+
+    this.overview.update(current => {
+
+      if (!current) return current;
+
+
+
+      const zones = current.zones.map(zone => {
+
+        if (zone.id !== zoneId) return zone;
+
+
+
+        return {
+
+          ...zone,
+
+          cards: zone.cards?.map(card =>
+
+            card.id === deviceId ? { ...card, isPriority: !card.isPriority } : card,
+
+          ),
+
+        };
+
+      });
+
+
+
+      return { ...current, zones };
+
+    });
+
+  }
+
+
+
   enableEcoMode(zoneId: string): void {
 
     this.overview.update(current => {
@@ -328,21 +416,45 @@ export class BusinessDevicesStore {
 
           ecoModeEnabled: true,
 
-          cards: zone.cards?.map(card => ({
+          cards: zone.cards?.map(card => {
 
-            ...card,
+            const shouldPowerDown =
 
-            loadKw: Number((card.loadKw * 0.85).toFixed(1)),
+              card.active && !card.isPriority && card.loadKw >= 1.2 && card.status !== 'offline';
 
-          })),
 
-          tableRows: zone.tableRows?.map(row => ({
 
-            ...row,
+            return {
 
-            loadKw: row.active ? Number((row.loadKw * 0.85).toFixed(1)) : row.loadKw,
+              ...card,
 
-          })),
+              active: shouldPowerDown ? false : card.active,
+
+              loadKw: shouldPowerDown ? 0 : Number((card.loadKw * 0.85).toFixed(1)),
+
+            };
+
+          }),
+
+          tableRows: zone.tableRows?.map(row => {
+
+            const shouldPowerDown = row.active && row.loadKw >= 1.2 && row.status !== 'OFFLINE';
+
+
+
+            return {
+
+              ...row,
+
+              active: shouldPowerDown ? false : row.active,
+
+              status: shouldPowerDown ? ('STANDBY' as const) : row.status,
+
+              loadKw: row.active ? Number((row.loadKw * 0.85).toFixed(1)) : row.loadKw,
+
+            };
+
+          }),
 
           lightingGroup: zone.lightingGroup
 

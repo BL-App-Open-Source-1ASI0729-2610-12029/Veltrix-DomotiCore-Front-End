@@ -14,6 +14,13 @@ export const smartIntegrationsRoutes: Routes = [
     loadComponent: () => import('../pages/sync-status/sync-status.component').then(m => m.SyncStatusComponent)
   },
   {
+    path: 'compatibility',
+    loadComponent: () =>
+      import('../pages/compatibility-checker/compatibility-checker.component').then(
+        m => m.CompatibilityCheckerComponent,
+      ),
+  },
+  {
     path: 'business-profile-api-settings',
     loadComponent: () => import('../pages/business-profile-api-settings/business-profile-api-settings.component').then(m => m.BusinessProfileApiSettingsComponent)
   },

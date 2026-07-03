@@ -27,6 +27,35 @@
   flex-wrap: wrap;
 }
 
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.device-meta,
+.device-battery {
+  margin: 0.15rem 0;
+  font-size: 0.82rem;
+  color: var(--gray-500);
+}
+
+.device-battery--missing {
+  font-style: italic;
+}
+
+.device-tile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.status-dot--warning {
+  background: #f59e0b;
+}
+
 .page-title {
   margin: 0 0 0.35rem;
   font-size: 2rem;

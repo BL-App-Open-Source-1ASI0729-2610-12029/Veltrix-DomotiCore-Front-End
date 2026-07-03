@@ -19,6 +19,14 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
       </a>
       <a
         mat-button
+        routerLink="/app/devices/gateway"
+        routerLinkActive="biz-devices-nav__link--active"
+        class="biz-devices-nav__link"
+      >
+        {{ 'gateway.nav' | translate }}
+      </a>
+      <a
+        mat-button
         routerLink="/app/devices/explorer"
         routerLinkActive="biz-devices-nav__link--active"
         class="biz-devices-nav__link"

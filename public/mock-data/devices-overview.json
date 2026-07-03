@@ -44,7 +44,9 @@
             "icon": "plug",
             "connection": "offline",
             "active": false,
-            "powerUsageW": null
+            "powerUsageW": null,
+            "batteryPercent": 12,
+            "usageCategory": "lighting"
           },
           {
             "id": "custom-1781146117204",

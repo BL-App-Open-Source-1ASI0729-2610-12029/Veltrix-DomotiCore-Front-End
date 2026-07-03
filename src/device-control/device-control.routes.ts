@@ -2,6 +2,13 @@ import { Routes } from '@angular/router';
 
 export const deviceControlRoutes: Routes = [
   {
+    path: 'gateway',
+    loadChildren: () =>
+      import('../gateway-management/presentation/gateway-management.routes').then(
+        m => m.gatewayManagementRoutes,
+      ),
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./presentation/pages/device-dashboard-host/device-dashboard-host.component').then(

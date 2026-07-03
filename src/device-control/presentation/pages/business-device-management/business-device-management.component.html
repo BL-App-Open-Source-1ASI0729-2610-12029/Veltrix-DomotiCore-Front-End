@@ -17,6 +17,9 @@
         <span>{{ 'businessDevices.totalConsumption' | translate }}</span>
         <strong>{{ overview.totalConsumptionKw }} kW</strong>
       </div>
+      <button type="button" mat-stroked-button class="btn-turn-on" (click)="onTurnAllOn()">
+        {{ 'businessDevices.turnAllOn' | translate }}
+      </button>
       <button type="button" mat-flat-button color="warn" class="btn-turn-off" (click)="onTurnAllOff()">
         <img [src]="icons.powerSettings" alt="" class="ui-icon ui-icon--sm" />
         {{ 'businessDevices.turnAllOff' | translate }}
@@ -68,10 +71,28 @@
           <img [src]="getIcon(device.icon)" alt="" class="ui-icon ui-icon--md" />
         </div>
         <h3>{{ device.name }}</h3>
+        <div class="device-card__badges">
+          <span class="priority-badge" *ngIf="device.isPriority">{{ 'businessDevices.priority' | translate }}</span>
+          <span class="battery-badge" *ngIf="device.batteryPercent != null">
+            {{ 'businessDevices.battery' | translate:{ value: device.batteryPercent } }}
+          </span>
+        </div>
         <div class="device-card__metrics">
           <span>{{ device.loadKw }} kW</span>
           <span>{{ device.metricLabel }}</span>
         </div>
+        <button
+          type="button"
+          mat-button
+          class="priority-toggle"
+          (click)="onTogglePriority(zone.id, device.id, $event)"
+        >
+          {{
+            device.isPriority
+              ? ('businessDevices.removePriority' | translate)
+              : ('businessDevices.setPriority' | translate)
+          }}
+        </button>
       </article>
 
       <article class="eco-card" *ngIf="zone.ecoPromoKey && !zone.ecoModeEnabled">

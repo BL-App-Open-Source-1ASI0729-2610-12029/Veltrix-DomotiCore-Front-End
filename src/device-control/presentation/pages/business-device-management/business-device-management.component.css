@@ -184,6 +184,39 @@
   color: var(--biz-navy);
 }
 
+.device-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0;
+}
+
+.priority-badge,
+.battery-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.priority-badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.battery-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.priority-toggle {
+  margin-top: 0.35rem;
+  padding: 0;
+  min-height: auto;
+}
+
 .device-card__metrics {
   display: flex;
   align-items: center;

@@ -142,7 +142,35 @@
     "deviceType": "Tipo de dispositivo",
     "typeClimate": "Clima (AC / Termostato)",
     "typeGeneric": "Dispositivo genérico",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "refresh": "Actualizar",
+    "turnOnAll": "Encender todo",
+    "ecoMode": "Modo ahorro",
+    "gateway": "Gateway",
+    "battery": "Batería",
+    "batteryUnavailable": "Información de batería no disponible",
+    "classify": "Clasificar",
+    "classifyTitle": "Clasificar dispositivo por uso",
+    "classifyLabel": "Categoría de uso",
+    "saveCategory": "Guardar categoría",
+    "priorityOn": "Prioritario",
+    "priorityOff": "Marcar prioritario",
+    "categories": {
+      "lighting": "Iluminación",
+      "climate": "Climatización",
+      "security": "Seguridad",
+      "entertainment": "Entretenimiento",
+      "generic": "General"
+    },
+    "toast": {
+      "refreshed": "Estado de dispositivos actualizado.",
+      "refreshFailed": "No se pudo actualizar. Verifica tu conexión.",
+      "turnOnAll": "Todos los dispositivos en línea fueron encendidos.",
+      "ecoMode": "El modo ahorro redujo dispositivos de alto consumo.",
+      "prioritySet": "{{name}} marcado como prioritario.",
+      "priorityRemoved": "{{name}} ya no es prioritario.",
+      "categorySaved": "Categoría del dispositivo actualizada."
+    }
   },
   "deviceDetail": {
     "breadcrumbDevices": "Dispositivos",
@@ -611,6 +639,11 @@
     "subtitle": "Administra {{count}} dispositivos activos en {{zones}} zonas principales.",
     "totalConsumption": "CONSUMO TOTAL",
     "turnAllOff": "Apagar Todo",
+    "turnAllOn": "Encender Todo",
+    "priority": "Prioritario",
+    "battery": "Batería {{value}}%",
+    "setPriority": "Marcar prioritario",
+    "removePriority": "Quitar prioridad",
     "zoneDevices": "{{name}} ({{count}} Dispositivos)",
     "viewAll": "Ver los {{count}} Dispositivos",
     "lightingGroup": "Grupo de Iluminación",
@@ -658,6 +691,8 @@
     },
     "toast": {
       "turnAllOff": "Todos los dispositivos fueron apagados.",
+      "turnAllOn": "Todos los dispositivos en línea fueron encendidos.",
+      "priorityUpdated": "Prioridad del dispositivo actualizada.",
       "ecoEnabled": "Smart Eco activado en {{zone}}.",
       "ecoAlreadyEnabled": "Smart Eco ya está activo en {{zone}}.",
       "viewAll": "Mostrando los {{count}} dispositivos...",
@@ -1269,6 +1304,68 @@
     "requestsUsed": "solicitudes de",
     "usageAmount": "{{used}} / {{total}}",
     "usageSummary": "{{amount}} de cuota empresarial usada en este ciclo de facturación."
+  },
+  "gateway": {
+    "nav": "Gateway",
+    "eyebrow": "Gestión de Gateway",
+    "title": "Gateway Veltrix",
+    "subtitle": "Vincula tu gateway físico y registra nodos inteligentes en DomotiCore.",
+    "backToDevices": "Volver a dispositivos",
+    "linkTitle": "Vincular gateway",
+    "linkHint": "Ingresa la dirección MAC o el ID impreso en tu dispositivo Veltrix.",
+    "codeLabel": "MAC / ID del gateway",
+    "labelField": "Nombre del gateway",
+    "linkAction": "Vincular",
+    "unlink": "Desvincular gateway",
+    "linkedId": "ID: {{id}}",
+    "linkedAt": "Vinculado el {{date}}",
+    "demoCodes": "Códigos demo: VELTRIX-GW-DEMO, AA:BB:CC:DD:EE:01",
+    "nodesTitle": "Registrar nodos",
+    "nodesSubtitle": "Agrega dispositivos compatibles detectados por el gateway.",
+    "nodeName": "Nombre del dispositivo",
+    "nodeType": "Tipo de dispositivo",
+    "nodeTypes": {
+      "bulb": "Foco inteligente",
+      "plug": "Enchufe inteligente",
+      "sensor": "Sensor",
+      "switch": "Interruptor"
+    },
+    "registerNode": "Registrar nodo",
+    "noNodes": "Aún no hay nodos registrados.",
+    "status": {
+      "online": "En línea",
+      "offline": "Desconectado",
+      "unlinked": "Sin vincular"
+    },
+    "nodeStatus": {
+      "registered": "Registrado",
+      "failed": "No detectado"
+    },
+    "toast": {
+      "codeRequired": "Ingresa un código de gateway antes de vincular.",
+      "linkedOnline": "Gateway vinculado correctamente. Estado: En línea.",
+      "notDetected": "Dispositivo no detectado. Verifica el código y la conexión.",
+      "unlinked": "Gateway desvinculado.",
+      "nodeNameRequired": "Ingresa un nombre de dispositivo.",
+      "nodeRegistered": "Dispositivo registrado correctamente.",
+      "nodeFailed": "No se pudo registrar el dispositivo.",
+      "gatewayOffline": "El gateway está desconectado. Vincula un gateway primero."
+    }
+  },
+  "compatibility": {
+    "eyebrow": "Integraciones Inteligentes",
+    "title": "Verificador de compatibilidad",
+    "subtitle": "Comprueba si tu dispositivo puede vincularse a DomotiCore antes de emparejarlo.",
+    "deviceModel": "Modelo o tipo de dispositivo",
+    "checkAction": "Verificar compatibilidad",
+    "supportedTitle": "Ejemplos compatibles",
+    "result": {
+      "compatible": "Este dispositivo es compatible y puede vincularse a DomotiCore.",
+      "incompatible": "Este dispositivo no es compatible por ahora. Revisa la lista oficial."
+    },
+    "toast": {
+      "queryRequired": "Ingresa un modelo o tipo de dispositivo."
+    }
   },
   "buttons": {
     "saveConfiguration": "Guardar Configuración",

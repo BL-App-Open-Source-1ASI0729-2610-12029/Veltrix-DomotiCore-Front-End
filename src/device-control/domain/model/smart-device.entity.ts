@@ -8,4 +8,7 @@ export interface SmartDevice {
   active: boolean;
   powerUsageW: number | null;
   statusLabel?: string;
+  batteryPercent?: number | null;
+  usageCategory?: 'lighting' | 'climate' | 'security' | 'entertainment' | 'generic';
+  isPriority?: boolean;
 }

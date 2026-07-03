@@ -1,0 +1,34 @@
+<div class="compatibility-page">
+  <header>
+    <p class="eyebrow">{{ 'compatibility.eyebrow' | translate }}</p>
+    <h1>{{ 'compatibility.title' | translate }}</h1>
+    <p>{{ 'compatibility.subtitle' | translate }}</p>
+  </header>
+
+  <section class="panel">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'compatibility.deviceModel' | translate }}</mat-label>
+      <input matInput [ngModel]="deviceQuery()" (ngModelChange)="deviceQuery.set($event)" name="deviceQuery" />
+    </mat-form-field>
+    <button type="button" mat-flat-button color="primary" (click)="checkCompatibility()">
+      {{ 'compatibility.checkAction' | translate }}
+    </button>
+
+    <div class="result" *ngIf="resultKey() as key" [class.result--ok]="key === 'compatibility.result.compatible'">
+      <mat-icon>{{ key === 'compatibility.result.compatible' ? 'check_circle' : 'error' }}</mat-icon>
+      <p>{{ key | translate }}</p>
+    </div>
+
+    <div class="supported-list">
+      <h2>{{ 'compatibility.supportedTitle' | translate }}</h2>
+      <ul>
+        <li>Philips Hue</li>
+        <li>TP-Link Kasa</li>
+        <li>Sonoff / Shelly</li>
+        <li>Nest Thermostat</li>
+        <li>Ring / Aqara sensors</li>
+        <li>Tuya smart bulbs and plugs</li>
+      </ul>
+    </div>
+  </section>
+</div>
