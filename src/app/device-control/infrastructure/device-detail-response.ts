@@ -2,6 +2,8 @@ export type OperationMode = 'cool' | 'heat' | 'fan';
 export type PowerChartPeriod = 'realtime' | 'day' | 'month';
 export type DeviceDetailType = 'climate' | 'generic' | 'lighting';
 
+import { ResourceAuditFields } from '../../shared/models/resource-audit.model';
+
 export interface PowerChartPointResponse {
   label: string;
   value: number;
@@ -14,7 +16,7 @@ export interface DeviceAlertResponse {
   message: string;
 }
 
-export interface DeviceDetailResponse {
+export interface DeviceDetailResponse extends ResourceAuditFields {
   id: string;
   roomId: string;
   roomName: string;

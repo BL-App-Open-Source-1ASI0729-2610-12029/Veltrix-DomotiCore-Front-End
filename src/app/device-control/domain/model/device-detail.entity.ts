@@ -5,8 +5,9 @@ import {
   PowerChartPeriod,
   PowerChartPointResponse,
 } from '../../infrastructure/device-detail-response';
+import { ResourceAuditFields } from '../../../shared/models/resource-audit.model';
 
-export interface DeviceDetail {
+export interface DeviceDetail extends ResourceAuditFields {
   id: string;
   roomId: string;
   roomName: string;

@@ -41,6 +41,7 @@
           • {{ detail.powerLoadKw }} kW
         </p>
         <p class="last-state-line">{{ formatLastState(detail) }}</p>
+        <app-resource-audit-line [audit]="detail" />
         <p class="usage-category-line" *ngIf="deviceUsageCategory() as category">
           {{ 'myDevices.classifyLabel' | translate }}: {{ categoryLabelKey(category) | translate }}
         </p>

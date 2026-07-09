@@ -11,6 +11,7 @@ import { OperationMode, PowerChartPeriod } from '../../../infrastructure/device-
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { ResourceAuditLineComponent } from '../../../../shared/presentation/components/resource-audit-line/resource-audit-line.component';
 
 interface ChartPoint {
   label: string;
@@ -21,7 +22,7 @@ interface ChartPoint {
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslateModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, FormsModule, RouterModule, TranslateModule, ResourceAuditLineComponent, ...MATERIAL_IMPORTS],
   templateUrl: './device-detail.component.html',
   styleUrl: './device-detail.component.css',
 })

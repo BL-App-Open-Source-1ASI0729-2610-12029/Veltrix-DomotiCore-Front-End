@@ -7,11 +7,12 @@ import { BusinessDevicesNavComponent } from '../../components/business-devices-n
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { ResourceAuditLineComponent } from '../../../../shared/presentation/components/resource-audit-line/resource-audit-line.component';
 
 @Component({
   selector: 'app-maintenance-hub',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, BusinessDevicesNavComponent, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, FormsModule, TranslateModule, BusinessDevicesNavComponent, ResourceAuditLineComponent, ...MATERIAL_IMPORTS],
   templateUrl: './maintenance-hub.component.html',
   styleUrls: ['./maintenance-hub.component.css'],
 })

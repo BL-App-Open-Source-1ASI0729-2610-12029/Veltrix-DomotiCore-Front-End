@@ -61,6 +61,11 @@
       "user": "Usuario estándar"
     }
   },
+  "resourceAudit": {
+    "createdBy": "Creado por {{name}} ({{role}}) el {{when}}",
+    "updatedBy": "Última modificación por {{name}} ({{role}}) el {{when}}",
+    "systemRole": "Sistema"
+  },
   "security": {
     "title": "Seguridad y Acceso",
     "subtitle": "Monitorea cámaras, cerraduras y actividad reciente de seguridad.",

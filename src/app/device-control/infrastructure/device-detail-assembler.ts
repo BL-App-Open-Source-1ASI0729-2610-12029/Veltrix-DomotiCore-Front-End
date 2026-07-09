@@ -1,9 +1,26 @@
 import { DeviceDetail } from '../domain/model/device-detail.entity';
 import { DeviceDetailResponse } from './device-detail-response';
+import { ResourceAuditFields } from '../../shared/models/resource-audit.model';
+
+function mapAudit(dto: ResourceAuditFields): ResourceAuditFields {
+  return {
+    createdByUserId: dto.createdByUserId,
+    createdByName: dto.createdByName,
+    createdByEmail: dto.createdByEmail,
+    createdByRole: dto.createdByRole,
+    createdAt: dto.createdAt,
+    updatedByUserId: dto.updatedByUserId,
+    updatedByName: dto.updatedByName,
+    updatedByEmail: dto.updatedByEmail,
+    updatedByRole: dto.updatedByRole,
+    updatedAt: dto.updatedAt,
+  };
+}
 
 export class DeviceDetailAssembler {
   static toDomain(dto: DeviceDetailResponse): DeviceDetail {
     return {
+      ...mapAudit(dto),
       id: dto.id,
       roomId: dto.roomId,
       roomName: dto.roomName,
@@ -24,11 +41,16 @@ export class DeviceDetailAssembler {
       humidityPercent: dto.humidityPercent ?? 0,
       scheduledTimer: dto.scheduledTimer ?? null,
       alerts: dto.alerts.map(a => ({ ...a })),
+      lastStateAt: dto.lastStateAt,
+      lastStateLabel: dto.lastStateLabel,
+      batteryPercent: dto.batteryPercent ?? null,
+      brightnessPercent: dto.brightnessPercent,
     };
   }
 
   static toResponse(entity: DeviceDetail): DeviceDetailResponse {
     return {
+      ...mapAudit(entity),
       id: entity.id,
       roomId: entity.roomId,
       roomName: entity.roomName,
@@ -49,6 +71,10 @@ export class DeviceDetailAssembler {
       humidityPercent: entity.humidityPercent,
       scheduledTimer: entity.scheduledTimer,
       alerts: entity.alerts,
+      lastStateAt: entity.lastStateAt,
+      lastStateLabel: entity.lastStateLabel,
+      batteryPercent: entity.batteryPercent,
+      brightnessPercent: entity.brightnessPercent,
     };
   }
 }

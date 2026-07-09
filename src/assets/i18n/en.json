@@ -61,6 +61,11 @@
       "user": "Standard User"
     }
   },
+  "resourceAudit": {
+    "createdBy": "Created by {{name}} ({{role}}) on {{when}}",
+    "updatedBy": "Last updated by {{name}} ({{role}}) on {{when}}",
+    "systemRole": "System"
+  },
   "security": {
     "title": "Security & Access",
     "subtitle": "Monitor cameras, locks and recent security activity.",

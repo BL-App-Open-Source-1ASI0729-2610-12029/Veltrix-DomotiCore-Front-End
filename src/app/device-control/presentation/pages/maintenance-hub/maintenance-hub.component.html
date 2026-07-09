@@ -41,6 +41,7 @@
           <strong>{{ record.deviceName }}</strong>
           <p>{{ record.description }}</p>
           <small>{{ record.performedAt | date:'medium' }}<span *ngIf="record.technician"> • {{ record.technician }}</span></small>
+          <app-resource-audit-line [audit]="record" />
         </div>
       </article>
     </div>
