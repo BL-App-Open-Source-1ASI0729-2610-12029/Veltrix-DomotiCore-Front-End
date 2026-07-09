@@ -316,6 +316,40 @@ export class AutomationApiService {
       .pipe(catchError(() => of({ executed: false, sceneId })));
   }
 
+  updateRule(
+    id: string,
+    patch: Partial<AutomationRuleResponse>,
+  ): Observable<AutomationRule> {
+    if (!this.api.hasApi()) {
+      const rule = MOCK_RULES.find(entry => entry.id === id);
+      if (!rule) {
+        return of(AutomationAssembler.toAutomationRule(MOCK_RULES[0]));
+      }
+      Object.assign(rule, patch);
+      if (patch.timeline) {
+        rule.timeline = { ...rule.timeline, ...patch.timeline };
+      }
+      return of(AutomationAssembler.toAutomationRule(rule));
+    }
+
+    return this.http
+      .patch<AutomationRuleResponse>(`${this.baseUrl()}/automation/rules/${id}`, patch)
+      .pipe(
+        map(dto => AutomationAssembler.toAutomationRule(dto)),
+        catchError(() => {
+          const rule = MOCK_RULES.find(entry => entry.id === id);
+          if (rule) {
+            Object.assign(rule, patch);
+            if (patch.timeline) {
+              rule.timeline = { ...rule.timeline, ...patch.timeline };
+            }
+            return of(AutomationAssembler.toAutomationRule(rule));
+          }
+          return of(AutomationAssembler.toAutomationRule(MOCK_RULES[0]));
+        }),
+      );
+  }
+
   createRule(payload: {
     id?: string;
     name: string;

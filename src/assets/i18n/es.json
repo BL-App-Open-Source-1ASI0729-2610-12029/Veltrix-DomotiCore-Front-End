@@ -1243,6 +1243,8 @@
       "photo": "Fotosensor"
     },
     "editShutdownProtocol": "Editar Protocolo de Cierre",
+    "editScheduleTitle": "Editar horario de la regla",
+    "editScheduleHint": "Ajusta el horario de «{{name}}» sin salir del centro de automatización.",
     "postponeShutdown": "Posponer 15 min",
     "shutdownModalHint": "Activa o desactiva pasos del protocolo de cierre.",
     "shutdownSteps": {
@@ -1271,6 +1273,7 @@
       "endsIn": "Termina en {{minutes}} min",
       "viewRule": "Ver regla",
       "editSchedule": "Editar horario",
+      "openZoneConfig": "Configuración de zonas",
       "closeDetail": "Cerrar",
       "status": {
         "running": "En ejecución ahora",
@@ -1293,6 +1296,7 @@
       "action": "Acción",
       "create": "Crear",
       "saveLogic": "Guardar Lógica",
+      "saveSchedule": "Guardar horario",
       "saving": "Guardando…",
       "startHour": "Hora de inicio",
       "endHour": "Hora de fin",
@@ -1315,6 +1319,8 @@
       "ruleNameRequired": "Ingresa un nombre para la regla.",
       "invalidSchedule": "La hora de fin debe ser posterior a la hora de inicio.",
       "shutdownPostponed": "Cierre pospuesto 15 minutos.",
+      "scheduleSaved": "Horario actualizado correctamente.",
+      "scheduleSaveFailed": "No se pudo guardar el horario. Inténtalo de nuevo.",
       "shutdownSaved": "Protocolo de cierre guardado.",
       "shutdownSaveFailed": "No se pudo guardar el protocolo. Inténtalo de nuevo.",
       "openingBuilder": "Abriendo constructor de automatización...",

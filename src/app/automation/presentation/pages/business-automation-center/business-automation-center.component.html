@@ -232,6 +232,15 @@
           <button type="button" mat-flat-button color="primary" class="btn-primary btn-primary--sm" (click)="onEditSelectedSchedule()">
             {{ selectedSlot.ruleId ? ('automation.timeline.editSchedule' | translate) : ('automation.editShutdownProtocol' | translate) }}
           </button>
+          <button
+            type="button"
+            mat-stroked-button
+            class="btn-outline btn-outline--sm"
+            *ngIf="selectedSlot.ruleId"
+            (click)="onOpenZoneConfiguration()"
+          >
+            {{ 'automation.timeline.openZoneConfig' | translate }}
+          </button>
         </div>
       </div>
     </article>
@@ -421,6 +430,44 @@
       <button type="button" mat-stroked-button class="btn-outline" (click)="closeNewRuleModal()">{{ 'buttons.cancel' | translate }}</button>
       <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="onConfirmCreateBusinessRule()">
         {{ 'automation.modal.create' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showScheduleEditModal() && editingScheduleRule() as rule" (click)="closeScheduleEditModal()">
+  <div class="biz-modal" (click)="$event.stopPropagation()">
+    <h3>{{ 'automation.editScheduleTitle' | translate }}</h3>
+    <p>{{ 'automation.editScheduleHint' | translate:{ name: rule.name } }}</p>
+    <label class="biz-modal__field">
+      <span>{{ 'automation.assetGroup' | translate }}</span>
+      <mat-form-field appearance="outline" class="full-width">
+        <input matInput type="text" [(ngModel)]="editScheduleGroup" />
+      </mat-form-field>
+    </label>
+    <div class="biz-modal__schedule-row">
+      <label class="biz-modal__field">
+        <span>{{ 'automation.modal.startHour' | translate }}</span>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="number" min="0" max="23" [(ngModel)]="editScheduleStartHour" />
+        </mat-form-field>
+      </label>
+      <label class="biz-modal__field">
+        <span>{{ 'automation.modal.endHour' | translate }}</span>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="number" min="1" max="24" [(ngModel)]="editScheduleEndHour" />
+        </mat-form-field>
+      </label>
+    </div>
+    <button type="button" mat-stroked-button class="btn-outline btn-outline--zones" (click)="onOpenZoneConfiguration()">
+      {{ 'automation.timeline.openZoneConfig' | translate }}
+    </button>
+    <div class="biz-modal__actions">
+      <button type="button" mat-stroked-button class="btn-outline" (click)="closeScheduleEditModal()" [disabled]="savingSchedule()">
+        {{ 'buttons.cancel' | translate }}
+      </button>
+      <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="onSaveScheduleEdit()" [disabled]="savingSchedule()">
+        {{ savingSchedule() ? ('automation.modal.saving' | translate) : ('automation.modal.saveSchedule' | translate) }}
       </button>
     </div>
   </div>

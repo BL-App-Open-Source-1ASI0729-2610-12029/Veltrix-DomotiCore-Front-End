@@ -90,9 +90,16 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
   readonly showNewRuleModal = signal(false);
   readonly showShutdownModal = signal(false);
+  readonly showScheduleEditModal = signal(false);
   readonly savingShutdown = signal(false);
+  readonly savingSchedule = signal(false);
   readonly hoveredSlotId = signal<string | null>(null);
   readonly shutdownStepDraft = signal<ShutdownStep[]>([]);
+
+  editScheduleRuleId = '';
+  editScheduleGroup = '';
+  editScheduleStartHour = 8;
+  editScheduleEndHour = 18;
 
 
 
@@ -191,9 +198,12 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   ngOnInit(): void {
-
     this.store.loadAll();
+  }
 
+  editingScheduleRule(): AutomationRule | null {
+    if (!this.editScheduleRuleId) return null;
+    return this.store.businessRules().find(rule => rule.id === this.editScheduleRuleId) ?? null;
   }
 
 
@@ -418,33 +428,68 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   onEditSelectedSchedule(): void {
-
     const slot = this.store.selectedTimelineSlot();
-
     if (!slot) return;
 
-
-
     if (slot.ruleId) {
+      const rule = this.store.businessRules().find(item => item.id === slot.ruleId);
+      if (!rule) return;
 
-      this.router.navigate(['/app/automation/zones']);
-
-      this.feedback.showToast(
-
-        this.translate.instant('automation.toast.openingSchedule', { group: slot.group ?? slot.label }),
-
-        'info',
-
-      );
-
+      this.editScheduleRuleId = rule.id;
+      this.editScheduleGroup = rule.group;
+      this.editScheduleStartHour = rule.timeline.startHour;
+      this.editScheduleEndHour = rule.timeline.endHour;
+      this.store.setTimelinePaused(true);
+      this.showScheduleEditModal.set(true);
       return;
-
     }
 
+    this.onEditShutdownProtocol();
+  }
 
+  closeScheduleEditModal(): void {
+    this.showScheduleEditModal.set(false);
+    this.savingSchedule.set(false);
+    this.store.setTimelinePaused(false);
+  }
 
-    this.showShutdownModal.set(true);
+  onSaveScheduleEdit(): void {
+    if (this.savingSchedule() || !this.editScheduleRuleId) return;
 
+    if (this.editScheduleEndHour <= this.editScheduleStartHour) {
+      this.feedback.showToast(this.translate.instant('automation.toast.invalidSchedule'), 'warning');
+      return;
+    }
+
+    this.savingSchedule.set(true);
+    this.store
+      .updateRuleSchedule(
+        this.editScheduleRuleId,
+        this.editScheduleStartHour,
+        this.editScheduleEndHour,
+        this.editScheduleGroup,
+      )
+      .subscribe({
+        next: () => {
+          this.closeScheduleEditModal();
+          this.feedback.showToast(this.translate.instant('automation.toast.scheduleSaved'), 'success');
+        },
+        error: () => {
+          this.savingSchedule.set(false);
+          this.feedback.showToast(this.translate.instant('automation.toast.scheduleSaveFailed'), 'error');
+        },
+      });
+  }
+
+  onOpenZoneConfiguration(): void {
+    const slotId =
+      this.editScheduleRuleId ||
+      this.store.selectedTimelineSlot()?.ruleId ||
+      this.store.selectedTimelineSlotId();
+    this.store.rememberTimelineSelection(slotId);
+    this.closeScheduleEditModal();
+    this.router.navigate(['/app/automation/zones']);
+    this.feedback.showToast(this.translate.instant('automation.toast.openingSchedule'), 'info');
   }
 
 
@@ -576,6 +621,10 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
+    if (this.showScheduleEditModal()) {
+      this.closeScheduleEditModal();
+      return;
+    }
     if (this.showShutdownModal()) {
       this.closeShutdownModal();
       return;
@@ -647,17 +696,12 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   onScheduleRowClick(assetGroup: string): void {
-
+    this.store.rememberTimelineSelection();
     this.router.navigate(['/app/automation/zones']);
-
     this.feedback.showToast(
-
       this.translate.instant('automation.toast.openingSchedule', { group: assetGroup }),
-
       'info',
-
     );
-
   }
 
 

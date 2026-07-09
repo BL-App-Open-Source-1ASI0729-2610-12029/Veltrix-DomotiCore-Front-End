@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { forkJoin, of, Observable } from 'rxjs';
+import { forkJoin, of, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AutomationApiService } from '../infrastructure/automation-api.service';
@@ -46,6 +46,7 @@ export type ViewMode = 'list' | 'grid';
 
 
 const TIMELINE_END_HOUR = 22;
+const TIMELINE_SELECTION_KEY = 'domoticore-timeline-selection';
 
 
 
@@ -169,9 +170,30 @@ export class AutomationStore {
 
 
   selectTimelineSlot(id: string | null): void {
-
     this.selectedTimelineSlotId.set(id);
+  }
 
+  rememberTimelineSelection(slotId?: string | null): void {
+    const id = slotId ?? this.selectedTimelineSlotId();
+    if (id) {
+      sessionStorage.setItem(TIMELINE_SELECTION_KEY, id);
+    }
+  }
+
+  private restoreTimelineSelection(): void {
+    const remembered = sessionStorage.getItem(TIMELINE_SELECTION_KEY);
+    const candidate = this.selectedTimelineSlotId() ?? remembered;
+    if (!candidate) {
+      return;
+    }
+
+    const exists = this.activeTimeline()?.slots.some(slot => slot.id === candidate);
+    if (exists) {
+      this.selectedTimelineSlotId.set(candidate);
+      if (remembered) {
+        sessionStorage.removeItem(TIMELINE_SELECTION_KEY);
+      }
+    }
   }
 
 
@@ -300,6 +322,48 @@ export class AutomationStore {
     });
 
     return optimisticRule;
+  }
+
+  updateRuleSchedule(
+    ruleId: string,
+    startHour: number,
+    endHour: number,
+    group?: string,
+  ): Observable<AutomationRule> {
+    const current = this.businessRules().find(rule => rule.id === ruleId);
+    if (!current) {
+      return throwError(() => new Error(`Rule not found: ${ruleId}`));
+    }
+
+    const safeStart = Math.min(23, Math.max(0, startHour));
+    const safeEnd = Math.min(24, Math.max(safeStart + 1, endHour));
+    const optimistic = current.withSchedule(safeStart, safeEnd, group);
+
+    this.businessRules.update(rules =>
+      rules.map(rule => (rule.id === ruleId ? optimistic : rule)),
+    );
+    this.selectedTimelineSlotId.set(ruleId);
+    this.rebuildTimeline();
+
+    return this.api
+      .updateRule(ruleId, {
+        group: optimistic.group,
+        timeline: {
+          startHour: safeStart,
+          endHour: safeEnd,
+          label: optimistic.timeline.label,
+          color: optimistic.timeline.color,
+        },
+      })
+      .pipe(
+        tap(rule => {
+          this.businessRules.update(rules =>
+            rules.map(existing => (existing.id === ruleId ? rule : existing)),
+          );
+          this.selectedTimelineSlotId.set(ruleId);
+          this.rebuildTimeline();
+        }),
+      );
   }
 
 
@@ -506,6 +570,7 @@ export class AutomationStore {
 
     });
 
+    this.restoreTimelineSelection();
   }
 
   private normalizeApiTimelineSlots(slots: TimelineSlotResponse[]): TimelineSlotResponse[] {

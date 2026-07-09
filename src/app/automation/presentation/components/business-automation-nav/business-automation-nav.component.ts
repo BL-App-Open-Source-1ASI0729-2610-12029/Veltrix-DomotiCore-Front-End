@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { AutomationStore } from '../../../application/automation.store';
 
 @Component({
   selector: 'app-business-automation-nav',
@@ -23,6 +24,7 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
         routerLink="/app/automation/zones"
         routerLinkActive="biz-auto-nav__link--active"
         class="biz-auto-nav__link"
+        (click)="onZonesNav()"
       >
         {{ 'zoneConfiguration.nav' | translate }}
       </a>
@@ -55,4 +57,10 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
     }
   `],
 })
-export class BusinessAutomationNavComponent {}
+export class BusinessAutomationNavComponent {
+  private readonly store = inject(AutomationStore);
+
+  onZonesNav(): void {
+    this.store.rememberTimelineSelection();
+  }
+}

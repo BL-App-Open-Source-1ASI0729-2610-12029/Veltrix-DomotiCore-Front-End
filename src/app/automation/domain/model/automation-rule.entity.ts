@@ -36,4 +36,21 @@ export class AutomationRule {
       this.timeline
     );
   }
+
+  withSchedule(startHour: number, endHour: number, group?: string): AutomationRule {
+    return new AutomationRule(
+      this.id,
+      this.name,
+      this.description,
+      this.icon,
+      this.active,
+      group?.trim() || this.group,
+      this.status,
+      {
+        ...this.timeline,
+        startHour,
+        endHour,
+      },
+    );
+  }
 }

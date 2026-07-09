@@ -1243,6 +1243,8 @@
       "photo": "Photosensor"
     },
     "editShutdownProtocol": "Edit Shutdown Protocol",
+    "editScheduleTitle": "Edit rule schedule",
+    "editScheduleHint": "Adjust the schedule for “{{name}}” without leaving the automation center.",
     "postponeShutdown": "Postpone 15 min",
     "shutdownModalHint": "Enable or disable steps in the closing protocol.",
     "shutdownSteps": {
@@ -1271,6 +1273,7 @@
       "endsIn": "Ends in {{minutes}} min",
       "viewRule": "View rule",
       "editSchedule": "Edit schedule",
+      "openZoneConfig": "Zone configuration",
       "closeDetail": "Close",
       "status": {
         "running": "Running now",
@@ -1293,6 +1296,7 @@
       "action": "Action",
       "create": "Create",
       "saveLogic": "Save Logic",
+      "saveSchedule": "Save schedule",
       "saving": "Saving…",
       "startHour": "Start hour",
       "endHour": "End hour",
@@ -1315,6 +1319,8 @@
       "ruleNameRequired": "Enter a name for the rule.",
       "invalidSchedule": "End hour must be later than start hour.",
       "shutdownPostponed": "Shutdown postponed by 15 minutes.",
+      "scheduleSaved": "Schedule updated successfully.",
+      "scheduleSaveFailed": "Could not save the schedule. Please try again.",
       "shutdownSaved": "Shutdown protocol saved.",
       "shutdownSaveFailed": "Could not save the protocol. Please try again.",
       "openingBuilder": "Opening automation builder...",
