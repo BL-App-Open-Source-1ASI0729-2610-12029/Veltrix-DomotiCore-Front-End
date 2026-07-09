@@ -27,6 +27,14 @@ export class LocalAuthRepository {
       return of(cached);
     }
 
+    if (this.api.hasApi()) {
+      const url = `${environment.apiUrl.replace(/\/$/, '')}/${AuthApiEndpoint.users}`;
+      return this.http.get<AuthUser[]>(url).pipe(
+        tap(users => this.cache.setCollection(AuthApiEndpoint.users, users)),
+        catchError(() => of([])),
+      );
+    }
+
     return this.api.getCollection<AuthUser>(AuthApiEndpoint.users, AuthApiEndpoint.users).pipe(
       tap(users => this.cache.setCollection(AuthApiEndpoint.users, users)),
     );

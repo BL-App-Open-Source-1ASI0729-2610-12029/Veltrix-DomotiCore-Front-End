@@ -284,6 +284,10 @@ export class AuthService {
       );
   }
 
+  acceptInviteToken(token: string): void {
+    this.teamInvitations.acceptInviteToken(token, this.currentUser);
+  }
+
   logout(): void {
     this.teamInvitations.stopPolling();
     this.currentUser = null;

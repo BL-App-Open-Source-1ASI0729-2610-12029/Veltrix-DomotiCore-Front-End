@@ -24,6 +24,7 @@ export interface TeamMemberResponse {
   status: TeamMemberStatus;
   tab: TeamMemberTab;
   linkedUserId?: string | number;
+  invitationId?: string;
 }
 
 export interface ZonePermissionResponse {

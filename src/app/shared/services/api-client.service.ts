@@ -19,7 +19,7 @@ export class ApiClientService {
   getCollection<T>(apiPath: string, mockFile: string): Observable<T[]> {
     if (this.hasApi()) {
       return this.http.get<T[]>(this.apiUrl(apiPath)).pipe(
-        catchError(() => this.loadCollection<T>(mockFile)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.loadCollection<T>(mockFile);
@@ -32,7 +32,7 @@ export class ApiClientService {
   ): Observable<T> {
     if (this.hasApi()) {
       return this.http.get<T>(`${this.apiUrl(apiPath)}/${id}`).pipe(
-        catchError(() => this.findInCollection<T>(mockFile, id)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.findInCollection<T>(mockFile, id);
@@ -49,7 +49,7 @@ export class ApiClientService {
   getObject<T>(apiPath: string, mockFile: string): Observable<T> {
     if (this.hasApi()) {
       return this.http.get<T>(this.apiUrl(apiPath)).pipe(
-        catchError(() => this.loadObject<T>(mockFile)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.loadObject<T>(mockFile);
@@ -69,7 +69,7 @@ export class ApiClientService {
   ): Observable<T> {
     if (this.hasApi()) {
       return this.http.post<T>(this.apiUrl(apiPath), body).pipe(
-        catchError(() => this.appendToCollection(mockFile, body)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.appendToCollection(mockFile, body);
@@ -83,7 +83,7 @@ export class ApiClientService {
   ): Observable<T> {
     if (this.hasApi()) {
       return this.http.patch<T>(`${this.apiUrl(apiPath)}/${id}`, body).pipe(
-        catchError(() => this.updateInCollection<T>(mockFile, id, body)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.updateInCollection<T>(mockFile, id, body);
@@ -101,7 +101,7 @@ export class ApiClientService {
   patchObject<T>(apiPath: string, body: Partial<T>, mockFile: string): Observable<T> {
     if (this.hasApi()) {
       return this.http.patch<T>(this.apiUrl(apiPath), body).pipe(
-        catchError(() => this.mergeObject<T>(mockFile, body)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.mergeObject<T>(mockFile, body);
@@ -114,7 +114,7 @@ export class ApiClientService {
   ): Observable<void> {
     if (this.hasApi()) {
       return this.http.delete<void>(`${this.apiUrl(apiPath)}/${id}`).pipe(
-        catchError(() => this.removeFromCollection(mockFile, id)),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.removeFromCollection(mockFile, id);
@@ -128,9 +128,7 @@ export class ApiClientService {
     if (this.hasApi()) {
       return this.http.get<T[]>(this.apiUrl(apiPath)).pipe(
         map(predicate),
-        catchError(() =>
-          this.loadCollection<T>(mockFile).pipe(map(predicate)),
-        ),
+        catchError(error => throwError(() => error)),
       );
     }
     return this.loadCollection<T>(mockFile).pipe(map(predicate));

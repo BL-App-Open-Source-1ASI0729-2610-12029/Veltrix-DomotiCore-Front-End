@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../application/auth.service';
 import { AuthFailureReason } from '../../../application/auth-result';
@@ -129,20 +129,28 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
     }
   `],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
   private readonly translate = inject(TranslateService);
 
   loginForm: FormGroup;
   loginError = '';
   isSubmitting = false;
+  private inviteToken: string | null = null;
 
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      this.inviteToken = params.get('invite');
     });
   }
 
@@ -163,6 +171,9 @@ export class LoginComponent {
       next: result => {
         this.isSubmitting = false;
         if (result.ok) {
+          if (this.inviteToken) {
+            this.authService.acceptInviteToken(this.inviteToken);
+          }
           this.router.navigateByUrl(this.authService.getDefaultRoute());
           return;
         }

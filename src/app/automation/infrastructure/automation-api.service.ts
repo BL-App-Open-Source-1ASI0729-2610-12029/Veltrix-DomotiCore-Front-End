@@ -391,8 +391,7 @@ export class AutomationApiService {
     }
 
     return this.http
-      .put<ShutdownProtocolResponse>(`${this.baseUrl()}/automation/shutdown-protocol`, protocol)
-      .pipe(catchError(() => of(snapshot)));
+      .put<ShutdownProtocolResponse>(`${this.baseUrl()}/automation/shutdown-protocol`, protocol);
   }
 
   dismissSmartSuggestion(): Observable<SmartSuggestionResponse> {

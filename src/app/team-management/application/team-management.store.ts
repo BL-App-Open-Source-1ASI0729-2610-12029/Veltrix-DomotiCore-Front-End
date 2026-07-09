@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { TeamManagementApiService } from '../infrastructure/team-management-api.service';
-import { TeamInvitationService } from './team-invitation.service';
+import { TeamInvitationApiService } from '../infrastructure/team-invitation-api.service';
 import { AuthService } from '../../iam/application/auth.service';
 import {
   TeamManagementResponse,
@@ -23,7 +23,7 @@ export interface TeamMemberFormPayload {
 @Injectable({ providedIn: 'root' })
 export class TeamManagementStore {
   private readonly api = inject(TeamManagementApiService);
-  private readonly invitations = inject(TeamInvitationService);
+  private readonly invitationsApi = inject(TeamInvitationApiService);
   private readonly auth = inject(AuthService);
 
   readonly data = signal<TeamManagementResponse | null>(null);
@@ -290,7 +290,15 @@ export class TeamManagementStore {
     });
     this.closeMemberMenu();
     this.persistSnapshot();
-    this.sendInvitation(member, 'team_invite_resent');
+
+    if (member.invitationId) {
+      this.invitationsApi.resend(member.invitationId).subscribe({
+        next: record => this.attachInvitationId(member.id, record.id),
+      });
+    } else {
+      this.sendInvitation(member, 'team_invite_resent');
+    }
+
     return member;
   }
 
@@ -335,7 +343,7 @@ export class TeamManagementStore {
     const inviter = this.auth.currentUser;
     if (!inviter) return;
 
-    this.invitations.sendInvitation({
+    this.invitationsApi.sendInvitation({
       recipientUserId: member.linkedUserId,
       recipientEmail: member.email,
       memberName: member.name,
@@ -344,7 +352,20 @@ export class TeamManagementStore {
       inviterName: inviter.name,
       inviterEmail: inviter.email,
       type,
+    }).subscribe({
+      next: record => this.attachInvitationId(member.id, record.id),
     });
+  }
+
+  private attachInvitationId(memberId: string, invitationId: string): void {
+    this.data.update(current => {
+      if (!current) return current;
+      const members = current.members.map(member =>
+        member.id === memberId ? { ...member, invitationId } : member,
+      );
+      return { ...current, members };
+    });
+    this.persistSnapshot();
   }
 
   private buildSummary(
