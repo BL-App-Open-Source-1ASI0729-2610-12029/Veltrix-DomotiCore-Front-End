@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 
-import { Observable, tap } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 import {
   BusinessDeviceCardResponse,
@@ -61,29 +62,37 @@ export class BusinessDevicesStore {
 
   readonly loading = signal(false);
 
+  readonly loadError = signal(false);
+
 
 
   load(): Observable<BusinessDevicesOverviewResponse> {
 
     this.loading.set(true);
 
+    this.loadError.set(false);
+
 
 
     return this.api.getOverview().pipe(
 
-      tap({
+      tap(data => {
 
-        next: data => {
+        this.overview.set(data);
 
-          this.overview.set(data);
-
-          this.loading.set(false);
-
-        },
-
-        error: () => this.loading.set(false),
+        this.loadError.set(false);
 
       }),
+
+      catchError(error => {
+
+        this.loadError.set(true);
+
+        return throwError(() => error);
+
+      }),
+
+      finalize(() => this.loading.set(false)),
 
     );
 

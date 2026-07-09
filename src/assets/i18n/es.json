@@ -757,6 +757,9 @@
   "businessDevices": {
     "navManagement": "Gestión de Dispositivos",
     "title": "Gestión de Dispositivos",
+    "loading": "Cargando dispositivos…",
+    "loadFailed": "No se pudieron cargar los dispositivos. Verifica tu conexión e intenta de nuevo.",
+    "retry": "Reintentar",
     "subtitle": "Administra {{count}} dispositivos activos en {{zones}} zonas principales.",
     "totalConsumption": "CONSUMO TOTAL",
     "turnAllOff": "Apagar Todo",
@@ -811,6 +814,7 @@
       }
     },
     "toast": {
+      "loadFailed": "No se pudieron cargar los dispositivos.",
       "turnAllOff": "Todos los dispositivos fueron apagados.",
       "turnAllOn": "Todos los dispositivos en línea fueron encendidos.",
       "turnAllOnPartial": "Algunos dispositivos siguieron desconectados: {{devices}}",

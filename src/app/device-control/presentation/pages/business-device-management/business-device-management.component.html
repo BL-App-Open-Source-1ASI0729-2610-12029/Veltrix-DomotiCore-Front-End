@@ -1,3 +1,14 @@
+<div class="biz-devices biz-devices--loading" *ngIf="store.loading() && !store.overview()">
+  <p>{{ 'businessDevices.loading' | translate }}</p>
+</div>
+
+<div class="biz-devices biz-devices--error" *ngIf="store.loadError() && !store.overview() && !store.loading()">
+  <p>{{ 'businessDevices.loadFailed' | translate }}</p>
+  <button type="button" mat-flat-button color="primary" (click)="onRetryLoad()">
+    {{ 'businessDevices.retry' | translate }}
+  </button>
+</div>
+
 <div class="biz-devices" *ngIf="store.overview() as overview">
 
   <app-business-devices-nav />

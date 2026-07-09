@@ -8,6 +8,7 @@ import { Room } from '../../../domain/model/room.entity';
 import { SmartDevice } from '../../../domain/model/smart-device.entity';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { TeamMembershipService } from '../../../../team-management/application/team-membership.service';
 import { matchesSearchQuery } from '../../../../shared/utils/text-search.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
@@ -38,15 +39,18 @@ export class DeviceDashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
   private readonly feedback = inject(UiFeedbackService);
+  private readonly membership = inject(TeamMembershipService);
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
       this.searchQuery.set(params.get('q') ?? '');
     });
+    this.membership.sync();
     this.loadDevices();
   }
 
   onRetryLoad(): void {
+    this.membership.sync();
     this.loadDevices();
   }
 

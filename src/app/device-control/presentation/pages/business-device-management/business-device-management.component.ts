@@ -39,7 +39,20 @@ export class BusinessDeviceManagementComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       this.searchQuery.set(params.get('q') ?? '');
     });
-    this.store.load().subscribe();
+    this.membership.sync();
+    this.loadDevices();
+  }
+
+  onRetryLoad(): void {
+    this.membership.sync();
+    this.loadDevices();
+  }
+
+  private loadDevices(): void {
+    this.store.load().subscribe({
+      error: () =>
+        this.feedback.showToast(this.translate.instant('businessDevices.toast.loadFailed'), 'error'),
+    });
   }
 
   getIcon(iconKey: string): string {

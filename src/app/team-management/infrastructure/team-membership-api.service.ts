@@ -11,6 +11,7 @@ export interface TeamMembershipRecord {
   invitationId: string;
   inviterUserId: number;
   inviterName: string;
+  inviterSegment?: string;
   teamRole: TeamMemberRole;
   zones: string[];
   status: 'active' | 'declined';
