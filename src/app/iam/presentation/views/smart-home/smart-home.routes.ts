@@ -13,7 +13,7 @@ export const smartHomeRoutes: Routes = [
     path: 'security',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../../security/presentation/routes/security.routes').then(m => m.securityRoutes),
+      import('../../../../security/presentation/routes/security.routes').then(m => m.securityRoutes),
   },
   {
     path: 'devices',

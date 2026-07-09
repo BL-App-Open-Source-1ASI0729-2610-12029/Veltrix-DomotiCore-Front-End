@@ -17,7 +17,7 @@ export const businessDeviceRoutes: Routes = [
   {
     path: 'gateway',
     loadChildren: () =>
-      import('../gateway-management/presentation/gateway-management.routes').then(
+      import('../app/gateway-management/presentation/gateway-management.routes').then(
         m => m.gatewayManagementRoutes,
       ),
   },
