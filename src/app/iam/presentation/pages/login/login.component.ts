@@ -66,7 +66,6 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
     .auth-card {
       text-align: left;
-      animation: fadeIn 0.5s ease-in;
     }
 
     h2 {
@@ -127,11 +126,6 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
     .auth-footer a:hover {
       color: var(--primary-strong);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   `],
 })

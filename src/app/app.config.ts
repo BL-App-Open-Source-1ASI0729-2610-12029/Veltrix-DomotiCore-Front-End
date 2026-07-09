@@ -4,9 +4,9 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { firstValueFrom } from 'rxjs';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AuthTokenInterceptor } from './shared/infrastructure/interceptors/auth-token.interceptor';
 
 export function initializeTranslations(translate: TranslateService) {
@@ -15,7 +15,7 @@ export function initializeTranslations(translate: TranslateService) {
     const browserLang = translate.getBrowserLang() || 'es';
     const supportedLanguages = ['en', 'es'];
     const currentLanguage = supportedLanguages.includes(browserLang) ? browserLang : 'es';
-    return translate.use(currentLanguage).toPromise();
+    return firstValueFrom(translate.use(currentLanguage)).catch(() => undefined);
   };
 }
 
@@ -23,7 +23,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,

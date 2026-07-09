@@ -39,7 +39,9 @@ export class AuthService {
     try {
       this.currentUser = JSON.parse(raw) as AuthUser;
       this.cache.setUserScope(this.currentUser.id);
-      this.teamInvitations.syncForCurrentUser();
+      if (this.currentUser?.email) {
+        this.teamInvitations.syncForCurrentUser();
+      }
     } catch {
       this.currentUser = null;
       this.cache.setUserScope(null);

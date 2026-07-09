@@ -1,14 +1,16 @@
 import { Routes } from '@angular/router';
 import { onboardingRouteGuard } from '../infrastructure/onboarding-route.guard';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 export const iamRoutes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
+    component: LoginComponent,
   },
   {
     path: 'register',
-    loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent),
+    component: RegisterComponent,
   },
   {
     path: 'onboarding',
