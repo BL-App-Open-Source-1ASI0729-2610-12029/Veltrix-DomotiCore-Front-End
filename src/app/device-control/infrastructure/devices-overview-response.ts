@@ -27,6 +27,7 @@ export interface RoomResponse {
 export interface SceneResponse {
   id: string;
   name: string;
+  nameKey?: string;
   icon: string;
 }
 
@@ -36,6 +37,7 @@ export interface DevicesOverviewResponse {
   totalRooms: number;
   totalConsumptionKwh: number;
   consumptionComparison: string;
+  consumptionComparisonKey?: string;
   rooms: RoomResponse[];
   scenes: SceneResponse[];
 }

@@ -120,3 +120,73 @@
   --mdc-outlined-button-container-shape: 999px;
   padding: 0.5rem 1rem;
 }
+
+/* Smart Home toolbar / filter buttons */
+:is(
+  .btn-turn-all,
+  .filter-btn,
+  .category-chip,
+  .time-btn,
+  .period-btn
+).mat-mdc-outlined-button,
+.page-header__actions .mat-mdc-outlined-button {
+  --mdc-outlined-button-outline-color: var(--gray-200, #dfe6f2);
+  --mdc-outlined-button-label-text-color: var(--gray-700, #3f4d6a);
+  --mdc-outlined-button-container-shape: 8px;
+  height: auto;
+  min-height: 36px;
+  padding: 0 14px;
+  line-height: 1.2;
+}
+
+:is(.btn-turn-all, .filter-btn, .category-chip).mat-mdc-outlined-button .mdc-button__label,
+.page-header__actions .mat-mdc-outlined-button .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-btn.active.mat-mdc-outlined-button,
+.category-chip--active.mat-mdc-outlined-button,
+.time-btn.active.mat-mdc-outlined-button,
+.period-btn--active.mat-mdc-outlined-button {
+  --mdc-outlined-button-container-color: var(--primary-color, #3455d1);
+  --mdc-outlined-button-outline-color: var(--primary-color, #3455d1);
+  --mdc-outlined-button-label-text-color: #fff;
+}
+
+.category-chip.mat-mdc-outlined-button {
+  --mdc-outlined-button-container-shape: 999px;
+}
+
+/* Automation inactivity panel */
+.inactivity-panel {
+  background: var(--surface, #fff);
+  border: 1px solid rgba(90, 102, 129, 0.08);
+  border-radius: 20px;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.inactivity-panel > p {
+  margin: 0 0 1.25rem;
+  color: var(--gray-600, #5f6f8a);
+  line-height: 1.55;
+  max-width: 720px;
+}
+
+.inactivity-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.inactivity-minutes {
+  min-width: 220px;
+  margin: 0;
+}
+
+.inactivity-panel .panel__header {
+  margin-bottom: 0.75rem;
+}

@@ -185,6 +185,13 @@
     "confirm": {
       "turnOnAll": "¿Encender todos los dispositivos en línea ahora?",
       "ecoMode": "¿Aplicar modo ahorro para reducir dispositivos de alto consumo?"
+    },
+    "consumptionComparison": "12% por debajo del promedio para esta hora del día.",
+    "roomsLabel": "Habitaciones",
+    "emptyFiltered": "No hay dispositivos que coincidan con el filtro seleccionado.",
+    "scenes": {
+      "goodNight": "Buenas noches",
+      "morning": "Mañana"
     }
   },
   "deviceDetail": {
@@ -305,6 +312,20 @@
       "month": "Mes"
     },
     "savingsSuggestions": "Sugerencias de ahorro personalizadas",
+    "savings": {
+      "thermostat": {
+        "title": "Bajar el termostato 2°C",
+        "description": "Ajusta la consigna del HVAC en horas pico para reducir la carga."
+      },
+      "standby": {
+        "title": "Desactivar dispositivos en standby por la noche",
+        "description": "Entretenimiento y periféricos de oficina siguen consumiendo energía en reposo."
+      },
+      "lighting": {
+        "title": "Atenuar iluminación no prioritaria 30%",
+        "description": "Aplica escenas de atenuación en zonas de poco tráfico después de las 10 PM."
+      }
+    },
     "anomalies": "Anomalías de consumo",
     "autoOptimization": {
       "title": "Optimización automática",
@@ -406,6 +427,7 @@
     "confirmDeleteTitle": "¿Eliminar entrada de actividad?",
     "confirmDeleteBody": "Esta acción no se puede deshacer. La entrada se eliminará del flujo de actividad.",
     "showing": "Mostrando {{from}} a {{to}} de {{total}} entradas",
+    "emptyFeed": "No hay actividad registrada para el rango y filtros seleccionados.",
     "systemHealth": "Salud del Sistema",
     "uptime": "Disponibilidad",
     "lastSync": "Última sincronización: hace {{minutes}} minutos",

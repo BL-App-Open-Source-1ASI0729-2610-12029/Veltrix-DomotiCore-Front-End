@@ -158,6 +158,38 @@
 
 .chart-wrap {
   position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.chart-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.chart-quick-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.chart-quick-stat span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+}
+
+.chart-quick-stat strong {
+  font-size: 0.95rem;
+  color: var(--gray-900);
+  line-height: 1.3;
 }
 
 .consumption-chart {
@@ -633,6 +665,7 @@
 
 .insights-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0.85rem;
   margin-bottom: 1.25rem;
 }

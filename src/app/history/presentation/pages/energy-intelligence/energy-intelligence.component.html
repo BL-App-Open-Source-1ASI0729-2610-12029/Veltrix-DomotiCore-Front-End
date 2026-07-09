@@ -99,6 +99,21 @@
           <span *ngFor="let point of data.chartPoints">{{ point.label }}</span>
         </div>
       </div>
+
+      <div class="chart-quick-stats" *ngIf="!store.loading()">
+        <div class="chart-quick-stat">
+          <span>{{ 'history.dailyAverage' | translate }}</span>
+          <strong>{{ data.dailyAverageKwh }} kWh</strong>
+        </div>
+        <div class="chart-quick-stat">
+          <span>{{ 'history.highestConsumer' | translate }}</span>
+          <strong>{{ data.highestConsumer.name }}</strong>
+        </div>
+        <div class="chart-quick-stat">
+          <span>{{ 'history.savingsSuggestions' | translate }}</span>
+          <strong>{{ data.savingsSuggestions.length }}</strong>
+        </div>
+      </div>
       </mat-card-content>
     </mat-card>
 
@@ -156,8 +171,8 @@
   <section class="insights-grid card" *ngIf="data.savingsSuggestions.length">
     <h2 class="section-title">{{ 'history.savingsSuggestions' | translate }}</h2>
     <article class="savings-card" *ngFor="let suggestion of data.savingsSuggestions">
-      <h3>{{ suggestion.title }}</h3>
-      <p>{{ suggestion.description }}</p>
+      <h3>{{ suggestion.titleKey ? (suggestion.titleKey | translate) : suggestion.title }}</h3>
+      <p>{{ suggestion.descriptionKey ? (suggestion.descriptionKey | translate) : suggestion.description }}</p>
       <strong>{{ suggestion.estimatedSavingKwh }} kWh</strong>
     </article>
   </section>

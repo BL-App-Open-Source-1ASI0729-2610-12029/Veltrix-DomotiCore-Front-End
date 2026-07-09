@@ -92,6 +92,12 @@ export class DeviceDashboardComponent implements OnInit {
     });
   }
 
+  hasVisibleRooms(): boolean {
+    const overview = this.store.overview();
+    if (!overview) return false;
+    return overview.rooms.some(room => this.roomMatchesSearch(room));
+  }
+
   onFilterCategory(category: SmartDevice['usageCategory'] | 'all'): void {
     this.categoryFilter.set(category);
   }

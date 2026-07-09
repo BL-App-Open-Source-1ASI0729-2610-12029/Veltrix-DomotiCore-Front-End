@@ -8,6 +8,7 @@ export class DevicesOverviewAssembler {
       totalRooms: dto.totalRooms,
       totalConsumptionKwh: dto.totalConsumptionKwh,
       consumptionComparison: dto.consumptionComparison,
+      consumptionComparisonKey: dto.consumptionComparisonKey,
       rooms: dto.rooms.map(room => ({
         ...room,
         devices: room.devices.map(device => ({ ...device })),

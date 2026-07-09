@@ -5,6 +5,7 @@
     "totalRooms": 4,
     "totalConsumptionKwh": 1.2,
     "consumptionComparison": "12% lower than average for this time of day.",
+    "consumptionComparisonKey": "myDevices.consumptionComparison",
     "rooms": [
       {
         "id": "living-room",
@@ -140,11 +141,13 @@
       {
         "id": "good-night",
         "name": "Good Night",
+        "nameKey": "myDevices.scenes.goodNight",
         "icon": "darkMode"
       },
       {
         "id": "morning",
         "name": "Morning",
+        "nameKey": "myDevices.scenes.morning",
         "icon": "lightMode"
       }
     ]

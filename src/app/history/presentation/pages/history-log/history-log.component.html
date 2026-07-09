@@ -58,6 +58,15 @@
           </tr>
         </thead>
         <tbody>
+          <tr *ngIf="store.paginatedEntries().length === 0">
+            <td colspan="6" class="empty-row">
+              <div class="empty-feed">
+                <img [src]="icons.history" alt="" class="ui-icon ui-icon--md" />
+                <p>{{ 'historyLog.emptyFeed' | translate }}</p>
+                <button type="button" mat-stroked-button (click)="onApplyFilters()">{{ 'historyLog.applyFilters' | translate }}</button>
+              </div>
+            </td>
+          </tr>
           <tr *ngFor="let entry of store.paginatedEntries()">
             <td class="col-time">{{ store.formatDateTime(entry.occurredAt) }}</td>
             <td class="col-device">

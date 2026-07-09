@@ -207,12 +207,14 @@
 
     <section class="devices-section">
       <div class="devices-header">
-        <h2>{{ 'dashboard.activeDevices' | translate }}</h2>
-        <div class="device-header-actions">
+        <div class="devices-header__top">
+          <h2>{{ 'dashboard.activeDevices' | translate }}</h2>
           <button mat-stroked-button class="btn-turn-all" type="button" (click)="onTurnAllOn()">
             <img [src]="icons.power" alt="" class="ui-icon ui-icon--sm" />
-            {{ 'dashboard.turnAllOn' | translate }}
+            <span>{{ 'dashboard.turnAllOn' | translate }}</span>
           </button>
+        </div>
+        <div class="device-header-actions">
           <div class="category-filters">
             <button mat-stroked-button class="filter-btn" [class.active]="categoryFilter() === 'all'" (click)="onFilterCategory('all')">{{ 'dashboard.all' | translate }}</button>
             <button mat-stroked-button class="filter-btn" *ngFor="let category of usageCategories" [class.active]="categoryFilter() === category" (click)="onFilterCategory(category)">

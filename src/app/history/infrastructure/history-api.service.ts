@@ -21,19 +21,25 @@ const SHARED_SAVINGS = [
   {
     id: 'save-thermostat',
     title: 'Lower thermostat by 2°C',
+    titleKey: 'history.savings.thermostat.title',
     description: 'Shift HVAC setpoint during peak hours to reduce HVAC load.',
+    descriptionKey: 'history.savings.thermostat.description',
     estimatedSavingKwh: 4.2,
   },
   {
     id: 'save-standby',
     title: 'Disable standby devices overnight',
+    titleKey: 'history.savings.standby.title',
     description: 'Entertainment and office peripherals still draw power when idle.',
+    descriptionKey: 'history.savings.standby.description',
     estimatedSavingKwh: 1.8,
   },
   {
     id: 'save-lighting',
     title: 'Dim non-priority lighting 30%',
+    titleKey: 'history.savings.lighting.title',
     description: 'Apply scene-based dimming in low-traffic areas after 10 PM.',
+    descriptionKey: 'history.savings.lighting.description',
     estimatedSavingKwh: 0.9,
   },
 ];

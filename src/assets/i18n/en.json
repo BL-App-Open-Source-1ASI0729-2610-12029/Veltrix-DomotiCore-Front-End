@@ -185,6 +185,13 @@
     "confirm": {
       "turnOnAll": "Turn on all online devices now?",
       "ecoMode": "Apply eco mode to reduce high-consumption devices?"
+    },
+    "consumptionComparison": "12% lower than average for this time of day.",
+    "roomsLabel": "Rooms",
+    "emptyFiltered": "No devices match the selected filter.",
+    "scenes": {
+      "goodNight": "Good Night",
+      "morning": "Morning"
     }
   },
   "deviceDetail": {
@@ -305,6 +312,20 @@
       "month": "Month"
     },
     "savingsSuggestions": "Personalized savings suggestions",
+    "savings": {
+      "thermostat": {
+        "title": "Lower thermostat by 2°C",
+        "description": "Shift HVAC setpoint during peak hours to reduce HVAC load."
+      },
+      "standby": {
+        "title": "Disable standby devices overnight",
+        "description": "Entertainment and office peripherals still draw power when idle."
+      },
+      "lighting": {
+        "title": "Dim non-priority lighting 30%",
+        "description": "Apply scene-based dimming in low-traffic areas after 10 PM."
+      }
+    },
     "anomalies": "Consumption anomalies",
     "autoOptimization": {
       "title": "Automatic optimization",
@@ -406,6 +427,7 @@
     "confirmDeleteTitle": "Delete activity entry?",
     "confirmDeleteBody": "This action cannot be undone. The entry will be removed from the activity stream.",
     "showing": "Showing {{from}} to {{to}} of {{total}} entries",
+    "emptyFeed": "No activity found for the selected range and filters.",
     "systemHealth": "System Health",
     "uptime": "Uptime",
     "lastSync": "Last sync: {{minutes}} minutes ago",

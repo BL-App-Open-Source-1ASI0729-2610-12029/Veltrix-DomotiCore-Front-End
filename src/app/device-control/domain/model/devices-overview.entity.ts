@@ -6,6 +6,7 @@ export interface DevicesOverview {
   totalRooms: number;
   totalConsumptionKwh: number;
   consumptionComparison: string;
+  consumptionComparisonKey?: string;
   rooms: Room[];
   scenes: Scene[];
 }

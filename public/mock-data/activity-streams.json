@@ -1,7 +1,7 @@
 [
   {
     "id": "as-1",
-    "occurredAt": "2026-06-07T14:32:00.000Z",
+    "occurredAt": "2026-07-08T14:32:00.000Z",
     "deviceName": "Living Room Pendant",
     "deviceModel": "Smart Bulb v2",
     "deviceIcon": "lightbulb",
@@ -14,7 +14,7 @@
   },
   {
     "id": "as-2",
-    "occurredAt": "2026-06-07T13:15:00.000Z",
+    "occurredAt": "2026-07-08T13:15:00.000Z",
     "deviceName": "Main Gate Sensor",
     "deviceModel": "Motion Sensor Pro",
     "deviceIcon": "door",
@@ -26,7 +26,7 @@
   },
   {
     "id": "as-3",
-    "occurredAt": "2026-06-07T12:00:00.000Z",
+    "occurredAt": "2026-07-08T12:00:00.000Z",
     "deviceName": "Master HVAC",
     "deviceModel": "Climate Hub X1",
     "deviceIcon": "acUnit",
@@ -39,7 +39,7 @@
   },
   {
     "id": "as-4",
-    "occurredAt": "2026-06-07T10:45:00.000Z",
+    "occurredAt": "2026-07-07T10:45:00.000Z",
     "deviceName": "Patio Camera",
     "deviceModel": "Cam Secure 4K",
     "deviceIcon": "videocam",
@@ -51,7 +51,7 @@
   },
   {
     "id": "as-5",
-    "occurredAt": "2026-06-07T09:20:00.000Z",
+    "occurredAt": "2026-07-07T09:20:00.000Z",
     "deviceName": "Living Room AC",
     "deviceModel": "Smart AC Unit",
     "deviceIcon": "acUnit",
@@ -64,7 +64,7 @@
   },
   {
     "id": "as-6",
-    "occurredAt": "2026-06-07T08:10:00.000Z",
+    "occurredAt": "2026-07-06T08:10:00.000Z",
     "deviceName": "Refrigerator",
     "deviceModel": "Kitchen Smart Fridge",
     "deviceIcon": "refrigerator",

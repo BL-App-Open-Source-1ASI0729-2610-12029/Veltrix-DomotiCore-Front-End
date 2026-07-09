@@ -6,6 +6,8 @@ export interface SavingsSuggestion {
   id: string;
   title: string;
   description: string;
+  titleKey?: string;
+  descriptionKey?: string;
   estimatedSavingKwh: number;
 }
 

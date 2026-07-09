@@ -334,7 +334,7 @@ export class DashboardComponent {
 
     return {
       left: (x / this.chartLayout.width) * 100,
-      top: ((y - 36) / this.chartLayout.height) * 100,
+      top: Math.max(8, (y / this.chartLayout.height) * 100),
     };
   });
 

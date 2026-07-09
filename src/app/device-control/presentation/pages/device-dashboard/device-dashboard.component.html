@@ -8,17 +8,17 @@
       </p>
     </div>
     <div class="page-header__actions">
-      <button type="button" mat-stroked-button (click)="onRefresh()" [disabled]="store.loading()">
+      <button type="button" mat-stroked-button class="header-action-btn" (click)="onRefresh()" [disabled]="store.loading()">
         <mat-icon>refresh</mat-icon>
-        {{ 'myDevices.refresh' | translate }}
+        <span>{{ 'myDevices.refresh' | translate }}</span>
       </button>
-      <button type="button" mat-stroked-button (click)="onTurnOnAll()">
-        {{ 'myDevices.turnOnAll' | translate }}
+      <button type="button" mat-stroked-button class="header-action-btn" (click)="onTurnOnAll()">
+        <span>{{ 'myDevices.turnOnAll' | translate }}</span>
       </button>
-      <button type="button" mat-stroked-button (click)="onEcoMode()">
-        {{ 'myDevices.ecoMode' | translate }}
+      <button type="button" mat-stroked-button class="header-action-btn" (click)="onEcoMode()">
+        <span>{{ 'myDevices.ecoMode' | translate }}</span>
       </button>
-      <a mat-stroked-button routerLink="/app/devices/gateway">{{ 'myDevices.gateway' | translate }}</a>
+      <a mat-stroked-button class="header-action-btn" routerLink="/app/devices/gateway">{{ 'myDevices.gateway' | translate }}</a>
       <button type="button" mat-flat-button color="primary" class="btn-add-device" (click)="openAddModal()">
         <img [src]="icons.add" alt="" class="ui-icon ui-icon--sm" />
         {{ 'myDevices.addDevice' | translate }}
@@ -48,8 +48,13 @@
 
   <div class="devices-layout">
     <div class="devices-main">
-      <section class="room-card room-card--featured" *ngIf="store.featuredRoom() as room">
-        <ng-container *ngIf="roomMatchesSearch(room)">
+      <div class="devices-empty" *ngIf="!store.loading() && !hasVisibleRooms()">
+        <p>{{ 'myDevices.emptyFiltered' | translate }}</p>
+        <button type="button" mat-stroked-button (click)="onFilterCategory('all')">{{ 'dashboard.all' | translate }}</button>
+      </div>
+
+      <ng-container *ngIf="store.featuredRoom() as room">
+      <section class="room-card room-card--featured" *ngIf="roomMatchesSearch(room)">
         <div class="room-card__header">
           <div class="room-card__title-wrap">
             <span class="room-icon" [ngClass]="getRoomIconClass(room)">
@@ -116,11 +121,11 @@
             </div>
           </article>
         </div>
-        </ng-container>
       </section>
+      </ng-container>
 
-      <section class="room-card room-card--suite" *ngIf="store.suiteRoom() as room">
-        <ng-container *ngIf="roomMatchesSearch(room)">
+      <ng-container *ngIf="store.suiteRoom() as room">
+      <section class="room-card room-card--suite" *ngIf="roomMatchesSearch(room)">
         <div class="suite-header">
           <div class="room-card__title-wrap">
             <span class="room-icon room-icon--master-bedroom">
@@ -181,8 +186,8 @@
             </div>
           </article>
         </div>
-        </ng-container>
       </section>
+      </ng-container>
     </div>
 
     <aside class="devices-aside">
@@ -190,11 +195,23 @@
         <img [src]="icons.power" alt="" class="ui-icon consumption-card__icon" />
         <p class="consumption-card__label">{{ 'myDevices.totalConsumption' | translate }}</p>
         <strong class="consumption-card__value">{{ overview.totalConsumptionKwh }} kWh</strong>
-        <p class="consumption-card__detail">{{ overview.consumptionComparison }}</p>
+        <p class="consumption-card__detail">
+          {{ overview.consumptionComparisonKey ? (overview.consumptionComparisonKey | translate) : overview.consumptionComparison }}
+        </p>
+        <div class="consumption-card__stats">
+          <div class="consumption-stat">
+            <span>{{ 'myDevices.activeDevices' | translate }}</span>
+            <strong>{{ overview.totalDevices }}</strong>
+          </div>
+          <div class="consumption-stat">
+            <span>{{ 'myDevices.roomsLabel' | translate }}</span>
+            <strong>{{ overview.totalRooms }}</strong>
+          </div>
+        </div>
       </article>
 
-      <section class="room-card room-card--compact" *ngFor="let room of store.compactRooms()">
-        <ng-container *ngIf="roomMatchesSearch(room)">
+      <ng-container *ngFor="let room of store.compactRooms()">
+      <section class="room-card room-card--compact" *ngIf="roomMatchesSearch(room)">
         <div class="room-card__header room-card__header--compact">
           <span class="room-icon room-icon--kitchen">
             <img [src]="getIcon(room.icon)" alt="" class="ui-icon ui-icon--md" />
@@ -237,8 +254,8 @@
             </label>
           </article>
         </div>
-        </ng-container>
       </section>
+      </ng-container>
 
       <div class="scenes-row">
         <button
@@ -250,7 +267,7 @@
           (click)="onScene(scene.id)"
         >
           <img [src]="getIcon(scene.icon)" alt="" class="ui-icon ui-icon--md" />
-          <span>{{ scene.name }}</span>
+          <span>{{ scene.nameKey ? (scene.nameKey | translate) : scene.name }}</span>
         </button>
       </div>
     </aside>
