@@ -8,7 +8,7 @@ import { ZoneConfigurationComponent } from '../zone-configuration/zone-configura
   standalone: true,
   imports: [ZoneConfigurationComponent],
   template: `
-    @if (auth.getAccountType() === 'small-business') {
+    @if (auth.getEffectiveAccountType() === 'small-business') {
       <app-zone-configuration />
     }
   `,
@@ -19,7 +19,7 @@ export class ZoneConfigurationHostComponent implements OnInit {
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    if (this.auth.getAccountType() !== 'small-business') {
+    if (this.auth.getEffectiveAccountType() !== 'small-business') {
       void this.router.navigate(['/app/automation/center']);
     }
   }

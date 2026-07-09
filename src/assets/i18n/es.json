@@ -268,6 +268,7 @@
     "technician": "Técnico (opcional)",
     "save": "Guardar registro",
     "empty": "Aún no hay registros de mantenimiento.",
+    "readonlyBanner": "Puedes revisar el historial de mantenimiento, pero tu rol no puede registrar nuevos registros.",
     "toast": {
       "required": "Nombre, fecha y descripción son obligatorios.",
       "saved": "Registro de mantenimiento guardado."
@@ -864,6 +865,7 @@
     "exportPdf": "Exportar PDF",
     "exportCsv": "Exportar CSV",
     "exportExcel": "Exportar Excel",
+    "export": "Exportar",
     "deviceReports": "Reportes por Dispositivo",
     "viewAllDevices": "Ver Todos los Dispositivos",
     "footer": "© {{year}} DomotiCore Enterprise Energy Management. Todos los sistemas operativos.",
@@ -922,6 +924,7 @@
     "subtitle": "Auditoría detallada del gasto energético, rendimiento en picos de demanda y modelado estratégico de ROI para infraestructura empresarial inteligente.",
     "exportPdf": "Exportar PDF",
     "exportExcel": "Exportar Excel",
+    "export": "Exportar",
     "recalculateRoi": "Recalcular ROI",
     "totalBilling": "Facturación Energética Total",
     "billingCycle": "Ciclo de Facturación",
@@ -979,6 +982,7 @@
     },
     "toast": {
       "exportPdf": "Reporte de análisis de costos descargado.",
+      "exportCsv": "CSV exportado correctamente.",
       "exportExcel": "Archivo Excel exportado correctamente.",
       "recalculateRoi": "Modelo ROI recalculado correctamente.",
       "filterSelected": "Filtro aplicado: {{filter}}"
@@ -989,6 +993,7 @@
     "title": "Alertas e Historial",
     "subtitle": "Registro integral de fallas del sistema, sobreconsumo y anulaciones manuales.",
     "exportCsv": "Exportar CSV",
+    "export": "Exportar",
     "filters": "Filtros",
     "activityLog": "Registro de Actividad",
     "showingRecords": "Mostrando {{count}}+ registros",
@@ -1080,6 +1085,8 @@
     },
     "toast": {
       "exportCsv": "Registro de actividad exportado a CSV.",
+      "exportExcel": "Archivo Excel exportado correctamente.",
+      "exportPdf": "Registro de actividad descargado.",
       "filterApplied": "Filtro aplicado: {{filter}}",
       "entryAcknowledged": "Alerta reconocida.",
       "entryInvestigating": "Alerta marcada como en investigación.",
@@ -1395,6 +1402,7 @@
     },
     "registerNode": "Registrar nodo",
     "noNodes": "Aún no hay nodos registrados.",
+    "readonlyBanner": "Puedes ver el estado del gateway, pero tu rol no puede vincular gateways ni registrar nodos.",
     "status": {
       "online": "En línea",
       "offline": "Desconectado",
@@ -1531,6 +1539,7 @@
     "viewAllAlerts": "Ver todas las alertas",
     "addDevice": "Agregar dispositivo",
     "activeDevices": "Dispositivos Activos",
+    "turnAllOn": "Encender Todo",
     "all": "Todo",
     "online": "En línea",
     "offline": "Desconectado",
@@ -1603,7 +1612,12 @@
       "chartUpdated": "Gráfico actualizado: {{range}}",
       "range24h": "Últimas 24 horas",
       "range7d": "Últimos 7 días",
-      "range30d": "Últimos 30 días"
+      "range30d": "Últimos 30 días",
+      "turnAllOn": "Todos los dispositivos disponibles fueron encendidos.",
+      "turnAllOnPartial": "Algunos dispositivos siguieron desconectados: {{devices}}"
+    },
+    "confirm": {
+      "turnAllOn": "¿Encender todos los dispositivos disponibles ahora?"
     }
   },
   "businessProfile": {
@@ -1611,6 +1625,7 @@
     "breadcrumb": "ADMIN · PERFIL EMPRESARIAL",
     "title": "Perfil Empresarial & Configuración API",
     "description": "Configure su identidad corporativa, integre proveedores de servicios públicos para facturación directa y gestione acceso API seguro.",
+    "readonlyBanner": "Puedes revisar los datos del perfil empresarial, pero tu rol no puede editar la configuración.",
     "corporateIdentity": "Identidad Corporativa",
     "corporateIdentityDesc": "Actualice los datos empresariales registrados.",
     "legalBusinessName": "Nombre Legal de la Empresa",
@@ -2007,6 +2022,16 @@
       "timezone": "Zona horaria",
       "sessionTimeout": "Tiempo de sesión",
       "minutes": "minutos"
+    },
+    "exportFormat": {
+      "title": "Preferencias de Exportación",
+      "description": "Elige el formato predeterminado al exportar reportes y registros de actividad.",
+      "label": "Formato de exportación preferido",
+      "options": {
+        "csv": "CSV",
+        "excel": "Excel",
+        "pdf": "PDF"
+      }
     },
     "systemShortcuts": {
       "title": "Accesos y Exportación",

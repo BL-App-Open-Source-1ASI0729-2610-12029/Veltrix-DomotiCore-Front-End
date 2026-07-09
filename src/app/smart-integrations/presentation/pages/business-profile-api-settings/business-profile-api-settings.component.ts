@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BusinessUsersNavComponent } from '../../../../team-management/presentation/components/business-users-nav/business-users-nav.component';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { downloadTextFile } from '../../../../shared/utils/download-file.util';
@@ -34,6 +35,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
           <h1>{{ 'businessProfile.title' | translate }}</h1>
           <p class="description">{{ 'businessProfile.description' | translate }}</p>
         </div>
+        <p class="readonly-banner" *ngIf="!canEditProfile()">{{ 'businessProfile.readonlyBanner' | translate }}</p>
       </div>
 
       <div class="main-content">
@@ -55,15 +57,15 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
             <div class="form-grid">
               <mat-form-field appearance="outline" floatLabel="always" subscriptSizing="dynamic">
                 <mat-label>{{ 'businessProfile.legalBusinessName' | translate }}</mat-label>
-                <input matInput id="businessName" type="text" [(ngModel)]="businessName" name="businessName">
+                <input matInput id="businessName" type="text" [(ngModel)]="businessName" name="businessName" [readonly]="!canEditProfile()">
               </mat-form-field>
               <mat-form-field appearance="outline" floatLabel="always" subscriptSizing="dynamic">
                 <mat-label>{{ 'businessProfile.tin' | translate }}</mat-label>
-                <input matInput id="tin" type="text" [(ngModel)]="tin" name="tin">
+                <input matInput id="tin" type="text" [(ngModel)]="tin" name="tin" [readonly]="!canEditProfile()">
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width" floatLabel="always" subscriptSizing="dynamic">
                 <mat-label>{{ 'businessProfile.headquartersAddress' | translate }}</mat-label>
-                <input matInput id="address" type="text" [(ngModel)]="address" name="address">
+                <input matInput id="address" type="text" [(ngModel)]="address" name="address" [readonly]="!canEditProfile()">
               </mat-form-field>
             </div>
             </mat-card-content>
@@ -98,7 +100,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                     </span>
                   </div>
                 </div>
-                <button mat-stroked-button color="primary" type="button" class="btn-outline btn-press" (click)="openConnectionModal()">{{ 'businessProfile.manageConnection' | translate }}</button>
+                <button mat-stroked-button color="primary" type="button" class="btn-outline btn-press" (click)="openConnectionModal()" [disabled]="!canEditProfile()">{{ 'businessProfile.manageConnection' | translate }}</button>
               </div>
 
               <div class="sync-pill">
@@ -106,8 +108,8 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
               </div>
 
               <div class="quick-actions">
-                <button matRipple type="button" class="btn-dashed btn-press" (click)="openBackupModal()">{{ 'businessProfile.connectBackupProvider' | translate }}</button>
-                <button matRipple type="button" class="btn-dashed btn-press" (click)="openSyncModal()">{{ 'businessProfile.syncIntervalSettings' | translate }}</button>
+                <button matRipple type="button" class="btn-dashed btn-press" (click)="openBackupModal()" [disabled]="!canEditProfile()">{{ 'businessProfile.connectBackupProvider' | translate }}</button>
+                <button matRipple type="button" class="btn-dashed btn-press" (click)="openSyncModal()" [disabled]="!canEditProfile()">{{ 'businessProfile.syncIntervalSettings' | translate }}</button>
               </div>
             </div>
             </mat-card-content>
@@ -135,7 +137,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                 <div class="doc-info">
                   <span class="doc-name">{{ documentDisplayName(document) }}</span>
                   <span class="doc-subtitle">
-                    {{ documentStatusKey(document.status) | translate }} ∑ {{ formatUploadedLabel(document) }}
+                    {{ documentStatusKey(document.status) | translate }} ù {{ formatUploadedLabel(document) }}
                   </span>
                 </div>
                 <button type="button" mat-icon-button class="download-btn" (click)="downloadDocument(document)" [attr.aria-label]="'businessProfile.downloadDocument' | translate">
@@ -145,7 +147,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
             </div>
 
             <input #docInput type="file" accept=".pdf,.doc,.docx" hidden (change)="onDocumentSelected($event)" />
-            <button mat-stroked-button class="btn-upload btn-press" (click)="uploadDocumentation()">{{ 'businessProfile.uploadNewDocumentation' | translate }}</button>
+            <button mat-stroked-button class="btn-upload btn-press" (click)="uploadDocumentation()" [disabled]="!canEditProfile()">{{ 'businessProfile.uploadNewDocumentation' | translate }}</button>
             </mat-card-content>
           </mat-card>
         </div>
@@ -162,7 +164,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
               <div class="api-key-value">{{ apiKey() }}</div>
             </div>
 
-            <button mat-stroked-button type="button" class="btn-white btn-press" (click)="generateNewKey()">{{ 'apiAccess.generateNewKey' | translate }}</button>
+            <button mat-stroked-button type="button" class="btn-white btn-press" (click)="generateNewKey()" [disabled]="!canEditProfile()">{{ 'apiAccess.generateNewKey' | translate }}</button>
             <button mat-button color="primary" type="button" class="btn-copy-key btn-press" (click)="copyApiKey()">{{ 'businessProfile.copyApiKey' | translate }}</button>
           </section>
 
@@ -177,7 +179,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                     <span>{{ hookStatusLabel(hook) | translate }}</span>
                   </div>
                 </div>
-                <button type="button" mat-icon-button class="settings-icon btn-press" (click)="openWebhookModal(hook.id)">
+                <button type="button" mat-icon-button class="settings-icon btn-press" (click)="openWebhookModal(hook.id)" [disabled]="!canEditProfile()">
                   <img [src]="icons.settings" alt="" class="ui-icon ui-icon--sm" />
                 </button>
               </div>
@@ -226,13 +228,13 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
             <div class="upgrade-content">
               <h3>{{ 'businessProfile.upgradeCtaTitle' | translate }}</h3>
               <p>{{ 'businessProfile.upgradeCtaDescription' | translate }}</p>
-              <button mat-stroked-button type="button" class="btn-white btn-press" (click)="openUpgradeModal()">{{ 'buttons.upgradeNow' | translate }}</button>
+              <button mat-stroked-button type="button" class="btn-white btn-press" (click)="openUpgradeModal()" [disabled]="!canEditProfile()">{{ 'buttons.upgradeNow' | translate }}</button>
             </div>
           </section>
         </aside>
       </div>
 
-      <div class="footer-actions">
+      <div class="footer-actions" *ngIf="canEditProfile()">
         <button mat-button color="primary" type="button" class="btn-text" (click)="discardChanges()" [disabled]="!isDirty()">{{ 'buttons.discardChanges' | translate }}</button>
         <button mat-flat-button color="primary" class="btn-primary btn-press" (click)="saveConfiguration()" [disabled]="!isDirty()">{{ 'buttons.saveConfiguration' | translate }}</button>
       </div>
@@ -402,6 +404,17 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
       font-size: 1rem;
       line-height: 1.75;
       max-width: 720px;
+    }
+
+    .readonly-banner {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .main-content {
@@ -1372,6 +1385,9 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
   private readonly profileStore = inject(BusinessProfileStore);
+  private readonly permissions = inject(RolePermissionService);
+
+  readonly canEditProfile = computed(() => this.permissions.canEditBusinessProfile());
 
   private savedSnapshot: BusinessProfile = structuredClone(DEFAULT_BUSINESS_PROFILE);
 
@@ -1461,6 +1477,8 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   openConnectionModal(): void {
+    if (!this.canEditProfile()) return;
+
     const current = this.provider();
     this.connectionDraft = {
       accountId: current.accountId,
@@ -1471,16 +1489,22 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   openBackupModal(): void {
+    if (!this.canEditProfile()) return;
+
     this.selectedBackupProvider = this.provider().backupProvider ?? this.backupProviderOptions[0];
     this.activeModal.set('backup');
   }
 
   openSyncModal(): void {
+    if (!this.canEditProfile()) return;
+
     this.syncIntervalDraft = this.syncInterval();
     this.activeModal.set('sync');
   }
 
   openWebhookModal(hookId: string): void {
+    if (!this.canEditProfile()) return;
+
     const hook = this.webhooks().find(item => item.id === hookId);
     if (!hook) return;
     this.activeWebhookId.set(hookId);
@@ -1489,6 +1513,8 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   openUpgradeModal(): void {
+    if (!this.canEditProfile()) return;
+
     this.activeModal.set('upgrade');
   }
 
@@ -1582,10 +1608,14 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   uploadDocumentation(): void {
+    if (!this.canEditProfile()) return;
+
     this.docInput?.nativeElement.click();
   }
 
   onDocumentSelected(event: Event): void {
+    if (!this.canEditProfile()) return;
+
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
 
@@ -1604,6 +1634,8 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   generateNewKey(): void {
+    if (!this.canEditProfile()) return;
+
     const suffix = Math.random().toString(36).slice(2, 10);
     this.apiKey.set(`dc_live_${suffix}_regenerated`);
     this.feedback.showToast(this.translate.instant('businessProfile.toast.keyGenerated'), 'success');
@@ -1622,13 +1654,13 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   }
 
   discardChanges(): void {
-    if (!this.isDirty()) return;
+    if (!this.canEditProfile() || !this.isDirty()) return;
     this.applySnapshot(this.savedSnapshot);
     this.feedback.showToast(this.translate.instant('businessProfile.toast.changesDiscarded'), 'warning');
   }
 
   saveConfiguration(): void {
-    if (!this.isDirty()) return;
+    if (!this.canEditProfile() || !this.isDirty()) return;
 
     const snapshot = this.currentSnapshot();
     this.profileStore.save(snapshot).subscribe(saved => {

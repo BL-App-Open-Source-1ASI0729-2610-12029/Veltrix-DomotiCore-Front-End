@@ -261,7 +261,20 @@
     </section>
 
     <section *ngIf="activeTab === 'system'" class="settings-section system-section">
-      <div class="system-grid">
+      <article class="system-card" *ngIf="permissions.canExportData()">
+        <h3>{{ 'settings.exportFormat.title' | translate }}</h3>
+        <p>{{ 'settings.exportFormat.description' | translate }}</p>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'settings.exportFormat.label' | translate }}</mat-label>
+          <mat-select [ngModel]="formData.preferredExportFormat || 'csv'" (ngModelChange)="updateField('preferredExportFormat', $event)">
+            <mat-option *ngFor="let format of exportFormatOptions" [value]="format">
+              {{ ('settings.exportFormat.options.' + format) | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </article>
+
+      <div class="system-grid" *ngIf="permissions.canAccessSystemSettings()">
         <article class="system-card">
           <h3>{{ 'settings.systemNotifications.title' | translate }}</h3>
           <p>{{ 'settings.systemNotifications.description' | translate }}</p>

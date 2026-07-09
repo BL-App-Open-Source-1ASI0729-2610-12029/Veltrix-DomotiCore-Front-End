@@ -17,6 +17,7 @@ import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
+import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 interface ChartCoordinate {
@@ -37,6 +38,7 @@ const DEVICE_MENU_HEIGHT = 132;
 export class BusinessReportsComponent implements OnInit {
   readonly store = inject(BusinessReportsStore);
   readonly permissions = inject(RolePermissionService);
+  readonly settingsStore = inject(SettingsStore);
   readonly icons = GOOGLE_ICONS;
   readonly currentYear = APP_CURRENT_YEAR;
 
@@ -83,6 +85,7 @@ export class BusinessReportsComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.settingsStore.fetchSettings();
     this.store.load();
   }
 
@@ -131,6 +134,23 @@ export class BusinessReportsComponent implements OnInit {
 
   statusKey(status: DeviceReportStatus): string {
     return status === 'OPTIMAL' ? 'businessReports.status.optimal' : 'businessReports.status.steady';
+  }
+
+  preferredExportFormat(): PreferredExportFormat {
+    return this.settingsStore.settings().preferredExportFormat ?? 'csv';
+  }
+
+  onExport(): void {
+    const format = this.preferredExportFormat();
+    if (format === 'pdf') {
+      this.onExportPdf();
+      return;
+    }
+    if (format === 'excel') {
+      this.onExportExcel();
+      return;
+    }
+    this.onExportCsv();
   }
 
   onExportPdf(): void {

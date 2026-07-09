@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   DEFAULT_PROFILE_PHOTO,
+  PreferredExportFormat,
   SettingsState,
   SettingsStore,
 } from '../../application/settings.store';
@@ -50,7 +51,7 @@ export class SettingsComponent implements OnInit {
   private readonly theme = inject(ThemeService);
   private readonly auth = inject(AuthService);
   private readonly authRepository = inject(LocalAuthRepository);
-  private readonly permissions = inject(RolePermissionService);
+  readonly permissions = inject(RolePermissionService);
 
   readonly settings = this.settingsStore.settings;
   readonly loading = this.settingsStore.loading;
@@ -67,7 +68,9 @@ export class SettingsComponent implements OnInit {
       if (tab.id === 'devices') {
         return this.permissions.canManageIntegrations() || !this.isBusinessMode();
       }
-      if (tab.id === 'system') return this.permissions.canAccessSystemSettings();
+      if (tab.id === 'system') {
+        return this.permissions.canAccessSystemSettings() || (this.isBusinessMode() && this.permissions.canExportData());
+      }
       return true;
     }),
   );
@@ -125,6 +128,8 @@ export class SettingsComponent implements OnInit {
   ];
 
   readonly sessionTimeoutOptions = [15, 30, 60, 120];
+
+  readonly exportFormatOptions: PreferredExportFormat[] = ['csv', 'excel', 'pdf'];
 
   readonly tabItems = [
     { id: 'profile' as const, labelKey: 'settings.tabs.profile', icon: GOOGLE_ICONS.person },

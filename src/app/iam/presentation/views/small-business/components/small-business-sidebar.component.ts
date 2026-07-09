@@ -69,6 +69,9 @@ export class SmallBusinessSidebarComponent {
       if (item.route === '/app/users') {
         return this.permissions.canManageTeam();
       }
+      if (item.route === '/app/smart-integrations') {
+        return this.permissions.canManageIntegrations();
+      }
       return true;
     }),
   );

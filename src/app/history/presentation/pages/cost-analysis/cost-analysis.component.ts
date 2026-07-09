@@ -6,7 +6,9 @@ import { BillingBarResponse, RoiUpgradeStatus } from '../../../infrastructure/co
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
+import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -19,6 +21,8 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 export class CostAnalysisComponent implements OnInit {
   readonly store = inject(CostAnalysisStore);
   readonly icons = GOOGLE_ICONS;
+  readonly permissions = inject(RolePermissionService);
+  readonly settingsStore = inject(SettingsStore);
 
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
@@ -32,6 +36,7 @@ export class CostAnalysisComponent implements OnInit {
   readonly chartPad = { top: 28, right: 20, bottom: 48, left: 58 };
 
   ngOnInit(): void {
+    this.settingsStore.fetchSettings();
     this.store.load();
   }
 
@@ -170,6 +175,23 @@ export class CostAnalysisComponent implements OnInit {
     return status === 'approved' ? 'costAnalysis.roi.statusApproved' : 'costAnalysis.roi.statusReview';
   }
 
+  preferredExportFormat(): PreferredExportFormat {
+    return this.settingsStore.settings().preferredExportFormat ?? 'csv';
+  }
+
+  onExport(): void {
+    const format = this.preferredExportFormat();
+    if (format === 'pdf') {
+      this.onExportPdf();
+      return;
+    }
+    if (format === 'excel') {
+      this.onExportExcel();
+      return;
+    }
+    this.onExportCsv();
+  }
+
   onExportPdf(): void {
     const data = this.store.data();
     if (!data) return;
@@ -188,6 +210,24 @@ export class CostAnalysisComponent implements OnInit {
 
     downloadTextFile('domoticore-cost-analysis.txt', lines.join('\n'));
     this.feedback.showToast(this.translate.instant('costAnalysis.toast.exportPdf'), 'success');
+  }
+
+  onExportCsv(): void {
+    const rows: string[][] = [
+      [
+        this.translate.instant('costAnalysis.audit.columns.period'),
+        this.translate.instant('costAnalysis.audit.columns.netAmount'),
+        this.translate.instant('costAnalysis.audit.columns.status'),
+      ],
+      ...this.store.filteredBillingAudit().map(row => [
+        row.period,
+        this.formatCurrency(row.netAmount),
+        row.status,
+      ]),
+    ];
+
+    downloadCsvFile('domoticore-cost-analysis.csv', rows);
+    this.feedback.showToast(this.translate.instant('costAnalysis.toast.exportCsv'), 'success');
   }
 
   onExportExcel(): void {

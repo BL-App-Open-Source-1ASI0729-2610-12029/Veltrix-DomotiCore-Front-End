@@ -1,4 +1,4 @@
-@if (auth.getAccountType() === 'small-business') {
+@if (auth.getEffectiveAccountType() === 'small-business') {
   <app-business-device-management />
 } @else {
   <app-device-dashboard />

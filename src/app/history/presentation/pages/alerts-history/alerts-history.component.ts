@@ -12,7 +12,9 @@ import {
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
+import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -25,6 +27,8 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 export class AlertsHistoryComponent implements OnInit {
   readonly store = inject(AlertsHistoryStore);
   readonly icons = GOOGLE_ICONS;
+  readonly permissions = inject(RolePermissionService);
+  readonly settingsStore = inject(SettingsStore);
 
   readonly tabs: AlertLogTab[] = ['all', 'alerts', 'manual'];
   readonly filterOptions: AlertsFilterKey[] = ['critical', 'last24h', 'unresolved'];
@@ -35,6 +39,7 @@ export class AlertsHistoryComponent implements OnInit {
   private readonly router = inject(Router);
 
   ngOnInit(): void {
+    this.settingsStore.fetchSettings();
     this.store.load();
 
     const tab = this.route.snapshot.queryParamMap.get('tab');
@@ -93,6 +98,23 @@ export class AlertsHistoryComponent implements OnInit {
     return String(value).padStart(2, '0');
   }
 
+  preferredExportFormat(): PreferredExportFormat {
+    return this.settingsStore.settings().preferredExportFormat ?? 'csv';
+  }
+
+  onExport(): void {
+    const format = this.preferredExportFormat();
+    if (format === 'pdf') {
+      this.onExportPdf();
+      return;
+    }
+    if (format === 'excel') {
+      this.onExportExcel();
+      return;
+    }
+    this.onExportCsv();
+  }
+
   onTabChange(tab: AlertLogTab): void {
     this.store.setTab(tab);
     void this.router.navigate([], {
@@ -123,6 +145,49 @@ export class AlertsHistoryComponent implements OnInit {
 
     downloadCsvFile('domoticore-alerts-history.csv', rows);
     this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportCsv'), 'success');
+  }
+
+  onExportExcel(): void {
+    const entries = this.store.filteredEntries();
+    const rows: string[][] = [
+      [
+        this.translate.instant('alertsHistory.table.priority'),
+        this.translate.instant('alertsHistory.table.eventDetail'),
+        this.translate.instant('alertsHistory.table.location'),
+        this.translate.instant('alertsHistory.table.timestamp'),
+        this.translate.instant('alertsHistory.table.status'),
+      ],
+      ...entries.map(entry => [
+        entry.priority,
+        this.translate.instant(entry.titleKey),
+        this.translate.instant(entry.locationKey),
+        entry.timestamp,
+        entry.status,
+      ]),
+    ];
+
+    downloadExcelFile('domoticore-alerts-history', rows);
+    this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportExcel'), 'success');
+  }
+
+  onExportPdf(): void {
+    const entries = this.store.filteredEntries();
+    const lines = [
+      this.translate.instant('alertsHistory.title'),
+      '',
+      ...entries.map(entry =>
+        [
+          entry.priority,
+          this.translate.instant(entry.titleKey),
+          this.translate.instant(entry.locationKey),
+          entry.timestamp,
+          entry.status,
+        ].join(' | '),
+      ),
+    ];
+
+    downloadTextFile('domoticore-alerts-history.txt', lines.join('\n'));
+    this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportPdf'), 'success');
   }
 
   onToggleFilters(event: Event): void {

@@ -900,6 +900,19 @@ body {
   color: var(--text-primary);
 }
 
+.device-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-turn-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .device-filters {
   display: flex;
   gap: 8px;

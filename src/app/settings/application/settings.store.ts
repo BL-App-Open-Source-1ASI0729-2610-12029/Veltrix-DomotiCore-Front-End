@@ -4,6 +4,8 @@ import { SettingsApiService } from '../infrastructure/settings-api.service';
 
 export const DEFAULT_PROFILE_PHOTO = 'assets/icons/shared/profile-admin.jpg';
 
+export type PreferredExportFormat = 'csv' | 'excel' | 'pdf';
+
 export interface SettingsState {
   fullName: string;
   email: string;
@@ -27,6 +29,7 @@ export interface SettingsState {
   weeklyReportEmailsEnabled?: boolean;
   timezone?: string;
   sessionTimeoutMinutes?: number;
+  preferredExportFormat?: PreferredExportFormat;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -57,6 +60,7 @@ export class SettingsStore {
     weeklyReportEmailsEnabled: false,
     timezone: 'America/Los_Angeles',
     sessionTimeoutMinutes: 60,
+    preferredExportFormat: 'csv',
   });
 
   readonly loading = signal(false);

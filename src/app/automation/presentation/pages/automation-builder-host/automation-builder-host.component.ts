@@ -15,7 +15,7 @@ export class AutomationBuilderHostComponent implements OnInit {
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    if (this.auth.getAccountType() !== 'smart-home') {
+    if (this.auth.getEffectiveAccountType() !== 'smart-home') {
       void this.router.navigate(['/app/automation/center']);
     }
   }

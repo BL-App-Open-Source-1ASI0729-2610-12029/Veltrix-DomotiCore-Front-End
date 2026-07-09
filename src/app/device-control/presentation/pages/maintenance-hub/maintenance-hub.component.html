@@ -6,7 +6,9 @@
     <p>{{ 'maintenance.subtitle' | translate }}</p>
   </header>
 
-  <section class="panel">
+  <p class="readonly-banner" *ngIf="!canRegister()">{{ 'maintenance.readonlyBanner' | translate }}</p>
+
+  <section class="panel" *ngIf="canRegister()">
     <h2>{{ 'maintenance.registerTitle' | translate }}</h2>
     <div class="form-grid">
       <mat-form-field appearance="outline">

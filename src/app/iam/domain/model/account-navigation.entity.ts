@@ -22,4 +22,6 @@ export const SMALL_BUSINESS_NAV_ITEMS: AccountNavItem[] = [
   { icon: GOOGLE_ICONS.automation, labelKey: 'navigation.automation', route: '/app/automation' },
   { icon: GOOGLE_ICONS.assessment, labelKey: 'navigation.reports', route: '/app/reports' },
   { icon: GOOGLE_ICONS.groups, labelKey: 'navigation.users', route: '/app/users' },
+  { icon: GOOGLE_ICONS.deviceHub, labelKey: 'navigation.integrations', route: '/app/smart-integrations' },
+  { icon: GOOGLE_ICONS.settings, labelKey: 'navigation.settings', route: '/app/settings' },
 ];

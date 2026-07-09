@@ -268,6 +268,7 @@
     "technician": "Technician (optional)",
     "save": "Save record",
     "empty": "No maintenance records yet.",
+    "readonlyBanner": "You can review maintenance history, but your role cannot register new records.",
     "toast": {
       "required": "Device name, date, and description are required.",
       "saved": "Maintenance record saved."
@@ -864,6 +865,7 @@
     "exportPdf": "Export PDF",
     "exportCsv": "Export CSV",
     "exportExcel": "Export Excel",
+    "export": "Export",
     "deviceReports": "Device-Specific Reports",
     "viewAllDevices": "View All Devices",
     "footer": "© {{year}} DomotiCore Enterprise Energy Management. All systems operational.",
@@ -922,6 +924,7 @@
     "subtitle": "A detailed audit of energy expenditure, peak-load performance, and strategic ROI modeling for Smart Enterprise infrastructure.",
     "exportPdf": "Export PDF",
     "exportExcel": "Export Excel",
+    "export": "Export",
     "recalculateRoi": "Recalculate ROI",
     "totalBilling": "Total Energy Billing",
     "billingCycle": "Billing Cycle",
@@ -979,6 +982,7 @@
     },
     "toast": {
       "exportPdf": "Cost analysis report downloaded.",
+      "exportCsv": "CSV exported successfully.",
       "exportExcel": "Excel file exported successfully.",
       "recalculateRoi": "ROI model recalculated successfully.",
       "filterSelected": "Filter applied: {{filter}}"
@@ -989,6 +993,7 @@
     "title": "Alerts & History",
     "subtitle": "Comprehensive log of system failures, over-consumption, and manual overrides.",
     "exportCsv": "Export CSV",
+    "export": "Export",
     "filters": "Filters",
     "activityLog": "Activity Log",
     "showingRecords": "Showing {{count}}+ records",
@@ -1080,6 +1085,8 @@
     },
     "toast": {
       "exportCsv": "Activity log exported to CSV.",
+      "exportExcel": "Excel file exported successfully.",
+      "exportPdf": "Activity log downloaded.",
       "filterApplied": "Filter applied: {{filter}}",
       "entryAcknowledged": "Alert acknowledged.",
       "entryInvestigating": "Alert marked as investigating.",
@@ -1395,6 +1402,7 @@
     },
     "registerNode": "Register node",
     "noNodes": "No nodes registered yet.",
+    "readonlyBanner": "You can view gateway status, but your role cannot link gateways or register nodes.",
     "status": {
       "online": "Online",
       "offline": "Offline",
@@ -1531,6 +1539,7 @@
     "viewAllAlerts": "View All Alerts",
     "addDevice": "Add Device",
     "activeDevices": "Active Devices",
+    "turnAllOn": "Turn All ON",
     "all": "All",
     "online": "Online",
     "offline": "Offline",
@@ -1603,7 +1612,12 @@
       "chartUpdated": "Chart updated: {{range}}",
       "range24h": "Last 24 hours",
       "range7d": "Last 7 days",
-      "range30d": "Last 30 days"
+      "range30d": "Last 30 days",
+      "turnAllOn": "All available devices were turned on.",
+      "turnAllOnPartial": "Some devices stayed offline: {{devices}}"
+    },
+    "confirm": {
+      "turnAllOn": "Turn on all available devices now?"
     }
   },
   "businessProfile": {
@@ -1611,6 +1625,7 @@
     "breadcrumb": "ADMIN · BUSINESS PROFILE",
     "title": "Business Profile & API Settings",
     "description": "Configure your corporate identity, integrate utility providers for direct billing, and manage secure API access for external ERP or monitoring dashboards.",
+    "readonlyBanner": "You can review business profile data, but your role cannot edit configuration.",
     "corporateIdentity": "Corporate Identity",
     "corporateIdentityDesc": "Update the registered business details that power compliance and billing workflows.",
     "legalBusinessName": "Legal Business Name",
@@ -2007,6 +2022,16 @@
       "timezone": "Timezone",
       "sessionTimeout": "Session timeout",
       "minutes": "minutes"
+    },
+    "exportFormat": {
+      "title": "Export Preferences",
+      "description": "Choose the default format used when exporting reports and activity logs.",
+      "label": "Preferred export format",
+      "options": {
+        "csv": "CSV",
+        "excel": "Excel",
+        "pdf": "PDF"
+      }
     },
     "systemShortcuts": {
       "title": "Shortcuts & Export",

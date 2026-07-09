@@ -8,13 +8,9 @@
       <p>{{ 'costAnalysis.subtitle' | translate }}</p>
     </div>
     <div class="cost-page__header-actions">
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportPdf()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExport()" *ngIf="permissions.canExportData()">
         <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'costAnalysis.exportPdf' | translate }}
-      </button>
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportExcel()">
-        <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'costAnalysis.exportExcel' | translate }}
+        {{ 'costAnalysis.export' | translate }} ({{ ('settings.exportFormat.options.' + preferredExportFormat()) | translate }})
       </button>
       <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" [disabled]="store.roiRecalculating()" (click)="onRecalculateRoi()">
         <img [src]="icons.refresh" alt="" class="ui-icon ui-icon--sm" />

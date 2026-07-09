@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GatewayStore } from '../../../application/gateway.store';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
@@ -16,6 +17,8 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 })
 export class GatewaySetupComponent implements OnInit {
   readonly store = inject(GatewayStore);
+  readonly permissions = inject(RolePermissionService);
+  readonly canManage = computed(() => this.permissions.canManageGateways());
 
   readonly gatewayCode = signal('');
   readonly gatewayLabel = signal('Veltrix Home Gateway');
@@ -30,6 +33,8 @@ export class GatewaySetupComponent implements OnInit {
   }
 
   onLinkGateway(): void {
+    if (!this.canManage()) return;
+
     const code = this.gatewayCode().trim();
     if (!code) {
       this.feedback.showToast(this.translate.instant('gateway.toast.codeRequired'), 'warning');
@@ -48,12 +53,16 @@ export class GatewaySetupComponent implements OnInit {
   }
 
   onUnlinkGateway(): void {
+    if (!this.canManage()) return;
+
     this.store.unlink().subscribe({
       next: () => this.feedback.showToast(this.translate.instant('gateway.toast.unlinked'), 'info'),
     });
   }
 
   onRegisterNode(): void {
+    if (!this.canManage()) return;
+
     const name = this.nodeName().trim();
     if (!name) {
       this.feedback.showToast(this.translate.instant('gateway.toast.nodeNameRequired'), 'warning');

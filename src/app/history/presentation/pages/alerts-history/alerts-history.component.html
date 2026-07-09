@@ -8,9 +8,9 @@
       <p>{{ 'alertsHistory.subtitle' | translate }}</p>
     </div>
     <div class="alerts-page__header-actions">
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportCsv()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExport()" *ngIf="permissions.canExportData()">
         <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'alertsHistory.exportCsv' | translate }}
+        {{ 'alertsHistory.export' | translate }} ({{ ('settings.exportFormat.options.' + preferredExportFormat()) | translate }})
       </button>
       <div class="filters-picker" [class.filters-picker--open]="store.showFiltersMenu()" (click)="$event.stopPropagation()">
         <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onToggleFilters($event)">

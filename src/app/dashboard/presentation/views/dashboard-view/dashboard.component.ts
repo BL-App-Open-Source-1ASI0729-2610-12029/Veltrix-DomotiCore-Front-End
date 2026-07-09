@@ -219,6 +219,38 @@ export class DashboardComponent {
     this.deviceFilter.set(filter);
   }
 
+  onTurnAllOn(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('dashboard.confirm.turnAllOn'))) return;
+
+    const devices = this.devices();
+    const failed: string[] = [];
+    const updated = devices.map(device => {
+      if (!device.active && !device.live) {
+        failed.push(this.deviceLabel(device));
+        return device;
+      }
+
+      return {
+        ...device,
+        active: true,
+        statusKey: device.statusKey === 'dashboard.devices.shutdown' ? undefined : device.statusKey,
+        status: device.statusKey === 'dashboard.devices.shutdown' ? this.translate.instant('common.on') : device.status,
+      };
+    });
+
+    this.devices.set(updated);
+
+    if (failed.length) {
+      this.feedback.showToast(
+        this.translate.instant('dashboard.toast.turnAllOnPartial', { devices: failed.join(', ') }),
+        'warning',
+      );
+      return;
+    }
+
+    this.feedback.showToast(this.translate.instant('dashboard.toast.turnAllOn'), 'success');
+  }
+
   navigateToDevices() {
     this.closeDeviceModal();
     this.router.navigate(['/app/devices']);

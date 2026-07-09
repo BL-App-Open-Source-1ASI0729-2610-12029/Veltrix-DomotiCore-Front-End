@@ -8,7 +8,7 @@ import { BusinessAutomationCenterComponent } from '../business-automation-center
   standalone: true,
   imports: [AutomationCenterComponent, BusinessAutomationCenterComponent],
   template: `
-    @if (auth.getAccountType() === 'small-business') {
+    @if (auth.getEffectiveAccountType() === 'small-business') {
       <app-business-automation-center />
     } @else {
       <app-automation-center />

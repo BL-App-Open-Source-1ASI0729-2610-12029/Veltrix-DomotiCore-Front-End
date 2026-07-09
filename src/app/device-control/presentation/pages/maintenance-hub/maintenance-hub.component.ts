@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MaintenanceStore } from '../../../application/maintenance.store';
 import { BusinessDevicesNavComponent } from '../../components/business-devices-nav/business-devices-nav.component';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
@@ -16,6 +17,8 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 })
 export class MaintenanceHubComponent implements OnInit {
   readonly store = inject(MaintenanceStore);
+  readonly permissions = inject(RolePermissionService);
+  readonly canRegister = computed(() => this.permissions.canRegisterMaintenance());
 
   readonly deviceName = signal('');
   readonly description = signal('');
@@ -30,6 +33,8 @@ export class MaintenanceHubComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (!this.canRegister()) return;
+
     const name = this.deviceName().trim();
     const desc = this.description().trim();
     if (!name || !desc || !this.performedAt()) {

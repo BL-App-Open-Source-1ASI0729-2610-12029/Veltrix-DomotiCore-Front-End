@@ -8,17 +8,9 @@
       <p>{{ 'businessReports.subtitle' | translate }}</p>
     </div>
     <div class="biz-reports__header-actions">
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportPdf()" *ngIf="permissions.canExportData()">
-        <img [src]="icons.receipt" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'businessReports.exportPdf' | translate }}
-      </button>
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportCsv()" *ngIf="permissions.canExportData()">
+      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExport()" *ngIf="permissions.canExportData()">
         <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'businessReports.exportCsv' | translate }}
-      </button>
-      <button type="button" mat-stroked-button class="btn-outline btn-press" (click)="onExportExcel()" *ngIf="permissions.canExportData()">
-        <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
-        {{ 'businessReports.exportExcel' | translate }}
+        {{ 'businessReports.export' | translate }} ({{ ('settings.exportFormat.options.' + preferredExportFormat()) | translate }})
       </button>
       <div class="period-picker" [class.period-picker--open]="store.showPeriodMenu()" (click)="$event.stopPropagation()">
         <button type="button" mat-flat-button color="primary" class="btn-primary btn-press" (click)="onSelectPeriod($event)">
