@@ -7,9 +7,9 @@ import { DeviceDetailStore } from '../../../application/device-detail.store';
 import { DevicesOverviewStore } from '../../../application/devices-overview.store';
 import { MaintenanceStore } from '../../../application/maintenance.store';
 import { OperationMode, PowerChartPeriod } from '../../../infrastructure/device-detail-response';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 interface ChartPoint {
   label: string;

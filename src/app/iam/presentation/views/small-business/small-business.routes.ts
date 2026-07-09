@@ -8,7 +8,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'operations-hub',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../sme-operations-hub/presentation/sme-operations-hub.routes').then(
+      import('../../../../../sme-operations-hub/presentation/sme-operations-hub.routes').then(
         m => m.smeOperationsHubRoutes,
       ),
   },
@@ -16,13 +16,13 @@ export const smallBusinessRoutes: Routes = [
     path: 'devices',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../device-control/business-device.routes').then(m => m.businessDeviceRoutes),
+      import('../../../../../device-control/business-device.routes').then(m => m.businessDeviceRoutes),
   },
   {
     path: 'reports',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../history/presentation/business-reports.routes').then(
+      import('../../../../../history/presentation/business-reports.routes').then(
         m => m.businessReportsRoutes,
       ),
   },
@@ -30,7 +30,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'smart-integrations',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../smart-integrations/presentation/routes/smart-integrations.routes').then(
+      import('../../../../../smart-integrations/presentation/routes/smart-integrations.routes').then(
         m => m.smartIntegrationsRoutes,
       ),
   },
@@ -38,13 +38,13 @@ export const smallBusinessRoutes: Routes = [
     path: 'automation',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
+      import('../../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
   },
   {
     path: 'users',
     canMatch: [isSmallBusinessAccount, requireTeamManagement],
     loadChildren: () =>
-      import('../../../../team-management/presentation/team-management.routes').then(
+      import('../../../../../team-management/presentation/team-management.routes').then(
         m => m.teamManagementRoutes,
       ),
   },
@@ -52,6 +52,6 @@ export const smallBusinessRoutes: Routes = [
     path: 'settings',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
+      import('../../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
   },
 ];

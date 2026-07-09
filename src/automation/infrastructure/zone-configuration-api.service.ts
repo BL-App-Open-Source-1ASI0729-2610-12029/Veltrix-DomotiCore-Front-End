@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { ZoneConfigurationResponse } from './zone-configuration-response';
 
 const CONFIG_PATH = 'zone-configuration';

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { AuthorizedUser, mapAuthorizedUser, toAuthorizedUserResponse } from '../domain/model/authorized-user.entity';
 import { SecurityCamera, mapSecurityCamera } from '../domain/model/security-camera.entity';
 import { SecurityLogEntry, mapSecurityLogEntry } from '../domain/model/security-log.entity';

@@ -7,7 +7,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { AuthTokenInterceptor } from '../shared/interceptors/auth-token.interceptor';
+import { AuthTokenInterceptor } from './shared/interceptors/auth-token.interceptor';
 
 export function initializeTranslations(translate: TranslateService) {
   return () => {

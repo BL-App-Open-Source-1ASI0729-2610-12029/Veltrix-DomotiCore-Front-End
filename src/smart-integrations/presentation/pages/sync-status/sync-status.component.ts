@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-sync-status',

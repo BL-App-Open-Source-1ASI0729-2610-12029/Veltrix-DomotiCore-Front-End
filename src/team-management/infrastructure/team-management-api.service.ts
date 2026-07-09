@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, catchError } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { TeamManagementResponse } from './team-management-response';
 
 const MOCK_TEAM: TeamManagementResponse = {

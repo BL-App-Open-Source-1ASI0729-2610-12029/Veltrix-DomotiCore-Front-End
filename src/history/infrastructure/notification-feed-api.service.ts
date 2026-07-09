@@ -5,7 +5,7 @@ import {
   DEFAULT_HISTORY_INSIGHTS,
   DEFAULT_NOTIFICATION_FEED,
 } from '../application/notification-feed.defaults';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import {
   HistoryInsights,
   NotificationFeedItem,

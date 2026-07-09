@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { catchError, finalize, timeout } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 const WARMUP_REQUEST_TIMEOUT_MS = 120_000;
 const WARMUP_BANNER_DELAY_MS = 3_000;

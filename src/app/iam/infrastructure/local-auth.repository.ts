@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { ApiClientService } from '../../shared/services/api-client.service';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { AuthUser } from '../domain/model/auth-user.entity';

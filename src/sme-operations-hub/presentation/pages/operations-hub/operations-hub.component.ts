@@ -9,14 +9,14 @@ import {
   SmeDeviceStatus,
   SmeOperationsHubStore,
 } from '../../../application/sme-operations-hub.store';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
 import {
   FacilityInteractiveMapComponent,
   FacilityMapMarker,
-} from '../../../../shared/components/facility-interactive-map/facility-interactive-map.component';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadJsonFile } from '../../../../shared/utils/download-file.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+} from '../../../../app/shared/components/facility-interactive-map/facility-interactive-map.component';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { downloadJsonFile } from '../../../../app/shared/utils/download-file.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-operations-hub',

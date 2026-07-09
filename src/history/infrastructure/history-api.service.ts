@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, delay, map } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { EnergyIntelligence } from '../domain/model/energy-intelligence.entity';
 import { EnergyPeriod } from '../domain/model/energy-period.entity';
 import { HistoryAssembler } from './history-assembler';

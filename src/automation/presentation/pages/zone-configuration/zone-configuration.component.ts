@@ -10,10 +10,10 @@ import {
   ZoneIcon,
 } from '../../../infrastructure/zone-configuration-response';
 import { BusinessAutomationNavComponent } from '../../components/business-automation-nav/business-automation-nav.component';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { APP_CURRENT_YEAR } from '../../../../app/shared/constants/app.constants';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 type FooterModalType = 'privacy' | 'health' | null;
 

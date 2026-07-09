@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { ThemeService } from '../../shared/services/theme.service';
+import { ThemeService } from '../../app/shared/services/theme.service';
 import { SettingsApiService } from '../infrastructure/settings-api.service';
 
 export const DEFAULT_PROFILE_PHOTO = 'assets/icons/shared/profile-admin.jpg';

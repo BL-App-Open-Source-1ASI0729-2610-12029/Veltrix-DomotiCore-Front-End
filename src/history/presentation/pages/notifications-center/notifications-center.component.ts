@@ -9,10 +9,10 @@ import {
   NotificationFeedItem,
 } from '../../../domain/model/notification-feed.entity';
 import { NotificationSeverity } from '../../../infrastructure/notification-feed-response';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
 import { HistoryNavComponent } from '../../components/history-nav/history-nav.component';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 type FeedSectionKey = keyof GroupedNotificationFeed;
 

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { BusinessDevicesOverviewResponse } from './business-devices-response';
 
 const MOCK_OVERVIEW: BusinessDevicesOverviewResponse = {

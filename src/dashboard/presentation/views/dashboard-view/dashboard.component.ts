@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DashboardStore, EnergyDataPoint } from '../../../application/dashboard.store';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
 import { DeviceEntity } from '../../../domain/model/device.entity';
 import { AlertEntity } from '../../../domain/model/alert.entity';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-dashboard',

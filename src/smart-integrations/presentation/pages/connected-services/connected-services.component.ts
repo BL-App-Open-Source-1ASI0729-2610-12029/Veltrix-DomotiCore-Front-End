@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-connected-services',

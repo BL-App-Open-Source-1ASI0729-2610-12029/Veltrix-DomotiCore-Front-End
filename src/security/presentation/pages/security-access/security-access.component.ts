@@ -9,9 +9,9 @@ import { SecurityCamera } from '../../../domain/model/security-camera.entity';
 import { SecurityLogEntry } from '../../../domain/model/security-log.entity';
 import { LogIconType } from '../../../infrastructure/security-response';
 import { AccessLevel } from '../../../infrastructure/security-response';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 const ASSET_ICONS = 'assets/icons/smart-home';
 

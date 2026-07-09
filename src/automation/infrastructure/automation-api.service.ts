@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { AutomationAssembler } from './automation-assembler';
 import { AutomationRule } from '../domain/model/automation-rule.entity';
 import { ShutdownProtocol } from '../domain/model/shutdown-protocol.entity';

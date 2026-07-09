@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { AlertLogEntryResponse, AlertsHistoryResponse } from './alerts-history-response';
 
 const BASE_ENTRIES: AlertLogEntryResponse[] = [

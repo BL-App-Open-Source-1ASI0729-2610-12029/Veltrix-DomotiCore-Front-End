@@ -8,17 +8,17 @@ import {
   SettingsState,
   SettingsStore,
 } from '../../application/settings.store';
-import { GOOGLE_ICONS } from '../../../shared/constants/google-icons';
-import { ThemeService } from '../../../shared/services/theme.service';
-import { UiFeedbackService } from '../../../shared/services/ui-feedback.service';
+import { GOOGLE_ICONS } from '../../../app/shared/constants/google-icons';
+import { ThemeService } from '../../../app/shared/services/theme.service';
+import { UiFeedbackService } from '../../../app/shared/services/ui-feedback.service';
 import { SecurityStore } from '../../../security/application/security.store';
 import { AuthorizedUser } from '../../../security/domain/model/authorized-user.entity';
 import { AccessLevel } from '../../../security/infrastructure/security-response';
-import { AuthService } from '../../../iam/application/auth.service';
-import { RolePermissionService } from '../../../iam/application/role-permission.service';
-import { LocalAuthRepository } from '../../../iam/infrastructure/local-auth.repository';
-import { downloadTextFile } from '../../../shared/utils/download-file.util';
-import { MATERIAL_IMPORTS } from '../../../shared/material';
+import { AuthService } from '../../../app/iam/application/auth.service';
+import { RolePermissionService } from '../../../app/iam/application/role-permission.service';
+import { LocalAuthRepository } from '../../../app/iam/infrastructure/local-auth.repository';
+import { downloadTextFile } from '../../../app/shared/utils/download-file.util';
+import { MATERIAL_IMPORTS } from '../../../app/shared/material';
 
 interface RetentionOption {
   days: number;

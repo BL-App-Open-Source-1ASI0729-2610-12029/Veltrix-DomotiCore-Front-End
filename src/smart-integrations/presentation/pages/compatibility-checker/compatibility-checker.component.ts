@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 const COMPATIBLE_DEVICES = [
   'philips hue',

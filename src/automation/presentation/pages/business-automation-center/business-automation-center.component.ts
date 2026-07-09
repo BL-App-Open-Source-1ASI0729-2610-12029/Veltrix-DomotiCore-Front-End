@@ -37,11 +37,11 @@ import {
 } from '../../../application/timeline-layout.util';
 
 import { BusinessAutomationNavComponent } from '../../components/business-automation-nav/business-automation-nav.component';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
 
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
 
 
 

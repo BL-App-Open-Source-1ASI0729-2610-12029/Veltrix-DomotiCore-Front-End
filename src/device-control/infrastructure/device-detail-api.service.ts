@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { DeviceDetail } from '../domain/model/device-detail.entity';
 import { DeviceDetailAssembler } from './device-detail-assembler';
 import { DeviceDetailResponse } from './device-detail-response';

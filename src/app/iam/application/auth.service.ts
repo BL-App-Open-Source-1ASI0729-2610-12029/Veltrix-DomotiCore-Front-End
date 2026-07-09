@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthFailureReason, AuthLoginResult, AuthRegisterResult } from './auth-result';
-import { SettingsStore } from '../../settings/application/settings.store';
+import { SettingsStore } from '../../../settings/application/settings.store';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { AccountType, getAccountTypeRoute, isOnboardingComplete } from '../domain/model/account-type.entity';
 import { AuthUser, createLocalUser, stripPassword } from '../domain/model/auth-user.entity';

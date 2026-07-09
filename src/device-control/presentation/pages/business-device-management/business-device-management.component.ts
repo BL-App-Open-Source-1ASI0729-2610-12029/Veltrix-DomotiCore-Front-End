@@ -8,10 +8,10 @@ import {
   BusinessZoneResponse,
 } from '../../../infrastructure/business-devices-response';
 import { BusinessDevicesNavComponent } from '../../components/business-devices-nav/business-devices-nav.component';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { matchesSearchQuery } from '../../../../shared/utils/text-search.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { matchesSearchQuery } from '../../../../app/shared/utils/text-search.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-business-device-management',

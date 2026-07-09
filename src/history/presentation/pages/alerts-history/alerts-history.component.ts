@@ -10,10 +10,10 @@ import {
   AlertPriority,
 } from '../../../infrastructure/alerts-history-response';
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile } from '../../../../shared/utils/download-file.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { downloadCsvFile } from '../../../../app/shared/utils/download-file.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-alerts-history',

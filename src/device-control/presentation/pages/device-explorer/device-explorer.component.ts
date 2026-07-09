@@ -19,10 +19,10 @@ import {
   ExplorerDeviceStatus,
 } from '../../../infrastructure/device-explorer-response';
 import { BusinessDevicesNavComponent } from '../../components/business-devices-nav/business-devices-nav.component';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadJsonFile } from '../../../../shared/utils/download-file.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { downloadJsonFile } from '../../../../app/shared/utils/download-file.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 type MapLayer = 'floor' | 'zones';
 

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { DevicesOverview } from '../domain/model/devices-overview.entity';
 import { DevicesOverviewAssembler } from './devices-overview-assembler';
 import { DevicesOverviewResponse } from './devices-overview-response';

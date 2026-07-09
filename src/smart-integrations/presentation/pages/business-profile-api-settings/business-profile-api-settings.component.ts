@@ -1,12 +1,12 @@
-﻿import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BusinessUsersNavComponent } from '../../../../team-management/presentation/components/business-users-nav/business-users-nav.component';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadTextFile } from '../../../../shared/utils/download-file.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { downloadTextFile } from '../../../../app/shared/utils/download-file.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 import { BusinessProfileStore } from '../../../application/business-profile.store';
 import {
   BusinessProfile,
@@ -135,7 +135,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                 <div class="doc-info">
                   <span class="doc-name">{{ documentDisplayName(document) }}</span>
                   <span class="doc-subtitle">
-                    {{ documentStatusKey(document.status) | translate }} · {{ formatUploadedLabel(document) }}
+                    {{ documentStatusKey(document.status) | translate }} � {{ formatUploadedLabel(document) }}
                   </span>
                 </div>
                 <button type="button" mat-icon-button class="download-btn" (click)="downloadDocument(document)" [attr.aria-label]="'businessProfile.downloadDocument' | translate">

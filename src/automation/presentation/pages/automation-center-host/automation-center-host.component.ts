@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from '../../../../iam/application/auth.service';
+import { AuthService } from '../../../../app/iam/application/auth.service';
 import { AutomationCenterComponent } from '../automation-center/automation-center.component';
 import { BusinessAutomationCenterComponent } from '../business-automation-center/business-automation-center.component';
 

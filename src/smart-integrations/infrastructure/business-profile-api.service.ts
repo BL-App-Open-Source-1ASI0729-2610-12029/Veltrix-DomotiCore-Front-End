@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { ApiClientService } from '../../shared/services/api-client.service';
+import { ApiClientService } from '../../app/shared/services/api-client.service';
 import { BusinessProfile, DEFAULT_BUSINESS_PROFILE } from '../domain/model/business-profile.entity';
 
 const PROFILE_PATH = 'business-profile';

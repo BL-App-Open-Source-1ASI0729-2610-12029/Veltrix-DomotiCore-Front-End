@@ -6,10 +6,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AutomationBuilderStore } from '../../../application/automation-builder.store';
 import { AutomationStore } from '../../../application/automation.store';
 import { BuilderCondition, SuggestedTemplate } from '../../../domain/model/automation-builder.entity';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
 import { AutomationNavComponent } from '../../components/automation-nav/automation-nav.component';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-automation-builder',

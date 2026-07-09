@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../../iam/application/auth.service';
+import { AuthService } from '../../../../app/iam/application/auth.service';
 import { ZoneConfigurationComponent } from '../zone-configuration/zone-configuration.component';
 
 @Component({

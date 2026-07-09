@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AutomationStore } from '../../../application/automation.store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { PageToolbarActionsComponent } from '../../../../shared/components/page-toolbar-actions/page-toolbar-actions.component';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { GOOGLE_ICONS } from '../../../../app/shared/constants/google-icons';
+import { PageToolbarActionsComponent } from '../../../../app/shared/components/page-toolbar-actions/page-toolbar-actions.component';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
 import { AutomationNavComponent } from '../../components/automation-nav/automation-nav.component';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-automation-center',

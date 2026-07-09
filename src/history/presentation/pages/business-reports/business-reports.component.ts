@@ -12,12 +12,12 @@ import {
   ReportsPeriod,
 } from '../../../infrastructure/business-reports-response';
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
-import { RolePermissionService } from '../../../../iam/application/role-permission.service';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { APP_CURRENT_YEAR } from '../../../../app/shared/constants/app.constants';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../app/shared/utils/download-file.util';
+import { RolePermissionService } from '../../../../app/iam/application/role-permission.service';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 interface ChartCoordinate {
   x: number;

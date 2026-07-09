@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { GOOGLE_ICONS } from '../../shared/constants/google-icons';
+import { GOOGLE_ICONS } from '../../app/shared/constants/google-icons';
 import { SmeOperationsHubApiService, OperationsHubSnapshotResponse } from '../infrastructure/sme-operations-hub-api.service';
 
 export type SmeDateRange = 'thisMonth' | 'lastMonth' | 'thisQuarter';

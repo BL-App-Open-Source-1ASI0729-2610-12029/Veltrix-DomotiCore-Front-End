@@ -5,9 +5,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ActivityStreamStore } from '../../../application/activity-stream.store';
 import { DateRangeFilter } from '../../../domain/model/activity-stream.entity';
 import { ActivityAction, ActivityDeviceType, ActivityStatus } from '../../../infrastructure/activity-stream-response';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
 import { HistoryNavComponent } from '../../components/history-nav/history-nav.component';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   standalone: true,

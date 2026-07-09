@@ -6,10 +6,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DevicesOverviewStore, NewDeviceType } from '../../../application/devices-overview.store';
 import { Room } from '../../../domain/model/room.entity';
 import { SmartDevice } from '../../../domain/model/smart-device.entity';
-import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
-import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { matchesSearchQuery } from '../../../../shared/utils/text-search.util';
-import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../../../app/shared/constants/google-icons';
+import { UiFeedbackService } from '../../../../app/shared/services/ui-feedback.service';
+import { matchesSearchQuery } from '../../../../app/shared/utils/text-search.util';
+import { MATERIAL_IMPORTS } from '../../../../app/shared/material';
 
 @Component({
   selector: 'app-device-dashboard',
