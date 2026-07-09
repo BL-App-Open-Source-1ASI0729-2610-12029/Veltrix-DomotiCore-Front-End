@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrls: ['./styles.css'],
+  styleUrls: ['../styles.css'],
 })
 export class App {
   protected readonly title = signal('domoticore');
