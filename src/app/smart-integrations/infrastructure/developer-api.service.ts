@@ -51,16 +51,6 @@ export class DeveloperApiService {
       .pipe(catchError(() => of([])));
   }
 
-  getDevice(id: string): Observable<DeveloperDeviceStatus | null> {
-    if (!this.hasApi()) {
-      return of(null);
-    }
-
-    return this.http
-      .get<DeveloperDeviceStatus>(`${this.baseUrl()}/developer/devices/${id}`)
-      .pipe(catchError(() => of(null)));
-  }
-
   private baseUrl(): string {
     return environment.apiUrl.replace(/\/$/, '');
   }

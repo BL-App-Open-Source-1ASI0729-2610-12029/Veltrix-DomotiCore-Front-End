@@ -292,28 +292,6 @@ export class TeamInvitationApiService {
 
 
 
-  listSent(): Observable<TeamInvitationRecord[]> {
-
-    if (!this.api.hasApi()) {
-
-      return of(this.readLocal());
-
-    }
-
-
-
-    return this.http.get<TeamInvitationApiResponse[]>(this.apiUrl('team-invitations/sent')).pipe(
-
-      map(responses => responses.map(response => this.mapResponse(response))),
-
-      catchError(() => of([])),
-
-    );
-
-  }
-
-
-
   resend(invitationId: string): Observable<TeamInvitationRecord> {
 
     if (!this.api.hasApi()) {
