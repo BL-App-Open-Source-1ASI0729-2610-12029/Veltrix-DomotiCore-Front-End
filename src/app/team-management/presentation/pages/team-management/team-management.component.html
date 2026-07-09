@@ -545,6 +545,16 @@
     <form class="team-modal__form" (ngSubmit)="onSubmitAddMember()">
 
       <mat-form-field appearance="outline" class="team-modal__field full-width">
+        <mat-label>{{ 'teamManagement.modals.fields.registeredUser' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedRegisteredUserId" name="selectedRegisteredUserId" (selectionChange)="onSelectRegisteredUser()">
+          <mat-option [value]="null">{{ 'teamManagement.modals.fields.manualEntry' | translate }}</mat-option>
+          <mat-option *ngFor="let user of registeredUsers()" [value]="user.id">
+            {{ user.name }} ({{ user.email }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="team-modal__field full-width">
         <mat-label>{{ 'teamManagement.modals.fields.name' | translate }}</mat-label>
         <input matInput type="text" [(ngModel)]="addMemberName" name="addMemberName" required />
       </mat-form-field>

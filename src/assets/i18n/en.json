@@ -435,6 +435,9 @@
     "applyFilters": "Apply Filters",
     "exportCsv": "Export CSV",
     "colTime": "TIME & DATE",
+    "colUser": "USER",
+    "adminScopeHint": "Global view: you are seeing activity from all users.",
+    "userScopeHint": "You only see your own activity. Administrators can view the global log.",
     "colDevice": "DEVICE",
     "colAction": "ACTION",
     "colLocation": "LOCATION",
@@ -663,7 +666,9 @@
         "name": "Full Name",
         "email": "Email Address",
         "role": "Role",
-        "zones": "Zone Access"
+        "zones": "Zone Access",
+        "registeredUser": "Registered user",
+        "manualEntry": "Enter manually"
       },
       "addMember": {
         "title": "Invite Team Member",
@@ -720,6 +725,14 @@
       "terms": "Terms of Service",
       "privacy": "Privacy Policy",
       "status": "System Status"
+    },
+    "notifications": {
+      "invite": {
+        "title": "Team invitation",
+        "message": "{{inviter}} invited you to the team as {{role}}. Zones: {{zones}}.",
+        "resent": "{{inviter}} resent your invitation as {{role}}. Zones: {{zones}}.",
+        "time": "Just now"
+      }
     },
     "toast": {
       "memberInvited": "Invitation sent to {{name}}.",
@@ -1208,6 +1221,11 @@
     "editShutdownProtocol": "Edit Shutdown Protocol",
     "postponeShutdown": "Postpone 15 min",
     "shutdownModalHint": "Enable or disable steps in the closing protocol.",
+    "shutdownSteps": {
+      "lockAccess": "Lock all external access points",
+      "hvacEco": "Set HVAC to 18°C (Eco-Mode)",
+      "shutdownRacks": "Shut down server racks"
+    },
     "timeline": {
       "operationalRules": "Operational rules",
       "securityProtocols": "Security protocols",
@@ -1248,6 +1266,8 @@
       "action": "Action",
       "create": "Create",
       "saveLogic": "Save Logic",
+      "startHour": "Start hour",
+      "endHour": "End hour",
       "triggerOptions": {
         "scheduledTime": "Scheduled time",
         "motion": "Motion detected",
@@ -1265,6 +1285,7 @@
       "ruleEnabled": "{{name}} enabled.",
       "ruleDisabled": "{{name}} disabled.",
       "ruleNameRequired": "Enter a name for the rule.",
+      "invalidSchedule": "End hour must be later than start hour.",
       "shutdownPostponed": "Shutdown postponed by 15 minutes.",
       "shutdownSaved": "Shutdown protocol saved.",
       "openingBuilder": "Opening automation builder...",

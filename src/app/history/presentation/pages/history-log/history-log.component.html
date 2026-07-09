@@ -45,11 +45,15 @@
 
     <mat-card-content>
 
+    <p class="scope-hint" *ngIf="store.isAdminView()">{{ 'historyLog.adminScopeHint' | translate }}</p>
+    <p class="scope-hint" *ngIf="!store.isAdminView()">{{ 'historyLog.userScopeHint' | translate }}</p>
+
     <div class="table-wrap">
       <table class="activity-table">
         <thead>
           <tr>
             <th>{{ 'historyLog.colTime' | translate }}</th>
+            <th *ngIf="store.isAdminView()">{{ 'historyLog.colUser' | translate }}</th>
             <th>{{ 'historyLog.colDevice' | translate }}</th>
             <th>{{ 'historyLog.colAction' | translate }}</th>
             <th>{{ 'historyLog.colLocation' | translate }}</th>
@@ -59,7 +63,7 @@
         </thead>
         <tbody>
           <tr *ngIf="store.paginatedEntries().length === 0">
-            <td colspan="6" class="empty-row">
+            <td [attr.colspan]="store.isAdminView() ? 7 : 6" class="empty-row">
               <div class="empty-feed">
                 <img [src]="icons.history" alt="" class="ui-icon ui-icon--md" />
                 <p>{{ 'historyLog.emptyFeed' | translate }}</p>
@@ -69,6 +73,10 @@
           </tr>
           <tr *ngFor="let entry of store.paginatedEntries()">
             <td class="col-time">{{ store.formatDateTime(entry.occurredAt) }}</td>
+            <td *ngIf="store.isAdminView()" class="col-user">
+              <strong>{{ entry.userName || '—' }}</strong>
+              <small *ngIf="entry.userEmail">{{ entry.userEmail }}</small>
+            </td>
             <td class="col-device">
               <span class="device-cell">
                 <span class="device-icon">
@@ -99,9 +107,9 @@
               <div class="menu-wrap">
                 <button type="button" mat-icon-button class="menu-btn" (click)="toggleMenu(entry.id)">⋯</button>
                 <div class="menu-dropdown" *ngIf="openMenuId === entry.id">
-                  <button type="button" mat-button (click)="markSuccess(entry.id)">{{ 'historyLog.markSuccess' | translate }}</button>
-                  <button type="button" mat-button (click)="markCritical(entry.id)">{{ 'historyLog.markCritical' | translate }}</button>
-                  <button type="button" mat-button color="warn" class="menu-delete" (click)="requestDeleteEntry(entry.id)">{{ 'historyLog.delete' | translate }}</button>
+                  <button type="button" mat-button (click)="markSuccess(entry.id)" [disabled]="!store.canManageEntry(entry)">{{ 'historyLog.markSuccess' | translate }}</button>
+                  <button type="button" mat-button (click)="markCritical(entry.id)" [disabled]="!store.canManageEntry(entry)">{{ 'historyLog.markCritical' | translate }}</button>
+                  <button type="button" mat-button color="warn" class="menu-delete" (click)="requestDeleteEntry(entry.id)" [disabled]="!store.canManageEntry(entry)">{{ 'historyLog.delete' | translate }}</button>
                 </div>
               </div>
             </td>

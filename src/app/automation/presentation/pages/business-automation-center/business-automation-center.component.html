@@ -241,7 +241,7 @@
       <ul class="shutdown-steps">
         <li *ngFor="let step of protocol.steps" [class.shutdown-steps__item--disabled]="step.disabled">
           <img [src]="getStepIcon(step.icon)" alt="" class="ui-icon ui-icon--sm" />
-          <span>{{ step.label }}</span>
+          <span>{{ shutdownStepLabel(step) }}</span>
         </li>
       </ul>
 
@@ -396,6 +396,20 @@
         <input matInput type="text" [(ngModel)]="newRuleGroup" />
       </mat-form-field>
     </label>
+    <div class="biz-modal__schedule-row">
+      <label class="biz-modal__field">
+        <span>{{ 'automation.modal.startHour' | translate }}</span>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="number" min="0" max="23" [(ngModel)]="newRuleStartHour" />
+        </mat-form-field>
+      </label>
+      <label class="biz-modal__field">
+        <span>{{ 'automation.modal.endHour' | translate }}</span>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="number" min="1" max="24" [(ngModel)]="newRuleEndHour" />
+        </mat-form-field>
+      </label>
+    </div>
     <div class="biz-modal__actions">
       <button type="button" mat-stroked-button class="btn-outline" (click)="closeNewRuleModal()">{{ 'buttons.cancel' | translate }}</button>
       <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="onConfirmCreateBusinessRule()">
@@ -413,7 +427,7 @@
       <li *ngFor="let step of protocol.steps">
         <label>
           <input type="checkbox" [checked]="!step.disabled" (change)="onToggleShutdownStep(step.id)" />
-          <span [class.shutdown-edit-list__disabled]="step.disabled">{{ step.label }}</span>
+          <span [class.shutdown-edit-list__disabled]="step.disabled">{{ shutdownStepLabel(step) }}</span>
         </label>
       </li>
     </ul>

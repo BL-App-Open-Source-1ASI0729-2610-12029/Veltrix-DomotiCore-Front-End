@@ -101,7 +101,13 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
   newRuleGroup = 'Whole Building';
 
+  newRuleStartHour = 8;
 
+  newRuleEndHour = 18;
+
+
+
+  readonly allTimelineSlots = computed(() => this.store.activeTimeline()?.slots ?? []);
 
   readonly timelineRange = computed<TimelineRange>(() => {
 
@@ -134,13 +140,13 @@ export class BusinessAutomationCenterComponent implements OnInit {
   });
 
   readonly operationalZoneBottom = computed(() => {
-    const slots = this.visibleTimelineSlots().filter(slot => slot.category === 'operational');
+    const slots = this.allTimelineSlots().filter(slot => slot.category === 'operational');
     const stacks = getMaxStackIndex(slots, 'operational');
     return OPERATIONAL_TOP + (stacks + 1) * (SLOT_HEIGHT + SLOT_GAP);
   });
 
   readonly timelineTrackHeight = computed(() => {
-    const slots = this.visibleTimelineSlots();
+    const slots = this.allTimelineSlots();
     const securityStacks = getMaxStackIndex(
       slots.filter(slot => slot.category === 'security'),
       'security',
@@ -266,7 +272,7 @@ export class BusinessAutomationCenterComponent implements OnInit {
   }
 
   hasSecuritySlots(): boolean {
-    return this.visibleTimelineSlots().some(slot => slot.category === 'security');
+    return this.allTimelineSlots().some(slot => slot.category === 'security');
   }
 
 
@@ -509,6 +515,10 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
     this.newRuleGroup = 'Whole Building';
 
+    this.newRuleStartHour = 8;
+
+    this.newRuleEndHour = 18;
+
     this.showNewRuleModal.set(true);
 
   }
@@ -540,11 +550,9 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   onSaveShutdownProtocol(): void {
-
+    this.store.saveShutdownProtocol();
     this.closeShutdownModal();
-
     this.feedback.showToast(this.translate.instant('automation.toast.shutdownSaved'), 'success');
-
   }
 
 
@@ -597,9 +605,20 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
     }
 
+    if (this.newRuleEndHour <= this.newRuleStartHour) {
+      this.feedback.showToast(this.translate.instant('automation.toast.invalidSchedule'), 'warning');
+      return;
+    }
 
 
-    const rule = this.store.addBusinessRule(name, this.newRuleDescription, this.newRuleGroup);
+
+    const rule = this.store.addBusinessRule(
+      name,
+      this.newRuleDescription,
+      this.newRuleGroup,
+      this.newRuleStartHour,
+      this.newRuleEndHour,
+    );
 
     this.closeNewRuleModal();
 
@@ -645,6 +664,10 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
   overtimeLabelKey(type: string): string {
     return `automation.overtimeTypes.${type}`;
+  }
+
+  shutdownStepLabel(step: { label: string; labelKey?: string }): string {
+    return step.labelKey ? this.translate.instant(step.labelKey) : step.label;
   }
 }
 

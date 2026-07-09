@@ -435,6 +435,9 @@
     "applyFilters": "Aplicar Filtros",
     "exportCsv": "Exportar CSV",
     "colTime": "HORA Y FECHA",
+    "colUser": "USUARIO",
+    "adminScopeHint": "Vista global: estás viendo la actividad de todos los usuarios.",
+    "userScopeHint": "Solo ves tu propia actividad. Los administradores pueden ver el registro global.",
     "colDevice": "DISPOSITIVO",
     "colAction": "ACCIÓN",
     "colLocation": "UBICACIÓN",
@@ -663,7 +666,9 @@
         "name": "Nombre Completo",
         "email": "Correo Electrónico",
         "role": "Rol",
-        "zones": "Acceso por Zona"
+        "zones": "Acceso por Zona",
+        "registeredUser": "Usuario registrado",
+        "manualEntry": "Ingresar manualmente"
       },
       "addMember": {
         "title": "Invitar Miembro del Equipo",
@@ -720,6 +725,14 @@
       "terms": "Términos de Servicio",
       "privacy": "Política de Privacidad",
       "status": "Estado del Sistema"
+    },
+    "notifications": {
+      "invite": {
+        "title": "Invitación al equipo",
+        "message": "{{inviter}} te invitó al equipo como {{role}}. Zonas: {{zones}}.",
+        "resent": "{{inviter}} reenvió tu invitación como {{role}}. Zonas: {{zones}}.",
+        "time": "Recién llegada"
+      }
     },
     "toast": {
       "memberInvited": "Invitación enviada a {{name}}.",
@@ -1208,6 +1221,11 @@
     "editShutdownProtocol": "Editar Protocolo de Cierre",
     "postponeShutdown": "Posponer 15 min",
     "shutdownModalHint": "Activa o desactiva pasos del protocolo de cierre.",
+    "shutdownSteps": {
+      "lockAccess": "Bloquear todos los puntos de acceso externos",
+      "hvacEco": "Configurar HVAC a 18°C (Modo Eco)",
+      "shutdownRacks": "Apagar racks de servidores"
+    },
     "timeline": {
       "operationalRules": "Reglas operativas",
       "securityProtocols": "Protocolos de seguridad",
@@ -1248,6 +1266,8 @@
       "action": "Acción",
       "create": "Crear",
       "saveLogic": "Guardar Lógica",
+      "startHour": "Hora de inicio",
+      "endHour": "Hora de fin",
       "triggerOptions": {
         "scheduledTime": "Hora programada",
         "motion": "Movimiento detectado",
@@ -1265,6 +1285,7 @@
       "ruleEnabled": "{{name}} activada.",
       "ruleDisabled": "{{name}} desactivada.",
       "ruleNameRequired": "Ingresa un nombre para la regla.",
+      "invalidSchedule": "La hora de fin debe ser posterior a la hora de inicio.",
       "shutdownPostponed": "Cierre pospuesto 15 minutos.",
       "shutdownSaved": "Protocolo de cierre guardado.",
       "openingBuilder": "Abriendo constructor de automatización...",

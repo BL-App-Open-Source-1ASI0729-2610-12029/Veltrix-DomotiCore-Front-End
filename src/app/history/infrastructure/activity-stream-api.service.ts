@@ -1,7 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { ApiClientService } from '../../shared/services/api-client.service';
+import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import {
   ActivityStreamEntryResponse,
   HistorySummaryResponse,
@@ -15,27 +18,64 @@ const SUMMARY_ID = 1;
 @Injectable({ providedIn: 'root' })
 export class ActivityStreamApiService {
   private readonly api = inject(ApiClientService);
+  private readonly http = inject(HttpClient);
+  private readonly cache = inject(LocalDataCacheService);
 
   getEntries(): Observable<ActivityStreamEntry[]> {
-    return this.api
-      .getCollection<ActivityStreamEntryResponse>(STREAMS_FILE, STREAMS_FILE)
-      .pipe(map(entries => entries.map(mapActivityEntry)));
+    if (this.api.hasApi()) {
+      return this.http
+        .get<ActivityStreamEntryResponse[]>(this.apiUrl(STREAMS_FILE))
+        .pipe(
+          map(remote => this.mergeEntries(remote)),
+          catchError(() => this.loadSeedEntries()),
+        );
+    }
+
+    return this.loadSeedEntries();
   }
 
   createEntry(entry: ActivityStreamEntry): Observable<ActivityStreamEntry> {
-    return this.api
-      .postToCollection(STREAMS_FILE, entry, STREAMS_FILE)
-      .pipe(map(mapActivityEntry));
+    this.upsertSharedEntry(entry);
+
+    if (this.api.hasApi()) {
+      return this.http
+        .post<ActivityStreamEntryResponse>(this.apiUrl(STREAMS_FILE), entry)
+        .pipe(
+          map(mapActivityEntry),
+          tap(saved => this.upsertSharedEntry(saved)),
+          catchError(() => of(entry)),
+        );
+    }
+
+    return of(entry);
   }
 
   updateEntry(entry: ActivityStreamEntry): Observable<ActivityStreamEntry> {
-    return this.api
-      .patchInCollection(STREAMS_FILE, entry.id, entry, STREAMS_FILE)
-      .pipe(map(mapActivityEntry));
+    this.upsertSharedEntry(entry);
+
+    if (this.api.hasApi()) {
+      return this.http
+        .patch<ActivityStreamEntryResponse>(`${this.apiUrl(STREAMS_FILE)}/${entry.id}`, entry)
+        .pipe(
+          map(mapActivityEntry),
+          tap(saved => this.upsertSharedEntry(saved)),
+          catchError(() => of(entry)),
+        );
+    }
+
+    return of(entry);
   }
 
   deleteEntry(id: string): Observable<void> {
-    return this.api.deleteFromCollection(STREAMS_FILE, id, STREAMS_FILE);
+    this.removeSharedEntry(id);
+
+    if (this.api.hasApi()) {
+      return this.http.delete<void>(`${this.apiUrl(STREAMS_FILE)}/${id}`).pipe(
+        catchError(() => of(void 0)),
+      );
+    }
+
+    return of(void 0);
   }
 
   getSummary(): Observable<HistorySummary> {
@@ -48,5 +88,53 @@ export class ActivityStreamApiService {
     return this.api
       .patchSingleton(SUMMARY_FILE, SUMMARY_ID, summary, SUMMARY_FILE)
       .pipe(map(mapHistorySummary));
+  }
+
+  private loadSeedEntries(): Observable<ActivityStreamEntry[]> {
+    const shared = this.getSharedEntries();
+    if (shared.length) {
+      return of(shared);
+    }
+
+    return this.http.get<ActivityStreamEntryResponse[]>(`/mock-data/${STREAMS_FILE}.json`).pipe(
+      map(remote => this.mergeEntries(remote)),
+      tap(entries => this.cache.setSharedCollection(STREAMS_FILE, entries)),
+    );
+  }
+
+  private mergeEntries(remote: ActivityStreamEntryResponse[]): ActivityStreamEntry[] {
+    const byId = new Map<string, ActivityStreamEntry>();
+
+    remote.map(mapActivityEntry).forEach(entry => byId.set(entry.id, entry));
+    this.getSharedEntries().forEach(entry => byId.set(entry.id, entry));
+
+    return Array.from(byId.values()).sort(
+      (left, right) => new Date(right.occurredAt).getTime() - new Date(left.occurredAt).getTime(),
+    );
+  }
+
+  private getSharedEntries(): ActivityStreamEntry[] {
+    return (this.cache.getSharedCollection<ActivityStreamEntry>(STREAMS_FILE) ?? []).map(entry => ({ ...entry }));
+  }
+
+  private upsertSharedEntry(entry: ActivityStreamEntry): void {
+    const next = [
+      ...this.getSharedEntries().filter(item => item.id !== entry.id),
+      { ...entry },
+    ].sort(
+      (left, right) => new Date(right.occurredAt).getTime() - new Date(left.occurredAt).getTime(),
+    );
+    this.cache.setSharedCollection(STREAMS_FILE, next);
+  }
+
+  private removeSharedEntry(id: string): void {
+    const next = this.getSharedEntries().filter(item => item.id !== id);
+    this.cache.setSharedCollection(STREAMS_FILE, next);
+  }
+
+  private apiUrl(path: string): string {
+    const base = environment.apiUrl.replace(/\/$/, '');
+    const clean = path.replace(/^\//, '');
+    return `${base}/${clean}`;
   }
 }

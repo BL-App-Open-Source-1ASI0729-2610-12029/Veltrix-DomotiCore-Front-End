@@ -10,7 +10,10 @@
     "actionLabel": "Turned ON",
     "location": "Ground Floor",
     "status": "success",
-    "consumptionKwh": 0.045
+    "consumptionKwh": 0.045,
+    "userId": 2,
+    "userEmail": "home@domoticore.local",
+    "userName": "Home Demo"
   },
   {
     "id": "as-2",
@@ -22,7 +25,10 @@
     "action": "triggered_alert",
     "actionLabel": "Triggered Alert",
     "location": "Entrance",
-    "status": "success"
+    "status": "success",
+    "userId": 1,
+    "userEmail": "admin@domoticore.local",
+    "userName": "Admin DomotiCore"
   },
   {
     "id": "as-3",
@@ -35,7 +41,10 @@
     "actionLabel": "Scheduled",
     "location": "Upper Floor",
     "status": "success",
-    "consumptionKwh": 1.4
+    "consumptionKwh": 1.4,
+    "userId": 2,
+    "userEmail": "home@domoticore.local",
+    "userName": "Home Demo"
   },
   {
     "id": "as-4",
@@ -47,7 +56,10 @@
     "action": "connection_lost",
     "actionLabel": "Connection Lost",
     "location": "Exterior",
-    "status": "critical"
+    "status": "critical",
+    "userId": 1,
+    "userEmail": "admin@domoticore.local",
+    "userName": "Admin DomotiCore"
   },
   {
     "id": "as-5",
@@ -60,7 +72,10 @@
     "actionLabel": "Consumption Updated",
     "location": "Ground Floor",
     "status": "success",
-    "consumptionKwh": 18.4
+    "consumptionKwh": 18.4,
+    "userId": 2,
+    "userEmail": "home@domoticore.local",
+    "userName": "Home Demo"
   },
   {
     "id": "as-6",
@@ -73,6 +88,9 @@
     "actionLabel": "Consumption Updated",
     "location": "Kitchen",
     "status": "success",
-    "consumptionKwh": 9.2
+    "consumptionKwh": 9.2,
+    "userId": 2,
+    "userEmail": "home@domoticore.local",
+    "userName": "Home Demo"
   }
 ]

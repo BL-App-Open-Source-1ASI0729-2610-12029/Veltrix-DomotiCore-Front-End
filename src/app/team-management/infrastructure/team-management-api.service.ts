@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay, catchError } from 'rxjs/operators';
+import { catchError, delay, tap } from 'rxjs/operators';
 import { ApiClientService } from '../../shared/services/api-client.service';
+import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { TeamManagementResponse } from './team-management-response';
 
 const MOCK_TEAM: TeamManagementResponse = {
@@ -55,16 +56,40 @@ const TEAM_FILE = 'team-management';
 @Injectable({ providedIn: 'root' })
 export class TeamManagementApiService {
   private readonly api = inject(ApiClientService);
+  private readonly cache = inject(LocalDataCacheService);
 
   getTeamManagement(): Observable<TeamManagementResponse> {
-    return this.api.getObject<TeamManagementResponse>(TEAM_FILE, TEAM_FILE).pipe(
-      catchError(() => of(structuredClone(MOCK_TEAM)).pipe(delay(250))),
-    );
+    const shared = this.cache.getSharedObject<TeamManagementResponse>(TEAM_FILE);
+    if (shared) {
+      return of(structuredClone(shared));
+    }
+
+    if (this.api.hasApi()) {
+      return this.api.getObject<TeamManagementResponse>(TEAM_FILE, TEAM_FILE).pipe(
+        tap(data => this.cache.setSharedObject(TEAM_FILE, data)),
+        catchError(() => this.seedTeam()),
+      );
+    }
+
+    return this.seedTeam();
   }
 
   updateTeamManagement(payload: TeamManagementResponse): Observable<TeamManagementResponse> {
-    return this.api.patchObject<TeamManagementResponse>(TEAM_FILE, payload, TEAM_FILE).pipe(
-      catchError(() => of(structuredClone(payload)).pipe(delay(250))),
-    );
+    this.cache.setSharedObject(TEAM_FILE, payload);
+
+    if (this.api.hasApi()) {
+      return this.api.patchObject<TeamManagementResponse>(TEAM_FILE, payload, TEAM_FILE).pipe(
+        tap(saved => this.cache.setSharedObject(TEAM_FILE, saved)),
+        catchError(() => of(structuredClone(payload)).pipe(delay(250))),
+      );
+    }
+
+    return of(structuredClone(payload)).pipe(delay(250));
+  }
+
+  private seedTeam(): Observable<TeamManagementResponse> {
+    const seeded = structuredClone(MOCK_TEAM);
+    this.cache.setSharedObject(TEAM_FILE, seeded);
+    return of(seeded).pipe(delay(250));
   }
 }

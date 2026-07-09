@@ -29,6 +29,8 @@ import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
+import { AuthService, AuthUser } from '../../../../iam/application/auth.service';
+import { LocalAuthRepository } from '../../../../iam/infrastructure/local-auth.repository';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 
@@ -57,6 +59,8 @@ export class TeamManagementComponent implements OnInit {
 
   readonly store = inject(TeamManagementStore);
   readonly permissions = inject(RolePermissionService);
+  private readonly auth = inject(AuthService);
+  private readonly localAuth = inject(LocalAuthRepository);
 
   readonly icons = GOOGLE_ICONS;
 
@@ -89,6 +93,10 @@ export class TeamManagementComponent implements OnInit {
   addMemberRole: TeamMemberRole = 'viewer';
 
   addMemberZones: string[] = ['global'];
+
+  selectedRegisteredUserId: string | number | null = null;
+
+  readonly registeredUsers = signal<AuthUser[]>([]);
 
 
 
@@ -197,7 +205,36 @@ export class TeamManagementComponent implements OnInit {
   ngOnInit(): void {
 
     this.store.load();
+    this.loadRegisteredUsers();
 
+  }
+
+  private loadRegisteredUsers(): void {
+    this.localAuth.loadUsers().subscribe(users => {
+      const currentEmail = this.auth.currentUser?.email?.toLowerCase();
+      const existingEmails = new Set(
+        (this.store.data()?.members ?? []).map(member => member.email.toLowerCase()),
+      );
+
+      this.registeredUsers.set(
+        users.filter(user => {
+          const email = user.email?.toLowerCase();
+          if (!email || email === currentEmail) return false;
+          if (existingEmails.has(email)) return false;
+          return user.accountType === 'small-business' || user.role === 'User' || user.role === 'Moderator';
+        }),
+      );
+    });
+  }
+
+  onSelectRegisteredUser(): void {
+    const user = this.registeredUsers().find(
+      candidate => String(candidate.id) === String(this.selectedRegisteredUserId),
+    );
+    if (!user) return;
+
+    this.addMemberName = user.name;
+    this.addMemberEmail = user.email;
   }
 
 
@@ -400,6 +437,8 @@ export class TeamManagementComponent implements OnInit {
 
       zones: this.addMemberZones,
 
+      linkedUserId: this.selectedRegisteredUserId ?? undefined,
+
     });
 
 
@@ -413,6 +452,7 @@ export class TeamManagementComponent implements OnInit {
     );
 
     this.resetAddForm();
+    this.loadRegisteredUsers();
 
   }
 
@@ -675,6 +715,8 @@ export class TeamManagementComponent implements OnInit {
     this.addMemberRole = 'viewer';
 
     this.addMemberZones = ['global'];
+
+    this.selectedRegisteredUserId = null;
 
   }
 

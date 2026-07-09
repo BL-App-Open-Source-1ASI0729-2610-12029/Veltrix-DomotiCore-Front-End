@@ -1,5 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { TeamManagementApiService } from '../infrastructure/team-management-api.service';
+import { TeamInvitationService } from './team-invitation.service';
+import { AuthService } from '../../iam/application/auth.service';
 import {
   TeamManagementResponse,
   TeamMemberResponse,
@@ -15,11 +17,14 @@ export interface TeamMemberFormPayload {
   email: string;
   role: TeamMemberRole;
   zones: string[];
+  linkedUserId?: string | number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class TeamManagementStore {
   private readonly api = inject(TeamManagementApiService);
+  private readonly invitations = inject(TeamInvitationService);
+  private readonly auth = inject(AuthService);
 
   readonly data = signal<TeamManagementResponse | null>(null);
   readonly loading = signal(false);
@@ -205,6 +210,7 @@ export class TeamManagementStore {
       zones: payload.zones.length ? payload.zones : ['global'],
       status: 'offline',
       tab: 'pending',
+      linkedUserId: payload.linkedUserId,
     };
 
     this.data.update(current => {
@@ -219,6 +225,7 @@ export class TeamManagementStore {
     this.currentPage.set(1);
     this.closeAddMemberModal();
     this.persistSnapshot();
+    this.sendInvitation(member, 'team_invite');
   }
 
   updateMember(memberId: string, payload: TeamMemberFormPayload): void {
@@ -283,6 +290,7 @@ export class TeamManagementStore {
     });
     this.closeMemberMenu();
     this.persistSnapshot();
+    this.sendInvitation(member, 'team_invite_resent');
     return member;
   }
 
@@ -320,6 +328,22 @@ export class TeamManagementStore {
 
     this.api.updateTeamManagement(payload).subscribe({
       next: saved => this.data.set(saved),
+    });
+  }
+
+  private sendInvitation(member: TeamMemberResponse, type: 'team_invite' | 'team_invite_resent'): void {
+    const inviter = this.auth.currentUser;
+    if (!inviter) return;
+
+    this.invitations.sendInvitation({
+      recipientUserId: member.linkedUserId,
+      recipientEmail: member.email,
+      memberName: member.name,
+      role: member.role,
+      zones: member.zones,
+      inviterName: inviter.name,
+      inviterEmail: inviter.email,
+      type,
     });
   }
 

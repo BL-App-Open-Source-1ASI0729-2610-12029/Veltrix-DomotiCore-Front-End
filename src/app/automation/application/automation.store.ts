@@ -149,14 +149,6 @@ export class AutomationStore {
 
     this.api.getSmartSuggestion().subscribe(suggestion => this.smartSuggestion.set(suggestion));
 
-    this.api.getActiveRuleTimeline().subscribe(timeline => {
-      if (timeline?.slots?.length) {
-        this.activeTimeline.set(timeline);
-      } else {
-        this.rebuildTimeline();
-      }
-    });
-
     this.api.getHomePreferences().subscribe(prefs => {
       this.inactivityAutoOffEnabled.set(prefs.inactivityAutoOffEnabled);
       this.inactivityMinutes.set(prefs.inactivityMinutes);
@@ -255,41 +247,30 @@ export class AutomationStore {
 
 
 
-  addBusinessRule(name: string, description: string, group: string): AutomationRule {
+  addBusinessRule(
+    name: string,
+    description: string,
+    group: string,
+    startHour = 8,
+    endHour = 18,
+  ): AutomationRule {
+    const trimmedName = name.trim();
+    const safeStart = Math.min(23, Math.max(0, startHour));
+    const safeEnd = Math.min(24, Math.max(safeStart + 1, endHour));
 
     const payload = {
-      name: name.trim(),
+      name: trimmedName,
       description: description.trim() || 'Custom facility automation scenario.',
       group: group.trim() || 'Custom Group',
       icon: 'auto_awesome',
       active: true,
       status: 'ACTIVE' as const,
-      timeline: { startHour: 8, endHour: 18, label: name.trim(), color: '#4263eb' },
+      timeline: { startHour: safeStart, endHour: safeEnd, label: trimmedName, color: '#4263eb' },
     };
 
-    this.api.createRule(payload).subscribe(dto => {
-      const rule = new AutomationRule(
-        dto.id,
-        dto.name,
-        dto.description,
-        dto.icon,
-        dto.active,
-        dto.group,
-        dto.status,
-        {
-          startHour: dto.timeline.startHour,
-          endHour: dto.timeline.endHour,
-          label: dto.timeline.label,
-          color: dto.timeline.color,
-        },
-      );
-      this.businessRules.update(rules => [...rules, rule]);
-      this.rebuildTimeline();
-      this.selectedTimelineSlotId.set(rule.id);
-    });
-
-    return new AutomationRule(
-      `rule-pending`,
+    const tempId = `rule-${Date.now()}`;
+    const optimisticRule = new AutomationRule(
+      tempId,
       payload.name,
       payload.description,
       payload.icon,
@@ -297,13 +278,25 @@ export class AutomationStore {
       payload.group,
       'ACTIVE',
       {
-        startHour: 8,
-        endHour: 18,
-        label: payload.name,
+        startHour: safeStart,
+        endHour: safeEnd,
+        label: trimmedName,
         color: '#4263eb',
       },
     );
 
+    this.businessRules.update(rules => [...rules, optimisticRule]);
+    this.rebuildTimeline();
+    this.selectedTimelineSlotId.set(tempId);
+
+    this.api.createRule(payload).subscribe(dto => {
+      const rule = AutomationAssembler.toAutomationRule(dto);
+      this.businessRules.update(rules => rules.map(existing => (existing.id === tempId ? rule : existing)));
+      this.rebuildTimeline();
+      this.selectedTimelineSlotId.set(rule.id);
+    });
+
+    return optimisticRule;
   }
 
 
@@ -336,11 +329,29 @@ export class AutomationStore {
 
     });
 
-    this.api.toggleShutdownStep(stepId).subscribe(protocol => {
-      this.shutdownProtocol.set(AutomationAssembler.toShutdownProtocol(protocol));
-      this.rebuildTimeline();
-    });
+    this.rebuildTimeline();
+    this.api.toggleShutdownStep(stepId).subscribe();
 
+  }
+
+  saveShutdownProtocol(): void {
+    const protocol = this.shutdownProtocol();
+    if (!protocol) return;
+
+    this.rebuildTimeline();
+    this.api.saveShutdownProtocol({
+      id: protocol.id,
+      name: protocol.name,
+      description: protocol.description,
+      triggersInMinutes: protocol.triggersInMinutes,
+      steps: protocol.steps.map(step => ({
+        id: step.id,
+        label: step.label,
+        icon: step.icon,
+        disabled: step.disabled,
+        labelKey: step.labelKey,
+      })),
+    }).subscribe();
   }
 
 

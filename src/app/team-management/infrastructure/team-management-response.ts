@@ -23,6 +23,7 @@ export interface TeamMemberResponse {
   extraZones?: number;
   status: TeamMemberStatus;
   tab: TeamMemberTab;
+  linkedUserId?: string | number;
 }
 
 export interface ZonePermissionResponse {

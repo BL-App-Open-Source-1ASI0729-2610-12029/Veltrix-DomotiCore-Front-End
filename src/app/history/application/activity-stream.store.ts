@@ -6,12 +6,16 @@ import {
 } from '../domain/model/activity-stream.entity';
 import { ActivityDeviceType, ActivityStatus } from '../infrastructure/activity-stream-response';
 import { ActivityStreamApiService } from '../infrastructure/activity-stream-api.service';
+import { AuthService } from '../../iam/application/auth.service';
+import { RolePermissionService } from '../../iam/application/role-permission.service';
 
 const PAGE_SIZE = 10;
 
 @Injectable({ providedIn: 'root' })
 export class ActivityStreamStore {
   private readonly api = inject(ActivityStreamApiService);
+  private readonly auth = inject(AuthService);
+  private readonly permissions = inject(RolePermissionService);
 
   readonly entries = signal<ActivityStreamEntry[]>([]);
   readonly summary = signal<HistorySummary | null>(null);
@@ -20,6 +24,22 @@ export class ActivityStreamStore {
   readonly dateRange = signal<DateRangeFilter>('last_7d');
   readonly deviceType = signal<ActivityDeviceType | 'all'>('all');
   readonly currentPage = signal(1);
+
+  readonly isAdminView = computed(() => this.permissions.getRole() === 'Admin');
+
+  readonly scopedEntries = computed(() => {
+    const user = this.auth.currentUser;
+    if (!user) return [];
+
+    if (this.isAdminView()) {
+      return this.entries();
+    }
+
+    return this.entries().filter(entry => {
+      if (entry.userId == null) return false;
+      return String(entry.userId) === String(user.id);
+    });
+  });
 
   readonly filteredEntries = computed(() => {
     const query = this.searchQuery().trim().toLowerCase();
@@ -33,7 +53,7 @@ export class ActivityStreamStore {
     };
     const cutoff = now - rangeMs[range];
 
-    return this.entries()
+    return this.scopedEntries()
       .filter(entry => new Date(entry.occurredAt).getTime() >= cutoff)
       .filter(entry => type === 'all' || entry.deviceType === type)
       .filter(entry => {
@@ -42,7 +62,8 @@ export class ActivityStreamStore {
           entry.deviceName.toLowerCase().includes(query) ||
           entry.deviceModel.toLowerCase().includes(query) ||
           entry.actionLabel.toLowerCase().includes(query) ||
-          entry.location.toLowerCase().includes(query)
+          entry.location.toLowerCase().includes(query) ||
+          (entry.userName?.toLowerCase().includes(query) ?? false)
         );
       })
       .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime());
@@ -109,7 +130,7 @@ export class ActivityStreamStore {
 
   updateEntryStatus(id: string, status: ActivityStatus): void {
     const entry = this.entries().find(e => e.id === id);
-    if (!entry) return;
+    if (!entry || !this.canManageEntry(entry)) return;
 
     const updated = { ...entry, status };
     this.entries.update(list => list.map(e => (e.id === id ? updated : e)));
@@ -117,19 +138,42 @@ export class ActivityStreamStore {
   }
 
   deleteEntry(id: string): void {
+    const entry = this.entries().find(e => e.id === id);
+    if (!entry || !this.canManageEntry(entry)) return;
+
     this.entries.update(list => list.filter(e => e.id !== id));
     this.api.deleteEntry(id).subscribe();
     this.syncSummaryTotal();
   }
 
   addEntry(entry: ActivityStreamEntry): void {
-    this.entries.update(list => [entry, ...list]);
-    this.api.createEntry(entry).subscribe({
+    const stamped = this.stampEntry(entry);
+    this.entries.update(list => [stamped, ...list.filter(item => item.id !== stamped.id)]);
+    this.api.createEntry(stamped).subscribe({
       next: saved => {
-        this.entries.update(list => list.map(e => (e.id === entry.id ? saved : e)));
+        this.entries.update(list => list.map(e => (e.id === stamped.id ? saved : e)));
         this.syncSummaryTotal();
       },
     });
+  }
+
+  canManageEntry(entry: ActivityStreamEntry): boolean {
+    if (this.isAdminView()) return true;
+    const user = this.auth.currentUser;
+    if (!user || entry.userId == null) return false;
+    return String(entry.userId) === String(user.id);
+  }
+
+  private stampEntry(entry: ActivityStreamEntry): ActivityStreamEntry {
+    const user = this.auth.currentUser;
+    if (!user) return entry;
+
+    return {
+      ...entry,
+      userId: user.id,
+      userEmail: user.email,
+      userName: user.name,
+    };
   }
 
   private syncSummaryTotal(): void {
@@ -139,7 +183,7 @@ export class ActivityStreamStore {
     const updated = {
       id: 1,
       ...current,
-      totalEntries: this.entries().length,
+      totalEntries: this.scopedEntries().length,
     };
 
     this.summary.set(updated);
@@ -147,16 +191,27 @@ export class ActivityStreamStore {
   }
 
   exportCsv(): string {
-    const headers = ['Time & Date', 'Device', 'Model', 'Action', 'Location', 'Status', 'Consumption kWh'];
-    const rows = this.filteredEntries().map(entry => [
-      this.formatDateTime(entry.occurredAt),
-      entry.deviceName,
-      entry.deviceModel,
-      entry.actionLabel,
-      entry.location,
-      entry.status,
-      entry.consumptionKwh?.toString() ?? '',
-    ]);
+    const headers = this.isAdminView()
+      ? ['Time & Date', 'User', 'Device', 'Model', 'Action', 'Location', 'Status', 'Consumption kWh']
+      : ['Time & Date', 'Device', 'Model', 'Action', 'Location', 'Status', 'Consumption kWh'];
+
+    const rows = this.filteredEntries().map(entry => {
+      const base = [
+        this.formatDateTime(entry.occurredAt),
+        entry.deviceName,
+        entry.deviceModel,
+        entry.actionLabel,
+        entry.location,
+        entry.status,
+        entry.consumptionKwh?.toString() ?? '',
+      ];
+
+      if (this.isAdminView()) {
+        return [this.formatDateTime(entry.occurredAt), entry.userName ?? '—', ...base.slice(1)];
+      }
+
+      return base;
+    });
 
     return [headers, ...rows]
       .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))

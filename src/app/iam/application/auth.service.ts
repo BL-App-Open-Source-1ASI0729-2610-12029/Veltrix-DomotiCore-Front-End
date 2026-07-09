@@ -6,6 +6,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthFailureReason, AuthLoginResult, AuthRegisterResult } from './auth-result';
 import { SettingsStore } from '../../settings/application/settings.store';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
+import { TeamInvitationService } from '../../team-management/application/team-invitation.service';
 import { AccountType, getAccountTypeRoute, isOnboardingComplete } from '../domain/model/account-type.entity';
 import { AuthUser, createLocalUser, stripPassword } from '../domain/model/auth-user.entity';
 import { normalizePlatformRole } from '../domain/model/platform-role.entity';
@@ -20,6 +21,7 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly cache = inject(LocalDataCacheService);
   private readonly settingsStore = inject(SettingsStore);
+  private readonly teamInvitations = inject(TeamInvitationService);
 
   currentUser: AuthUser | null = null;
 
@@ -37,6 +39,7 @@ export class AuthService {
     try {
       this.currentUser = JSON.parse(raw) as AuthUser;
       this.cache.setUserScope(this.currentUser.id);
+      this.teamInvitations.syncForCurrentUser();
     } catch {
       this.currentUser = null;
       this.cache.setUserScope(null);
@@ -77,6 +80,7 @@ export class AuthService {
     this.persistSession(user);
     this.settingsStore.reset();
     this.settingsStore.fetchSettings();
+    this.teamInvitations.syncForCurrentUser();
     this.refreshUserInBackground(user);
     return of(user);
   }

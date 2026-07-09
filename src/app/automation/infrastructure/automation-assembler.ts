@@ -39,6 +39,7 @@ export class AutomationAssembler {
         label: s.label,
         icon: s.icon,
         disabled: s.disabled,
+        labelKey: s.labelKey,
       }))
     );
   }

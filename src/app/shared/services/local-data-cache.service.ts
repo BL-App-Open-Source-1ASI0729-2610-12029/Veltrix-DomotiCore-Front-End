@@ -52,6 +52,22 @@ export class LocalDataCacheService {
       .forEach(k => localStorage.removeItem(k));
   }
 
+  getSharedCollection<T>(key: string): T[] | null {
+    return this.readRaw<T[]>(this.sharedKey(key));
+  }
+
+  setSharedCollection<T>(key: string, data: T[]): void {
+    this.writeRaw(this.sharedKey(key), data);
+  }
+
+  getSharedObject<T>(key: string): T | null {
+    return this.readRaw<T>(this.sharedKey(key));
+  }
+
+  setSharedObject<T>(key: string, data: T): void {
+    this.writeRaw(this.sharedKey(key), data);
+  }
+
   private bustIfStale(): void {
     if (typeof localStorage === 'undefined') return;
     if (localStorage.getItem(VERSION_KEY) !== CACHE_VERSION) {
@@ -62,6 +78,26 @@ export class LocalDataCacheService {
 
   private scopedKey(key: string): string {
     return this.userScope ? `${this.userScope}:${key}` : key;
+  }
+
+  private sharedKey(key: string): string {
+    return `shared:${key}`;
+  }
+
+  private readRaw<T>(key: string): T | null {
+    if (typeof localStorage === 'undefined') return null;
+    const raw = localStorage.getItem(this.prefix + key);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  private writeRaw<T>(key: string, data: T): void {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.setItem(this.prefix + key, JSON.stringify(data));
   }
 
   private read<T>(key: string): T | null {

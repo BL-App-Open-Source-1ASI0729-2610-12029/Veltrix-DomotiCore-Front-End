@@ -19,6 +19,7 @@ export interface ShutdownStepResponse {
   label: string;
   icon: string;
   disabled: boolean;
+  labelKey?: string;
 }
 
 export interface ShutdownProtocolResponse {

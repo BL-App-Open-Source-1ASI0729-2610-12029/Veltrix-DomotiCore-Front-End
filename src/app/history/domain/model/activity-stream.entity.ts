@@ -20,6 +20,9 @@ export interface ActivityStreamEntry {
   location: string;
   status: ActivityStatus;
   consumptionKwh?: number;
+  userId?: string | number;
+  userEmail?: string;
+  userName?: string;
 }
 
 export interface HistorySummary {

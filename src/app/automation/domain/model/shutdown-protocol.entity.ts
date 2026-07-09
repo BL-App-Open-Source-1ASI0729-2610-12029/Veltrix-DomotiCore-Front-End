@@ -3,6 +3,7 @@ export interface ShutdownStep {
   label: string;
   icon: string;
   disabled: boolean;
+  labelKey?: string;
 }
 
 export class ShutdownProtocol {

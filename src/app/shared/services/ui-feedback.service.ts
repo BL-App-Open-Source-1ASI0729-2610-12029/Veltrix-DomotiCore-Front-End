@@ -15,6 +15,7 @@ export interface AppNotification {
   messageKey: string;
   timeKey: string;
   read: boolean;
+  messageParams?: Record<string, string>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -72,6 +73,13 @@ export class UiFeedbackService {
     this.notifications.update(items =>
       items.map(item => (item.id === id ? { ...item, read: true } : item))
     );
+  }
+
+  addUserNotification(notification: AppNotification): void {
+    this.notifications.update(items => {
+      const withoutDuplicate = items.filter(item => item.id !== notification.id);
+      return [notification, ...withoutDuplicate];
+    });
   }
 
   markAllNotificationsRead(): void {

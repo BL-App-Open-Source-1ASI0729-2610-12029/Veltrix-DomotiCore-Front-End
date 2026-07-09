@@ -30,7 +30,7 @@ import { MATERIAL_IMPORTS } from '../../../material';
               (click)="feedback.markNotificationRead(item.id)"
             >
               <strong>{{ item.titleKey | translate }}</strong>
-              <p>{{ item.messageKey | translate }}</p>
+              <p>{{ item.messageKey | translate:item.messageParams }}</p>
               <small>{{ item.timeKey | translate }}</small>
             </article>
           </div>

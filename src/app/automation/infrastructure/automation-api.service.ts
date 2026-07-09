@@ -48,9 +48,9 @@ const MOCK_PROTOCOL: ShutdownProtocolResponse = {
   description: 'Master protocol for facility shutdown. Triggers in 15 minutes.',
   triggersInMinutes: 15,
   steps: [
-    { id: 's1', label: 'Lock all external access points', icon: 'lock', disabled: false },
-    { id: 's2', label: 'Set HVAC to 18°C (Eco-Mode)', icon: 'thermostat', disabled: false },
-    { id: 's3', label: 'Shut down server racks', icon: 'power_settings_new', disabled: true },
+    { id: 's1', label: 'Lock all external access points', labelKey: 'automation.shutdownSteps.lockAccess', icon: 'lock', disabled: false },
+    { id: 's2', label: 'Set HVAC to 18°C (Eco-Mode)', labelKey: 'automation.shutdownSteps.hvacEco', icon: 'thermostat', disabled: false },
+    { id: 's3', label: 'Shut down server racks', labelKey: 'automation.shutdownSteps.shutdownRacks', icon: 'power_settings_new', disabled: true },
   ],
 };
 
@@ -343,22 +343,56 @@ export class AutomationApiService {
     };
 
     if (!this.api.hasApi()) {
+      MOCK_RULES.push(fallback);
       return of(fallback);
     }
 
     return this.http
       .post<AutomationRuleResponse>(`${this.baseUrl()}/automation/rules`, payload)
-      .pipe(catchError(() => of(fallback)));
+      .pipe(catchError(() => {
+        MOCK_RULES.push(fallback);
+        return of(fallback);
+      }));
   }
 
   toggleShutdownStep(stepId: string): Observable<ShutdownProtocolResponse> {
+    const toggleMockStep = (): ShutdownProtocolResponse => {
+      const step = MOCK_PROTOCOL.steps.find(entry => entry.id === stepId);
+      if (step) step.disabled = !step.disabled;
+      return {
+        ...MOCK_PROTOCOL,
+        steps: MOCK_PROTOCOL.steps.map(entry => ({ ...entry })),
+      };
+    };
+
     if (!this.api.hasApi()) {
-      return of(MOCK_PROTOCOL);
+      return of(toggleMockStep());
     }
 
     return this.http
       .post<ShutdownProtocolResponse>(`${this.baseUrl()}/automation/shutdown-protocol/steps/${stepId}/toggle`, {})
-      .pipe(catchError(() => of(MOCK_PROTOCOL)));
+      .pipe(catchError(() => of(toggleMockStep())));
+  }
+
+  saveShutdownProtocol(protocol: ShutdownProtocolResponse): Observable<ShutdownProtocolResponse> {
+    MOCK_PROTOCOL.id = protocol.id;
+    MOCK_PROTOCOL.name = protocol.name;
+    MOCK_PROTOCOL.description = protocol.description;
+    MOCK_PROTOCOL.triggersInMinutes = protocol.triggersInMinutes;
+    MOCK_PROTOCOL.steps = protocol.steps.map(step => ({ ...step }));
+
+    const snapshot: ShutdownProtocolResponse = {
+      ...MOCK_PROTOCOL,
+      steps: MOCK_PROTOCOL.steps.map(step => ({ ...step })),
+    };
+
+    if (!this.api.hasApi()) {
+      return of(snapshot);
+    }
+
+    return this.http
+      .put<ShutdownProtocolResponse>(`${this.baseUrl()}/automation/shutdown-protocol`, protocol)
+      .pipe(catchError(() => of(snapshot)));
   }
 
   dismissSmartSuggestion(): Observable<SmartSuggestionResponse> {
