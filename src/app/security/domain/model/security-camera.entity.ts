@@ -1,9 +1,11 @@
-import { SecurityCameraResponse } from '../../infrastructure/security-response';
+import { CameraMediaType, SecurityCameraResponse } from '../../infrastructure/security-response';
 
 export interface SecurityCamera {
   id: string;
   labelKey: string;
   imageUrl: string;
+  streamUrl?: string;
+  mediaType?: CameraMediaType;
   isPrimary: boolean;
 }
 

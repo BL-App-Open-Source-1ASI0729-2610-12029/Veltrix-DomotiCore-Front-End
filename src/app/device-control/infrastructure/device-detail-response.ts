@@ -1,6 +1,6 @@
 export type OperationMode = 'cool' | 'heat' | 'fan';
 export type PowerChartPeriod = 'realtime' | 'day' | 'month';
-export type DeviceDetailType = 'climate' | 'generic';
+export type DeviceDetailType = 'climate' | 'generic' | 'lighting';
 
 export interface PowerChartPointResponse {
   label: string;
@@ -38,6 +38,7 @@ export interface DeviceDetailResponse {
   lastStateAt?: string;
   lastStateLabel?: string;
   batteryPercent?: number | null;
+  brightnessPercent?: number;
 }
 
 export const FAN_SPEED_OPTIONS = ['Low', 'Medium', 'High', 'Auto', 'Auto High'] as const;

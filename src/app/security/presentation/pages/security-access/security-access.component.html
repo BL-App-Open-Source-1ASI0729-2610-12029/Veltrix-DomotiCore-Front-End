@@ -61,7 +61,23 @@
           tabindex="0"
           role="button"
         >
-          <img [src]="camera.imageUrl" [alt]="camera.labelKey | translate" />
+          <div class="camera-feed__media" [class.camera-feed__media--live]="isLiveCamera(camera)">
+            <video
+              *ngIf="camera.mediaType === 'video'"
+              class="camera-feed__video"
+              [src]="camera.streamUrl || camera.imageUrl"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+            <img
+              *ngIf="camera.mediaType !== 'video'"
+              [src]="camera.streamUrl || camera.imageUrl"
+              [alt]="camera.labelKey | translate"
+            />
+            <span class="camera-feed__scanline" *ngIf="isLiveCamera(camera)" aria-hidden="true"></span>
+          </div>
           <span class="camera-label">{{ camera.labelKey | translate }}</span>
         </article>
       </div>
@@ -307,8 +323,24 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <div class="security-modal__feed">
-      <img [src]="selectedCamera.imageUrl" [alt]="selectedCamera.labelKey | translate" />
+    <div class="security-modal__feed" [class.security-modal__feed--live]="selectedCamera && isLiveCamera(selectedCamera)">
+      <ng-container *ngIf="selectedCamera as camera">
+        <video
+          *ngIf="camera.mediaType === 'video'"
+          class="security-modal__video"
+          [src]="camera.streamUrl || camera.imageUrl"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+        <img
+          *ngIf="camera.mediaType !== 'video'"
+          [src]="camera.streamUrl || camera.imageUrl"
+          [alt]="camera.labelKey | translate"
+        />
+        <span class="camera-feed__scanline" *ngIf="isLiveCamera(camera)" aria-hidden="true"></span>
+      </ng-container>
       <span class="security-modal__live">
         <span class="live-dot"></span>
         {{ 'security.live' | translate }}

@@ -1,7 +1,7 @@
 [
   {
     "id": "as-1",
-    "occurredAt": "2026-07-08T14:32:00.000Z",
+    "occurredAt": "2026-07-09T14:32:00.000Z",
     "deviceName": "Living Room Pendant",
     "deviceModel": "Smart Bulb v2",
     "deviceIcon": "lightbulb",
@@ -14,7 +14,7 @@
   },
   {
     "id": "as-2",
-    "occurredAt": "2026-07-08T13:15:00.000Z",
+    "occurredAt": "2026-07-09T13:15:00.000Z",
     "deviceName": "Main Gate Sensor",
     "deviceModel": "Motion Sensor Pro",
     "deviceIcon": "door",

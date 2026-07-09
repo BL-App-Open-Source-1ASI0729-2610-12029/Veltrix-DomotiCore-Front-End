@@ -162,6 +162,28 @@
       </mat-card>
     </div>
 
+    <div class="detail-main" *ngIf="detail.deviceType === 'lighting'">
+      <mat-card class="card content-card lighting-card" [class.lighting-card--disabled]="!detail.active">
+        <mat-card-content>
+          <div class="lighting-card__header">
+            <h2 class="card-title">{{ 'deviceDetail.brightness' | translate }}</h2>
+            <span class="lighting-card__value">{{ detail.brightnessPercent ?? 80 }}%</span>
+          </div>
+          <p class="lighting-card__hint">{{ 'deviceDetail.brightnessHint' | translate }}</p>
+          <input
+            type="range"
+            class="lighting-slider"
+            min="0"
+            max="100"
+            step="1"
+            [value]="detail.brightnessPercent ?? 80"
+            [disabled]="!detail.active"
+            (input)="store.adjustBrightness($any($event.target).valueAsNumber)"
+          />
+        </mat-card-content>
+      </mat-card>
+    </div>
+
     <div class="detail-aside">
       <mat-card class="card content-card power-card">
         <mat-card-content>

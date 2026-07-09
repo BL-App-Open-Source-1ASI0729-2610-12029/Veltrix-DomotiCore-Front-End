@@ -117,6 +117,10 @@ export class SecurityAccessComponent implements OnInit {
     this.selectedFootageEntry = null;
   }
 
+  isLiveCamera(camera: SecurityCamera): boolean {
+    return camera.mediaType === 'gif' || camera.mediaType === 'video';
+  }
+
   grantAccess(): void {
     this.grantAccessName = '';
     this.grantAccessEmail = '';

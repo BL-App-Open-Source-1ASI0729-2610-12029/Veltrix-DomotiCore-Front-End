@@ -301,6 +301,7 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'myDevices.deviceType' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedDeviceType" name="deviceType">
+          <mat-option value="lighting">{{ 'myDevices.typeLighting' | translate }}</mat-option>
           <mat-option value="climate">{{ 'myDevices.typeClimate' | translate }}</mat-option>
           <mat-option value="generic">{{ 'myDevices.typeGeneric' | translate }}</mat-option>
         </mat-select>

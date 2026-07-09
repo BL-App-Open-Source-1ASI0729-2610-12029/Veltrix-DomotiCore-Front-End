@@ -1048,3 +1048,32 @@
   background: var(--surface-soft);
   color: var(--gray-200);
 }
+
+.lighting-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.lighting-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.lighting-card__hint {
+  margin: 0 0 1rem;
+  color: var(--gray-500);
+  font-size: 0.92rem;
+}
+
+.lighting-slider {
+  width: 100%;
+  accent-color: var(--primary-color);
+}
+
+.lighting-card--disabled {
+  opacity: 0.65;
+}

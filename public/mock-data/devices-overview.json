@@ -54,13 +54,24 @@
             "usageCategory": "lighting"
           },
           {
+            "id": "front-porch-cam",
+            "name": "Front Porch Camera",
+            "icon": "videocam",
+            "connection": "online",
+            "active": true,
+            "powerUsageW": 8,
+            "statusLabel": "Online • Live",
+            "usageCategory": "security"
+          },
+          {
             "id": "custom-1781146117204",
             "name": "hola",
             "icon": "moreHoriz",
             "connection": "online",
             "active": false,
             "powerUsageW": 0,
-            "statusLabel": "Online • 0W"
+            "statusLabel": "Online • 0W",
+            "usageCategory": "generic"
           }
         ]
       },
@@ -78,7 +89,8 @@
             "connection": "online",
             "active": true,
             "powerUsageW": 850,
-            "statusLabel": "Online • 850W"
+            "statusLabel": "Online • 850W",
+            "usageCategory": "generic"
           },
           {
             "id": "smart-oven",
@@ -87,7 +99,8 @@
             "connection": "offline",
             "active": false,
             "powerUsageW": null,
-            "statusLabel": "Offline"
+            "statusLabel": "Offline",
+            "usageCategory": "generic"
           }
         ]
       },
@@ -108,7 +121,8 @@
             "connection": "online",
             "active": true,
             "powerUsageW": null,
-            "statusLabel": "Heating"
+            "statusLabel": "Heating",
+            "usageCategory": "climate"
           },
           {
             "id": "blinds",
@@ -117,7 +131,8 @@
             "connection": "online",
             "active": true,
             "powerUsageW": null,
-            "statusLabel": "65% Open"
+            "statusLabel": "65% Open",
+            "usageCategory": "generic"
           },
           {
             "id": "air-purifier",
@@ -126,7 +141,8 @@
             "connection": "online",
             "active": true,
             "powerUsageW": null,
-            "batteryPercent": 54
+            "batteryPercent": 54,
+            "usageCategory": "climate"
           },
           {
             "id": "bedside-speaker",
@@ -135,7 +151,8 @@
             "connection": "online",
             "active": false,
             "powerUsageW": 0,
-            "batteryPercent": 76
+            "batteryPercent": 76,
+            "usageCategory": "entertainment"
           }
         ]
       }

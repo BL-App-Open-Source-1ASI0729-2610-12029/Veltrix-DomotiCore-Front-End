@@ -10,7 +10,7 @@ import { DeviceBulkControlApiService } from '../infrastructure/device-bulk-contr
 import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
 import { DevicesOverviewAssembler } from '../infrastructure/devices-overview-assembler';
 
-export type NewDeviceType = 'climate' | 'generic';
+export type NewDeviceType = 'climate' | 'generic' | 'lighting';
 
 const SCENE_ID_MAP: Record<string, string> = {
   'good-night': 'night-mode',
@@ -400,16 +400,30 @@ export class DevicesOverviewStore {
     const room = current.rooms.find(r => r.id === roomId);
     const roomName = room?.name ?? roomId;
     const id = `custom-${Date.now()}`;
-    const icon = deviceType === 'climate' ? 'acUnit' : 'moreHoriz';
+    const icon =
+      deviceType === 'climate' ? 'acUnit' : deviceType === 'lighting' ? 'lightbulb' : 'moreHoriz';
+    const usageCategory =
+      deviceType === 'lighting'
+        ? 'lighting'
+        : deviceType === 'climate'
+          ? 'climate'
+          : 'generic';
 
     const newDevice: SmartDevice = {
       id,
       name: name.trim(),
       icon,
       connection: 'online',
-      active: deviceType === 'climate',
-      powerUsageW: deviceType === 'climate' ? 1200 : 0,
-      statusLabel: deviceType === 'climate' ? 'Online • 1200W' : 'Online • 0W',
+      active: deviceType === 'climate' || deviceType === 'lighting',
+      powerUsageW:
+        deviceType === 'climate' ? 1200 : deviceType === 'lighting' ? 45 : 0,
+      statusLabel:
+        deviceType === 'climate'
+          ? 'Online • 1200W'
+          : deviceType === 'lighting'
+            ? 'Online • 45W'
+            : 'Online • 0W',
+      usageCategory,
     };
 
     const rooms = current.rooms.map(r => {
@@ -446,6 +460,13 @@ export class DevicesOverviewStore {
           message: 'Utility rates increase in 2 hours. Consider pre-cooling now.',
         },
       ];
+    }
+
+    if (deviceType === 'lighting') {
+      detail.active = true;
+      detail.powerLoadKw = 0.045;
+      detail.brightnessPercent = 80;
+      detail.lastStateLabel = 'Warm white 80%';
     }
 
     return this.detailApi.create(detail);

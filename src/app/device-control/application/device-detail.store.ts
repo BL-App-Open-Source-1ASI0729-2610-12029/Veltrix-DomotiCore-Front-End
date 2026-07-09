@@ -42,7 +42,11 @@ export class DeviceDetailStore {
     }
 
     const deviceType =
-      device.icon === 'acUnit' || device.icon === 'thermostat' ? 'climate' : 'generic';
+      device.usageCategory === 'lighting' || device.icon === 'lightbulb'
+        ? 'lighting'
+        : device.icon === 'acUnit' || device.icon === 'thermostat'
+          ? 'climate'
+          : 'generic';
 
     const detail = createDefaultDeviceDetail(
       deviceId,
@@ -77,6 +81,30 @@ export class DeviceDetailStore {
       },
       error: () => this.saving.set(false),
     });
+  }
+
+  adjustBrightness(value: number): void {
+    const current = this.detail();
+    if (!current || current.deviceType !== 'lighting' || !current.active) return;
+
+    const brightnessPercent = Math.min(100, Math.max(0, Math.round(value)));
+    const powerLoadKw = this.estimatePowerLoad({ ...current, brightnessPercent });
+    const updated: DeviceDetail = {
+      ...current,
+      brightnessPercent,
+      powerLoadKw,
+      powerChartPoints: this.updateChartTail(current.powerChartPoints, powerLoadKw),
+      lastStateAt: new Date().toISOString(),
+      lastStateLabel: `Warm white ${brightnessPercent}%`,
+    };
+    this.detail.set(updated);
+    this.persist(updated);
+    this.overviewStore.syncDeviceState(
+      updated.roomId,
+      updated.id,
+      updated.active,
+      Math.round(updated.powerLoadKw * 1000),
+    );
   }
 
   togglePower(): void {
@@ -318,8 +346,17 @@ export class DeviceDetailStore {
   }
 
   private estimatePowerLoad(detail: DeviceDetail): number {
-    if (!detail.active || detail.deviceType !== 'climate') {
-      return detail.active ? 0.3 : 0;
+    if (!detail.active) {
+      return 0;
+    }
+
+    if (detail.deviceType === 'lighting') {
+      const brightness = detail.brightnessPercent ?? 80;
+      return Math.round((brightness / 100) * 0.06 * 1000) / 1000;
+    }
+
+    if (detail.deviceType !== 'climate') {
+      return 0.3;
     }
 
     const modeBase: Record<OperationMode, number> = {

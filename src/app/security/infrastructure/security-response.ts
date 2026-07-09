@@ -2,10 +2,14 @@ export type AccessLevel = 'admin' | 'member' | 'guest';
 export type LogIconType = 'enter' | 'exit' | 'alert' | 'lock';
 export type LogTone = 'success' | 'neutral' | 'danger';
 
+export type CameraMediaType = 'image' | 'video' | 'gif';
+
 export interface SecurityCameraResponse {
   id: string;
   labelKey: string;
   imageUrl: string;
+  streamUrl?: string;
+  mediaType?: CameraMediaType;
   isPrimary: boolean;
 }
 

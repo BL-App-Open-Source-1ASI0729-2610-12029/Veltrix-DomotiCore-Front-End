@@ -30,6 +30,7 @@ export interface DeviceDetail {
   lastStateAt?: string;
   lastStateLabel?: string;
   batteryPercent?: number | null;
+  brightnessPercent?: number;
 }
 
 export function createDefaultDeviceDetail(
@@ -41,6 +42,7 @@ export function createDefaultDeviceDetail(
   deviceType: DeviceDetailType,
 ): DeviceDetail {
   const isClimate = deviceType === 'climate';
+  const isLighting = deviceType === 'lighting';
 
   return {
     id,
@@ -50,12 +52,12 @@ export function createDefaultDeviceDetail(
     icon,
     deviceType,
     connection: 'online',
-    active: false,
+    active: isLighting,
     currentTempC: isClimate ? 22.5 : 0,
     targetTempC: isClimate ? 21 : 0,
     operationMode: 'cool',
     ecoMode: false,
-    powerLoadKw: 0,
+    powerLoadKw: isLighting ? 0.045 : 0,
     powerChartPeriod: 'realtime',
     powerChartPoints: isClimate
       ? [
@@ -65,13 +67,21 @@ export function createDefaultDeviceDetail(
           { label: '17:00', value: 1.1 },
           { label: 'NOW', value: 0 },
         ]
-      : [{ label: 'NOW', value: 0 }],
+      : isLighting
+        ? [
+            { label: '18:00', value: 0.02 },
+            { label: '19:00', value: 0.03 },
+            { label: '20:00', value: 0.04 },
+            { label: 'NOW', value: 0.045 },
+          ]
+        : [{ label: 'NOW', value: 0 }],
     fanSpeed: isClimate ? 'Auto' : '—',
     swing: isClimate ? 'Off' : '—',
     humidityPercent: isClimate ? 45 : 0,
     scheduledTimer: null,
     alerts: [],
     lastStateAt: new Date().toISOString(),
-    lastStateLabel: 'Standby',
+    lastStateLabel: isLighting ? 'Warm white 80%' : 'Standby',
+    brightnessPercent: isLighting ? 80 : undefined,
   };
 }

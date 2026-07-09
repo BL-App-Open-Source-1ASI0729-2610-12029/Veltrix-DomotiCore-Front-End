@@ -6,7 +6,7 @@
     "time": "Today, 08:15 AM",
     "iconType": "enter",
     "tone": "success",
-    "snapshotUrl": "assets/icons/smart-home/snapshot-entry.jpg",
+    "snapshotUrl": "assets/icons/smart-home/snapshot-entry.png",
     "snapshotLabelKey": "security.log.snapshotSaved"
   },
   {

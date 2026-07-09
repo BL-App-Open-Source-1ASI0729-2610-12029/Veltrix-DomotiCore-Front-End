@@ -2,25 +2,31 @@
   {
     "id": "living-room",
     "labelKey": "security.cameras.livingRoom",
-    "imageUrl": "assets/icons/smart-home/camera-living-room.jpg",
+    "imageUrl": "assets/icons/smart-home/camera-living-room.png",
+    "streamUrl": "assets/icons/smart-home/camera-living-room.png",
+    "mediaType": "gif",
     "isPrimary": true
   },
   {
     "id": "driveway",
     "labelKey": "security.cameras.driveway",
-    "imageUrl": "assets/icons/smart-home/camera-driveway.jpg",
+    "imageUrl": "assets/icons/smart-home/camera-driveway.png",
+    "streamUrl": "assets/icons/smart-home/camera-driveway.png",
+    "mediaType": "gif",
     "isPrimary": true
   },
   {
     "id": "patio",
     "labelKey": "security.cameras.patio",
-    "imageUrl": "assets/icons/smart-home/camera-driveway.jpg",
+    "imageUrl": "assets/icons/smart-home/camera-driveway.png",
+    "mediaType": "image",
     "isPrimary": false
   },
   {
     "id": "backyard",
     "labelKey": "security.cameras.backyard",
-    "imageUrl": "assets/icons/smart-home/camera-living-room.jpg",
+    "imageUrl": "assets/icons/smart-home/camera-living-room.png",
+    "mediaType": "image",
     "isPrimary": false
   }
 ]
