@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
@@ -17,13 +17,17 @@ export type { AuthUser };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly injector = inject(Injector);
   private readonly localAuth = inject(LocalAuthRepository);
   private readonly router = inject(Router);
   private readonly cache = inject(LocalDataCacheService);
   private readonly settingsStore = inject(SettingsStore);
-  private readonly teamInvitations = inject(TeamInvitationService);
 
   currentUser: AuthUser | null = null;
+
+  private get teamInvitations(): TeamInvitationService {
+    return this.injector.get(TeamInvitationService);
+  }
 
   constructor() {
     this.loadSession();
@@ -40,7 +44,7 @@ export class AuthService {
       this.currentUser = JSON.parse(raw) as AuthUser;
       this.cache.setUserScope(this.currentUser.id);
       if (this.currentUser?.email) {
-        this.teamInvitations.syncForCurrentUser();
+        this.teamInvitations.syncForCurrentUser(this.currentUser);
       }
     } catch {
       this.currentUser = null;
@@ -82,7 +86,7 @@ export class AuthService {
     this.persistSession(user);
     this.settingsStore.reset();
     this.settingsStore.fetchSettings();
-    this.teamInvitations.syncForCurrentUser();
+    this.teamInvitations.syncForCurrentUser(user);
     this.refreshUserInBackground(user);
     return of(user);
   }
