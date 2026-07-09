@@ -1,1 +1,1 @@
-export type EnergyPeriod = 'day' | 'week' | 'month';
+export type EnergyPeriod = 'day' | 'week' | 'month' | 'quarter' | 'year';

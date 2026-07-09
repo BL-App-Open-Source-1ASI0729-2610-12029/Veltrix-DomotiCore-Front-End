@@ -72,7 +72,9 @@
           <mat-option value="smart-bulb">{{ 'gateway.nodeTypes.bulb' | translate }}</mat-option>
           <mat-option value="smart-plug">{{ 'gateway.nodeTypes.plug' | translate }}</mat-option>
           <mat-option value="sensor">{{ 'gateway.nodeTypes.sensor' | translate }}</mat-option>
+          <mat-option value="external-sensor">{{ 'gateway.nodeTypes.externalSensor' | translate }}</mat-option>
           <mat-option value="switch">{{ 'gateway.nodeTypes.switch' | translate }}</mat-option>
+          <mat-option value="camera">{{ 'gateway.nodeTypes.camera' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
       <button
@@ -108,5 +110,42 @@
     <ng-template #emptyNodes>
       <p class="empty-state">{{ 'gateway.noNodes' | translate }}</p>
     </ng-template>
+  </section>
+
+  <section class="gateway-card gateway-card--integrations" *ngIf="store.gateway()?.status === 'online'">
+    <h2>{{ 'gateway.integrationsTitle' | translate }}</h2>
+    <p>{{ 'gateway.integrationsSubtitle' | translate }}</p>
+    <div class="integrations-grid">
+      <article class="integration-item">
+        <mat-icon>videocam</mat-icon>
+        <div>
+          <strong>{{ 'gateway.integrations.cameras.title' | translate }}</strong>
+          <p>{{ 'gateway.integrations.cameras.description' | translate }}</p>
+        </div>
+        <a mat-stroked-button [routerLink]="isBusiness() ? '/app/devices/explorer' : '/app/security'">
+          {{ 'gateway.integrations.cameras.action' | translate }}
+        </a>
+      </article>
+      <article class="integration-item">
+        <mat-icon>sensors</mat-icon>
+        <div>
+          <strong>{{ 'gateway.integrations.externalSensors.title' | translate }}</strong>
+          <p>{{ 'gateway.integrations.externalSensors.description' | translate }}</p>
+        </div>
+        <button type="button" mat-stroked-button (click)="nodeType.set('external-sensor')">
+          {{ 'gateway.integrations.externalSensors.action' | translate }}
+        </button>
+      </article>
+      <article class="integration-item">
+        <mat-icon>hub</mat-icon>
+        <div>
+          <strong>{{ 'gateway.integrations.platforms.title' | translate }}</strong>
+          <p>{{ 'gateway.integrations.platforms.description' | translate }}</p>
+        </div>
+        <a mat-stroked-button [routerLink]="isBusiness() ? '/app/smart-integrations' : '/app/automation'">
+          {{ 'gateway.integrations.platforms.action' | translate }}
+        </a>
+      </article>
+    </div>
   </section>
 </div>

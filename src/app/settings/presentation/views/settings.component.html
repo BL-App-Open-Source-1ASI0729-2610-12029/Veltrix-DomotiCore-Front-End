@@ -289,6 +289,9 @@
                 (change)="toggleNotification('energyAlertsEnabled')">
               </mat-slide-toggle>
             </div>
+            <button type="button" mat-stroked-button color="primary" class="energy-rules-btn" (click)="openEnergyAlertBuilder()">
+              {{ 'energyAlerts.manageRules' | translate }}
+            </button>
             <div class="system-toggle-item">
               <div>
                 <strong>{{ 'settings.systemNotifications.deviceFailureAlertsEnabled' | translate }}</strong>
@@ -347,6 +350,9 @@
             </button>
             <button type="button" mat-stroked-button class="btn-secondary" (click)="exportSettings()">
               {{ 'settings.systemShortcuts.exportSettings' | translate }}
+            </button>
+            <button type="button" mat-stroked-button class="btn-secondary" (click)="restartFeatureTour()">
+              {{ 'featureDiscovery.restartTour' | translate }}
             </button>
           </div>
         </article>
@@ -524,6 +530,23 @@
         <button type="button" mat-stroked-button class="btn-secondary" (click)="closeUserActions()">{{ 'common.cancel' | translate }}</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showEnergyAlertBuilder" (click)="closeEnergyAlertBuilder()">
+  <div class="settings-modal settings-modal--wide" (click)="$event.stopPropagation()">
+    <div class="settings-modal__header">
+      <h3>{{ 'energyAlerts.builderTitle' | translate }}</h3>
+      <button type="button" mat-icon-button (click)="closeEnergyAlertBuilder()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <app-energy-alert-builder
+      [showList]="true"
+      [showCancel]="true"
+      (saved)="closeEnergyAlertBuilder()"
+      (cancelled)="closeEnergyAlertBuilder()"
+    ></app-energy-alert-builder>
   </div>
 </div>
 

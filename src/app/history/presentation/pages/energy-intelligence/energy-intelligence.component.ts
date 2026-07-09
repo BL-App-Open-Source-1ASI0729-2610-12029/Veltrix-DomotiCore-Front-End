@@ -10,6 +10,8 @@ import { HistoryNavComponent } from '../../components/history-nav/history-nav.co
 import { Router } from '@angular/router';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
+import { downloadCsvFile } from '../../../../shared/utils/download-file.util';
+import { resolveSmartHomeEnergyRoute } from '../../../../shared/utils/device-energy-navigation.util';
 
 interface ChartCoordinate {
   x: number;
@@ -30,7 +32,7 @@ export class EnergyIntelligenceComponent implements OnInit {
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
 
-  readonly periods: EnergyPeriod[] = ['day', 'week', 'month'];
+  readonly periods: EnergyPeriod[] = ['day', 'week', 'month', 'quarter', 'year'];
   readonly showAddModal = signal(false);
   readonly addSuccess = signal(false);
 
@@ -138,8 +140,38 @@ export class EnergyIntelligenceComponent implements OnInit {
   }
 
   onViewDetailedReport(): void {
-    this.feedback.showToast(this.translate.instant('history.toast.openingDetailedReport'), 'info');
-    this.router.navigate(['/app/history/activity']);
+    const data = this.store.energyIntelligence();
+    if (data?.devices?.length) {
+      downloadCsvFile(`energy-report-${this.store.selectedPeriod()}.csv`, [
+        ['Device', 'Consumption (kWh)', 'Share (%)'],
+        ...data.devices.map(device => [device.name, `${device.consumptionKwh}`, `${device.sharePercent}`]),
+      ]);
+      this.feedback.showToast(this.translate.instant('history.toast.detailedReportExported'), 'success');
+    }
+
+    const section = document.getElementById('consumption-by-device');
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  onOpenHighestConsumer(): void {
+    const data = this.store.energyIntelligence();
+    if (!data) return;
+    const device = data.devices.find(item => item.name === data.highestConsumer.name);
+    this.onOpenDevice(device?.id ?? 'hvac', data.highestConsumer.name);
+  }
+
+  onOpenDevice(deviceId: string, deviceName: string): void {
+    const route = resolveSmartHomeEnergyRoute(deviceId);
+    if (!route) {
+      this.router.navigate(['/app/devices']);
+      return;
+    }
+
+    this.router.navigate(route);
+    this.feedback.showToast(
+      this.translate.instant('history.toast.openingDevice', { device: deviceName }),
+      'info',
+    );
   }
 
   openAddModal(): void {

@@ -121,3 +121,40 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(250%); }
 }
+
+.integrations-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.integration-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.9rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.integration-item mat-icon {
+  color: var(--primary-color, #2949c7);
+}
+
+.integration-item strong {
+  display: block;
+  color: #111827;
+}
+
+.integration-item p {
+  margin: 0.2rem 0 0;
+  color: #4b5563;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 720px) {
+  .integration-item {
+    grid-template-columns: 1fr;
+  }
+}

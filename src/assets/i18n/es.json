@@ -306,7 +306,9 @@
     "consumptionByDevice": "Consumo por Dispositivo",
     "viewDetailedReport": "Ver Reporte Detallado",
     "toast": {
-      "openingDetailedReport": "Abriendo reporte detallado de consumo."
+      "openingDetailedReport": "Abriendo reporte detallado de consumo.",
+      "detailedReportExported": "Reporte CSV detallado descargado.",
+      "openingDevice": "Abriendo detalles energéticos de {{device}}."
     },
     "addReading": "Agregar lectura",
     "addDevice": "Agregar Dispositivo",
@@ -321,7 +323,9 @@
     "period": {
       "day": "Día",
       "week": "Semana",
-      "month": "Mes"
+      "month": "Mes",
+      "quarter": "Trimestre",
+      "year": "Año"
     },
     "savingsSuggestions": "Sugerencias de ahorro personalizadas",
     "savings": {
@@ -348,7 +352,9 @@
     "ecoTip": {
       "day": "Bajar el termostato solo 2°C podría ahorrarte 0,6 kWh hoy.",
       "week": "Bajar el termostato solo 2°C podría ahorrarte 4,2 kWh esta semana.",
-      "month": "Bajar el termostato solo 2°C podría ahorrarte 18,4 kWh este mes."
+      "month": "Bajar el termostato solo 2°C podría ahorrarte 18,4 kWh este mes.",
+      "quarter": "Programar descansos de HVAC los fines de semana podría ahorrar 24 kWh este trimestre.",
+      "year": "Mantenimiento anual del HVAC y horarios inteligentes podrían ahorrar 180 kWh este año."
     }
   },
   "historyNotifications": {
@@ -950,7 +956,10 @@
     "period": {
       "thisMonth": "Este mes",
       "lastMonth": "Mes anterior",
-      "thisQuarter": "Este trimestre"
+      "thisQuarter": "Este trimestre",
+      "lastQuarter": "Trimestre anterior",
+      "thisYear": "Este año",
+      "lastYear": "Año anterior"
     },
     "efficiency": {
       "optimal": "ÓPTIMO",
@@ -1507,7 +1516,28 @@
       "bulb": "Foco inteligente",
       "plug": "Enchufe inteligente",
       "sensor": "Sensor",
-      "switch": "Interruptor"
+      "externalSensor": "Sensor externo (MQTT/Zigbee)",
+      "switch": "Interruptor",
+      "camera": "Cámara IP"
+    },
+    "integrationsTitle": "Integraciones avanzadas",
+    "integrationsSubtitle": "Conecta cámaras, sensores externos y plataformas de terceros mediante el gateway.",
+    "integrations": {
+      "cameras": {
+        "title": "Cámaras de seguridad",
+        "description": "Vincula cámaras IP detectadas por el gateway o revisa transmisiones en vivo.",
+        "action": "Abrir cámaras"
+      },
+      "externalSensors": {
+        "title": "Sensores externos",
+        "description": "Registra sensores MQTT, Zigbee o BLE para temperatura, movimiento y medición energética.",
+        "action": "Usar tipo sensor"
+      },
+      "platforms": {
+        "title": "Plataformas de terceros",
+        "description": "Conecta Home Assistant, Grafana, SAP o webhooks personalizados.",
+        "action": "Abrir integraciones"
+      }
     },
     "registerNode": "Registrar nodo",
     "noNodes": "Aún no hay nodos registrados.",
@@ -1729,7 +1759,8 @@
       "highConsumption": { "type": "ALTO CONSUMO", "title": "Horno de cocina encendido 3 horas", "description": "Pico de energía: +450% sobre la línea base.", "time": "hace 24m" },
       "maintenance": { "type": "MANTENIMIENTO", "title": "Filtro HVAC necesita limpieza", "description": "Programado para revisión.", "time": "hace 2h" },
       "info": { "type": "INFO", "title": "Ciclo de lavavajillas completado", "description": "Todos los sistemas operan con normalidad.", "time": "hace 5h" },
-      "new": { "type": "NUEVA ALERTA", "title": "Nueva alerta personalizada", "description": "Has creado una nueva regla de alerta.", "time": "ahora" }
+      "new": { "type": "NUEVA ALERTA", "title": "Nueva alerta personalizada", "description": "Has creado una nueva regla de alerta.", "time": "ahora" },
+      "custom": { "title": "Alerta energética personalizada activa", "description": "Esta alerta se activará cuando se superen los umbrales configurados." }
     },
     "devices": {
       "livingRoomAc": { "name": "AC Sala", "status": "22°C • Modo Auto" },
@@ -1997,13 +2028,96 @@
     "helpTopics": {
       "dashboard": { "title": "Panel", "description": "Monitorea consumo energético, alertas y dispositivos activos en tiempo real." },
       "devices": { "title": "Dispositivos", "description": "Controla dispositivos individuales, temperatura y ajustes de energía." },
+      "energy": { "title": "Reportes energéticos", "description": "Revisa consumo histórico por día, semana, mes, trimestre o año." },
       "automation": { "title": "Automatización", "description": "Crea escenas y horarios para automatizar tu hogar inteligente." },
+      "alerts": { "title": "Alertas energéticas", "description": "Configura umbrales y reglas de notificación antes de picos de costo." },
       "integrations": { "title": "Integraciones", "description": "Conecta plataformas externas y gestiona credenciales API." }
     },
     "sampleNotifications": {
       "highConsumption": { "title": "Alto consumo", "message": "El horno de cocina superó la línea base en 450%.", "time": "hace 24m" },
       "automationDone": { "title": "Automatización completada", "message": "La escena Luces de la Tarde se activó correctamente.", "time": "hace 1h" },
       "deviceOnline": { "title": "Dispositivo en línea", "message": "La cámara de entrada se reconectó a la red.", "time": "hace 3h" }
+    }
+  },
+  "energyAlerts": {
+    "builderTitle": "Reglas de alerta energética",
+    "manageRules": "Configurar reglas de alerta",
+    "addRule": "Agregar nueva regla",
+    "ruleName": "Nombre de la regla",
+    "metric": "Métrica",
+    "threshold": "Umbral (kWh)",
+    "period": "Período de evaluación",
+    "saveRule": "Guardar regla",
+    "empty": "Aún no hay reglas personalizadas. Crea una abajo.",
+    "metrics": {
+      "totalConsumption": "Consumo total",
+      "peakDemand": "Demanda pico",
+      "deviceConsumption": "Consumo por dispositivo"
+    },
+    "periods": {
+      "day": "Diario",
+      "week": "Semanal",
+      "month": "Mensual"
+    },
+    "toast": {
+      "saved": "Regla de alerta energética guardada.",
+      "removed": "Regla de alerta eliminada."
+    }
+  },
+  "featureDiscovery": {
+    "eyebrow": "Tour del producto",
+    "title": "Descubre DomotiCore",
+    "previous": "Atrás",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "tryIt": "Probar",
+    "minimize": "Minimizar tour",
+    "reopen": "Reabrir tour del producto",
+    "restartTour": "Reiniciar tour del producto",
+    "toast": {
+      "restarted": "Tour del producto reiniciado."
+    },
+    "steps": {
+      "dashboard": {
+        "title": "Monitorea tu panel",
+        "description": "Sigue consumo en vivo, dispositivos activos y alertas críticas desde un solo lugar."
+      },
+      "devices": {
+        "title": "Controla dispositivos",
+        "description": "Enciende o apaga equipos, ajusta clima y organiza habitaciones o zonas."
+      },
+      "energy": {
+        "title": "Reportes energéticos históricos",
+        "description": "Compara consumo por día, semana, mes, trimestre o año y exporta CSV detallado."
+      },
+      "gateway": {
+        "title": "Gateway e IoT",
+        "description": "Vincula tu gateway y registra focos, sensores, cámaras e integraciones externas."
+      },
+      "automation": {
+        "title": "Automatiza rutinas",
+        "description": "Crea escenas y horarios para reducir consumo automáticamente."
+      },
+      "operations": {
+        "title": "Centro de operaciones",
+        "description": "Consulta salud de instalaciones, accesos rápidos y flujos SME."
+      },
+      "reports": {
+        "title": "Reportes empresariales",
+        "description": "Analiza eficiencia, alertas de pico y tendencias por dispositivo."
+      },
+      "businessDevices": {
+        "title": "Dispositivos de la empresa",
+        "description": "Gestiona zonas, mantenimiento y estado de equipos."
+      },
+      "integrations": {
+        "title": "Integraciones inteligentes",
+        "description": "Conecta Grafana, utilities, SAP y APIs externas."
+      },
+      "alerts": {
+        "title": "Alertas configurables",
+        "description": "Define umbrales energéticos y reglas de notificación en Ajustes."
+      }
     }
   },
   "common": {

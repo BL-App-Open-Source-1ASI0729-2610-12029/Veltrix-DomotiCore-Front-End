@@ -1024,6 +1024,10 @@
   border: 1px solid var(--settings-border);
 }
 
+.settings-modal--wide {
+  width: min(100%, 560px);
+}
+
 .settings-modal__header {
   display: flex;
   align-items: center;
@@ -1219,6 +1223,10 @@
 .system-toggle-list {
   display: grid;
   gap: 0.85rem;
+}
+
+.energy-rules-btn {
+  margin-top: 0.35rem;
 }
 
 .system-toggle-item {

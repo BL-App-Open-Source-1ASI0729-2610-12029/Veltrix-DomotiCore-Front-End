@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
 import { AppOverlayComponent } from '../../../../shared/presentation/components/app-overlay/app-overlay.component';
+import { FeatureDiscoveryComponent } from '../../../../shared/presentation/components/feature-discovery/feature-discovery.component';
 import { NavbarComponent } from '../../../../shared/presentation/components/navbar/navbar.component';
 import { SmartHomeSidebarComponent } from './components/smart-home-sidebar.component';
 
@@ -16,6 +17,7 @@ import { SmartHomeSidebarComponent } from './components/smart-home-sidebar.compo
     RouterModule,
     TranslateModule,
     AppOverlayComponent,
+    FeatureDiscoveryComponent,
     NavbarComponent,
     SmartHomeSidebarComponent,
   ],
@@ -26,6 +28,7 @@ import { SmartHomeSidebarComponent } from './components/smart-home-sidebar.compo
       [class.account-view--settings]="isSettingsRoute()"
     >
       <app-overlay></app-overlay>
+      <app-feature-discovery></app-feature-discovery>
       <app-navbar
         [sidebarOpen]="sidebarOpen"
         (toggleSidebar)="toggleSidebar.emit()"

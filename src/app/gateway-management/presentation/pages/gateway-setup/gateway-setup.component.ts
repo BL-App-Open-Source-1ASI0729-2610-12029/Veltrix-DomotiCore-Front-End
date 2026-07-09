@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GatewayStore } from '../../../application/gateway.store';
+import { AuthService } from '../../../../iam/application/auth.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
@@ -17,8 +18,10 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 })
 export class GatewaySetupComponent implements OnInit {
   readonly store = inject(GatewayStore);
+  readonly auth = inject(AuthService);
   readonly permissions = inject(RolePermissionService);
   readonly canManage = computed(() => this.permissions.canManageGateways());
+  readonly isBusiness = computed(() => this.auth.getEffectiveAccountType() === 'small-business');
 
   readonly gatewayCode = signal('');
   readonly gatewayLabel = signal('Veltrix Home Gateway');

@@ -16,6 +16,7 @@ import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google
 import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { downloadCsvFile, downloadExcelFile, downloadTextFile, downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { resolveBusinessReportRoute } from '../../../../shared/utils/device-energy-navigation.util';
 import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
@@ -50,7 +51,14 @@ export class BusinessReportsComponent implements OnInit {
 
   private readonly chartBaseY = 220;
 
-  readonly periodOptions: ReportsPeriod[] = ['thisMonth', 'lastMonth', 'thisQuarter'];
+  readonly periodOptions: ReportsPeriod[] = [
+    'thisMonth',
+    'lastMonth',
+    'thisQuarter',
+    'lastQuarter',
+    'thisYear',
+    'lastYear',
+  ];
   readonly deviceMenuAnchor = signal<DOMRect | null>(null);
 
   readonly activeDeviceMenu = computed(() => {
@@ -316,11 +324,15 @@ export class BusinessReportsComponent implements OnInit {
 
   onViewDevice(device: DeviceReportResponse): void {
     this.closeDeviceMenu();
-    this.router.navigate(['/app/devices']);
-    this.feedback.showToast(
-      this.translate.instant('businessReports.toast.viewingDevice', { device: device.name }),
-      'info',
-    );
+    const route = resolveBusinessReportRoute(device.id);
+    if (route) {
+      this.router.navigate(route);
+      return;
+    }
+
+    this.router.navigate(['/app/devices/management'], {
+      queryParams: { zone: device.zone, highlight: device.id },
+    });
   }
 
   onExportDeviceRow(device: DeviceReportResponse): void {

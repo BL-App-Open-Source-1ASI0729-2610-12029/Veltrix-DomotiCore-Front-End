@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppOverlayComponent } from '../../../../shared/presentation/components/app-overlay/app-overlay.component';
+import { FeatureDiscoveryComponent } from '../../../../shared/presentation/components/feature-discovery/feature-discovery.component';
 import { NavbarComponent } from '../../../../shared/presentation/components/navbar/navbar.component';
 import { SmallBusinessSidebarComponent } from './components/small-business-sidebar.component';
 
@@ -14,12 +15,14 @@ import { SmallBusinessSidebarComponent } from './components/small-business-sideb
     RouterModule,
     TranslateModule,
     AppOverlayComponent,
+    FeatureDiscoveryComponent,
     NavbarComponent,
     SmallBusinessSidebarComponent,
   ],
   template: `
     <div class="account-view account-view--business" [class.account-view--sidebar-open]="sidebarOpen">
       <app-overlay></app-overlay>
+      <app-feature-discovery></app-feature-discovery>
       <app-navbar
         [sidebarOpen]="sidebarOpen"
         (toggleSidebar)="toggleSidebar.emit()"

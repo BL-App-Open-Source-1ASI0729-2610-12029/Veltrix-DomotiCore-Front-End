@@ -9,12 +9,14 @@ import { UiFeedbackService } from '../../../../shared/services/ui-feedback.servi
 import { DeviceEntity, DeviceUsageCategory } from '../../../domain/model/device.entity';
 import { AlertEntity } from '../../../domain/model/alert.entity';
 import { SegmentNavigationService } from '../../../../iam/application/segment-navigation.service';
+import { EnergyAlertBuilderComponent } from '../../../../shared/presentation/components/energy-alert-builder/energy-alert-builder.component';
+import { EnergyAlertRulesService } from '../../../../shared/services/energy-alert-rules.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, FormsModule, TranslateModule, EnergyAlertBuilderComponent, ...MATERIAL_IMPORTS],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../../../../history/presentation/styles/reports-animations.css']
 })
@@ -27,6 +29,7 @@ export class DashboardComponent implements OnInit {
   private segmentNav = inject(SegmentNavigationService);
   private feedback = inject(UiFeedbackService);
   private translate = inject(TranslateService);
+  private alertRules = inject(EnergyAlertRulesService);
 
   statistics = this.dashboardStore.statistics;
   alerts = this.dashboardStore.alerts;
@@ -47,6 +50,7 @@ export class DashboardComponent implements OnInit {
   showAddDeviceModal = signal(false);
   showEnergySaverModal = signal(false);
   showAlertModal = signal(false);
+  showAlertBuilderModal = signal(false);
   showCategoryModal = signal(false);
   shutdownPending = signal(false);
 
@@ -102,15 +106,26 @@ export class DashboardComponent implements OnInit {
   }
 
   onAddAlert() {
+    this.showAlertBuilderModal.set(true);
+  }
+
+  closeAlertBuilderModal() {
+    this.showAlertBuilderModal.set(false);
+  }
+
+  onAlertRuleSaved(): void {
+    const latest = this.alertRules.rules()[0];
+    if (!latest) return;
+
     const newAlert: AlertEntity = {
-      typeKey: 'dashboard.alerts.new.type',
-      titleKey: 'dashboard.alerts.new.title',
-      descriptionKey: 'dashboard.alerts.new.description',
+      typeKey: `common.severityLevels.${latest.severity}`,
+      titleKey: 'dashboard.alerts.custom.title',
+      descriptionKey: 'dashboard.alerts.custom.description',
       timeKey: 'dashboard.alerts.new.time',
-      danger: false
+      danger: latest.severity === 'critical',
     };
     this.alerts.set([newAlert, ...this.alerts()]);
-    this.feedback.showToast(this.translate.instant('dashboard.toast.alertCreated'), 'success');
+    this.closeAlertBuilderModal();
   }
 
   onAlertDetails(alert: AlertEntity) {

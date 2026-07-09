@@ -425,3 +425,20 @@
     </div>
   </div>
 </div>
+
+<div class="modal-backdrop" *ngIf="showAlertBuilderModal()" (click)="closeAlertBuilderModal()">
+  <div class="dashboard-modal dashboard-modal--wide" (click)="$event.stopPropagation()">
+    <div class="dashboard-modal__header">
+      <h3>{{ 'energyAlerts.builderTitle' | translate }}</h3>
+      <button type="button" mat-icon-button class="dashboard-modal__close" (click)="closeAlertBuilderModal()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <app-energy-alert-builder
+      [showList]="true"
+      [showCancel]="true"
+      (saved)="onAlertRuleSaved()"
+      (cancelled)="closeAlertBuilderModal()"
+    ></app-energy-alert-builder>
+  </div>
+</div>

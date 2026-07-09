@@ -306,7 +306,9 @@
     "consumptionByDevice": "Consumption by Device",
     "viewDetailedReport": "View Detailed Report",
     "toast": {
-      "openingDetailedReport": "Opening detailed consumption report."
+      "openingDetailedReport": "Opening detailed consumption report.",
+      "detailedReportExported": "Detailed CSV report downloaded.",
+      "openingDevice": "Opening {{device}} energy details."
     },
     "addReading": "Add reading",
     "addDevice": "Add Device",
@@ -321,7 +323,9 @@
     "period": {
       "day": "Day",
       "week": "Week",
-      "month": "Month"
+      "month": "Month",
+      "quarter": "Quarter",
+      "year": "Year"
     },
     "savingsSuggestions": "Personalized savings suggestions",
     "savings": {
@@ -348,7 +352,9 @@
     "ecoTip": {
       "day": "Lowering your thermostat by just 2°C could save you 0.6 kWh today.",
       "week": "Lowering your thermostat by just 2°C could save you 4.2 kWh this week.",
-      "month": "Lowering your thermostat by just 2°C could save you 18.4 kWh this month."
+      "month": "Lowering your thermostat by just 2°C could save you 18.4 kWh this month.",
+      "quarter": "Scheduling HVAC setbacks on weekends could save 24 kWh this quarter.",
+      "year": "Annual HVAC maintenance and smart scheduling could save 180 kWh this year."
     }
   },
   "historyNotifications": {
@@ -950,7 +956,10 @@
     "period": {
       "thisMonth": "This month",
       "lastMonth": "Last month",
-      "thisQuarter": "This quarter"
+      "thisQuarter": "This quarter",
+      "lastQuarter": "Last quarter",
+      "thisYear": "This year",
+      "lastYear": "Last year"
     },
     "efficiency": {
       "optimal": "OPTIMAL",
@@ -1507,7 +1516,28 @@
       "bulb": "Smart bulb",
       "plug": "Smart plug",
       "sensor": "Sensor",
-      "switch": "Switch"
+      "externalSensor": "External sensor (MQTT/Zigbee)",
+      "switch": "Switch",
+      "camera": "IP camera"
+    },
+    "integrationsTitle": "Advanced integrations",
+    "integrationsSubtitle": "Connect cameras, external sensors and third-party platforms through your gateway.",
+    "integrations": {
+      "cameras": {
+        "title": "Security cameras",
+        "description": "Link IP cameras discovered by the gateway or review live feeds.",
+        "action": "Open cameras"
+      },
+      "externalSensors": {
+        "title": "External sensors",
+        "description": "Register MQTT, Zigbee or BLE sensors for temperature, motion and energy metering.",
+        "action": "Use sensor type"
+      },
+      "platforms": {
+        "title": "Third-party platforms",
+        "description": "Connect Home Assistant, Grafana, SAP or custom webhooks.",
+        "action": "Open integrations"
+      }
     },
     "registerNode": "Register node",
     "noNodes": "No nodes registered yet.",
@@ -1729,7 +1759,8 @@
       "highConsumption": { "type": "HIGH CONSUMPTION", "title": "Kitchen Oven left on for 3 hours", "description": "Energy surge: +450% from baseline.", "time": "24m ago" },
       "maintenance": { "type": "MAINTENANCE", "title": "HVAC Filter Needs Cleaning", "description": "Scheduled for review.", "time": "2h ago" },
       "info": { "type": "INFO", "title": "Dishwasher cycle complete", "description": "All systems operating normally.", "time": "5h ago" },
-      "new": { "type": "NEW ALERT", "title": "New custom alert added", "description": "You have successfully created a new alert rule.", "time": "now" }
+      "new": { "type": "NEW ALERT", "title": "New custom alert added", "description": "You have successfully created a new alert rule.", "time": "now" },
+      "custom": { "title": "Custom energy alert active", "description": "This alert will trigger when configured thresholds are exceeded." }
     },
     "devices": {
       "livingRoomAc": { "name": "Living Room AC", "status": "22°C • Auto Mode" },
@@ -1997,13 +2028,96 @@
     "helpTopics": {
       "dashboard": { "title": "Dashboard", "description": "Monitor energy usage, alerts and active devices in real time." },
       "devices": { "title": "Devices", "description": "Control individual devices, adjust temperature and power settings." },
+      "energy": { "title": "Energy reports", "description": "Review historical consumption by day, week, month, quarter or year." },
       "automation": { "title": "Automation", "description": "Create scenes and schedules to automate your smart home." },
+      "alerts": { "title": "Energy alerts", "description": "Configure threshold rules and get notified before costs spike." },
       "integrations": { "title": "Integrations", "description": "Connect external platforms and manage API credentials." }
     },
     "sampleNotifications": {
       "highConsumption": { "title": "High consumption", "message": "Kitchen oven exceeded baseline by 450%.", "time": "24m ago" },
       "automationDone": { "title": "Automation completed", "message": "Evening Lights scene activated successfully.", "time": "1h ago" },
       "deviceOnline": { "title": "Device online", "message": "Front Porch Cam reconnected to the network.", "time": "3h ago" }
+    }
+  },
+  "energyAlerts": {
+    "builderTitle": "Energy alert rules",
+    "manageRules": "Configure alert rules",
+    "addRule": "Add new rule",
+    "ruleName": "Rule name",
+    "metric": "Metric",
+    "threshold": "Threshold (kWh)",
+    "period": "Evaluation period",
+    "saveRule": "Save rule",
+    "empty": "No custom rules yet. Create one below.",
+    "metrics": {
+      "totalConsumption": "Total consumption",
+      "peakDemand": "Peak demand",
+      "deviceConsumption": "Single device consumption"
+    },
+    "periods": {
+      "day": "Daily",
+      "week": "Weekly",
+      "month": "Monthly"
+    },
+    "toast": {
+      "saved": "Energy alert rule saved.",
+      "removed": "Alert rule removed."
+    }
+  },
+  "featureDiscovery": {
+    "eyebrow": "Product tour",
+    "title": "Discover DomotiCore",
+    "previous": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "tryIt": "Try it",
+    "minimize": "Minimize tour",
+    "reopen": "Reopen product tour",
+    "restartTour": "Restart product tour",
+    "toast": {
+      "restarted": "Product tour restarted."
+    },
+    "steps": {
+      "dashboard": {
+        "title": "Monitor your dashboard",
+        "description": "Track live energy usage, active devices and critical alerts from one place."
+      },
+      "devices": {
+        "title": "Control devices",
+        "description": "Turn devices on/off, adjust climate and organize rooms or zones."
+      },
+      "energy": {
+        "title": "Historical energy reports",
+        "description": "Compare consumption by day, week, month, quarter or year and export detailed CSV."
+      },
+      "gateway": {
+        "title": "Gateway & IoT nodes",
+        "description": "Link your gateway and register bulbs, sensors, cameras and external integrations."
+      },
+      "automation": {
+        "title": "Automate routines",
+        "description": "Create scenes and schedules to reduce consumption automatically."
+      },
+      "operations": {
+        "title": "Operations hub",
+        "description": "See facility health, shortcuts and SME workflows at a glance."
+      },
+      "reports": {
+        "title": "Business energy reports",
+        "description": "Analyze efficiency, peak alerts and per-device consumption trends."
+      },
+      "businessDevices": {
+        "title": "Facility devices",
+        "description": "Manage zones, maintenance and device status across your business."
+      },
+      "integrations": {
+        "title": "Smart integrations",
+        "description": "Connect Grafana, utilities, SAP and external APIs."
+      },
+      "alerts": {
+        "title": "Configurable alerts",
+        "description": "Define energy thresholds and notification rules in Settings."
+      }
     }
   },
   "common": {

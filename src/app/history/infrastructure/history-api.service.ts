@@ -161,6 +161,71 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
     })),
     anomalies: SHARED_ANOMALIES,
   },
+  quarter: {
+    period: 'quarter',
+    totalConsumptionKwh: 552.6,
+    trendPercent: 6,
+    trendDirection: 'down',
+    trendLabel: 'vs last quarter',
+    chartPoints: [
+      { label: 'M1', value: 168 },
+      { label: 'M2', value: 176 },
+      { label: 'M3', value: 208.6 },
+    ],
+    highestConsumer: {
+      name: 'HVAC System',
+      consumptionKwh: 237.6,
+      sharePercent: 43,
+      icon: 'acUnit',
+    },
+    dailyAverageKwh: 6.1,
+    dailyAverageLabel: 'Stable vs last 90 days',
+    dailyAverageBars: [40, 54, 49, 58, 56, 63, 60],
+    ecoTip: 'Scheduling HVAC setbacks on weekends could save 24 kWh this quarter.',
+    ecoTipKey: 'history.ecoTip.quarter',
+    devices: SHARED_DEVICES.map(device => ({
+      ...device,
+      consumptionKwh: +(device.consumptionKwh * 13).toFixed(1),
+    })),
+    savingsSuggestions: SHARED_SAVINGS.map(item => ({
+      ...item,
+      estimatedSavingKwh: +(item.estimatedSavingKwh * 13).toFixed(1),
+    })),
+    anomalies: SHARED_ANOMALIES,
+  },
+  year: {
+    period: 'year',
+    totalConsumptionKwh: 2210.4,
+    trendPercent: 9,
+    trendDirection: 'down',
+    trendLabel: 'vs last year',
+    chartPoints: [
+      { label: 'Q1', value: 520 },
+      { label: 'Q2', value: 548 },
+      { label: 'Q3', value: 552.6 },
+      { label: 'Q4', value: 589.8 },
+    ],
+    highestConsumer: {
+      name: 'HVAC System',
+      consumptionKwh: 950.4,
+      sharePercent: 43,
+      icon: 'acUnit',
+    },
+    dailyAverageKwh: 6.1,
+    dailyAverageLabel: 'Stable vs prior year',
+    dailyAverageBars: [36, 50, 45, 55, 52, 60, 58],
+    ecoTip: 'Annual HVAC maintenance and smart scheduling could save 180 kWh this year.',
+    ecoTipKey: 'history.ecoTip.year',
+    devices: SHARED_DEVICES.map(device => ({
+      ...device,
+      consumptionKwh: +(device.consumptionKwh * 52).toFixed(1),
+    })),
+    savingsSuggestions: SHARED_SAVINGS.map(item => ({
+      ...item,
+      estimatedSavingKwh: +(item.estimatedSavingKwh * 52).toFixed(1),
+    })),
+    anomalies: SHARED_ANOMALIES,
+  },
 };
 
 const MOCK_BUSINESS_REPORTS: BusinessReportsResponse = {
@@ -260,12 +325,30 @@ export class HistoryApiService {
   }
 
   private mockBusinessReports(period: ReportsPeriod): Observable<BusinessReportsResponse> {
-    const scale = period === 'thisMonth' ? 1 : period === 'lastMonth' ? 0.92 : 1.08;
-    const peakLabel = period === 'thisMonth'
-      ? 'Today, 2:30 PM'
-      : period === 'lastMonth'
-        ? 'Sep 28, 3:15 PM'
-        : 'Q4 Peak, 1:45 PM';
+    const scale =
+      period === 'thisMonth'
+        ? 1
+        : period === 'lastMonth'
+          ? 0.92
+          : period === 'thisQuarter'
+            ? 1.08
+            : period === 'lastQuarter'
+              ? 1.02
+              : period === 'thisYear'
+                ? 1.12
+                : 0.96;
+    const peakLabel =
+      period === 'thisMonth'
+        ? 'Today, 2:30 PM'
+        : period === 'lastMonth'
+          ? 'Sep 28, 3:15 PM'
+          : period === 'thisQuarter'
+            ? 'Q4 Peak, 1:45 PM'
+            : period === 'lastQuarter'
+              ? 'Q3 Peak, 2:10 PM'
+              : period === 'thisYear'
+                ? 'YTD Peak, 3:00 PM'
+                : 'Prior year peak, 2:55 PM';
 
     const scaled: BusinessReportsResponse = {
       ...MOCK_BUSINESS_REPORTS,

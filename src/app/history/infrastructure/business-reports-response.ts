@@ -1,7 +1,7 @@
 import { ConsumptionDataPointResponse } from './history-response';
 
 export type ReportsChartPeriod = 'weekly' | 'monthly';
-export type ReportsPeriod = 'thisMonth' | 'lastMonth' | 'thisQuarter';
+export type ReportsPeriod = 'thisMonth' | 'lastMonth' | 'thisQuarter' | 'lastQuarter' | 'thisYear' | 'lastYear';
 export type DeviceReportTrend = 'up' | 'down' | 'stable';
 export type DeviceReportStatus = 'OPTIMAL' | 'STEADY';
 

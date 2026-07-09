@@ -301,7 +301,9 @@ export class AppOverlayComponent {
   readonly helpTopics = [
     { titleKey: 'overlay.helpTopics.dashboard.title', descriptionKey: 'overlay.helpTopics.dashboard.description' },
     { titleKey: 'overlay.helpTopics.devices.title', descriptionKey: 'overlay.helpTopics.devices.description' },
+    { titleKey: 'overlay.helpTopics.energy.title', descriptionKey: 'overlay.helpTopics.energy.description' },
     { titleKey: 'overlay.helpTopics.automation.title', descriptionKey: 'overlay.helpTopics.automation.description' },
+    { titleKey: 'overlay.helpTopics.alerts.title', descriptionKey: 'overlay.helpTopics.alerts.description' },
     { titleKey: 'overlay.helpTopics.integrations.title', descriptionKey: 'overlay.helpTopics.integrations.description' },
   ];
 

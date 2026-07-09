@@ -118,7 +118,7 @@
     </mat-card>
 
     <aside class="insights-stack">
-      <article class="insight-card insight-card--primary insight-card--animate">
+      <article class="insight-card insight-card--primary insight-card--animate insight-card--clickable" (click)="onOpenHighestConsumer()">
         <img [src]="icons.power" alt="" class="ui-icon insight-card__icon" />
         <p class="insight-card__label">{{ 'history.highestConsumer' | translate }}</p>
         <h3 class="insight-card__value">{{ data.highestConsumer.name }}</h3>
@@ -188,7 +188,7 @@
     </article>
   </section>
 
-  <section class="devices-section card">
+  <section class="devices-section card" id="consumption-by-device">
     <div class="devices-section__header">
       <h2 class="section-title">{{ 'history.consumptionByDevice' | translate }}</h2>
       <button type="button" mat-button color="primary" class="link-btn" (click)="onViewDetailedReport()">
@@ -197,7 +197,7 @@
     </div>
 
     <div class="devices-grid reports-stagger">
-      <article *ngFor="let device of data.devices" class="device-item device-item--animate">
+      <article *ngFor="let device of data.devices" class="device-item device-item--animate device-item--clickable" (click)="onOpenDevice(device.id, device.name)" role="button" tabindex="0" (keyup.enter)="onOpenDevice(device.id, device.name)">
         <div class="device-item__top">
           <div class="device-item__identity">
             <span class="device-item__icon-wrap">

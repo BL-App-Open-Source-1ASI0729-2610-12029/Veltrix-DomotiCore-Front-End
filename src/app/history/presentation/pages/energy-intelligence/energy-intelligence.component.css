@@ -705,3 +705,20 @@
 .anomaly-card--low {
   border-left: 4px solid #0d9488;
 }
+
+.insight-card--clickable,
+.device-item--clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.insight-card--clickable:hover,
+.device-item--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(41, 73, 199, 0.12);
+}
+
+.device-item--clickable:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}

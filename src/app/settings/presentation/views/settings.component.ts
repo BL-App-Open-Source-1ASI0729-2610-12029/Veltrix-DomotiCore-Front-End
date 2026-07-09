@@ -21,6 +21,8 @@ import { RolePermissionService } from '../../../iam/application/role-permission.
 import { LocalAuthRepository } from '../../../iam/infrastructure/local-auth.repository';
 import { downloadTextFile } from '../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../shared/material';
+import { EnergyAlertBuilderComponent } from '../../../shared/presentation/components/energy-alert-builder/energy-alert-builder.component';
+import { FeatureDiscoveryService } from '../../../shared/services/feature-discovery.service';
 
 interface RetentionOption {
   days: number;
@@ -37,7 +39,7 @@ interface ConnectionItem {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, FormsModule, TranslateModule, EnergyAlertBuilderComponent, ...MATERIAL_IMPORTS],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css'],
 })
@@ -54,6 +56,9 @@ export class SettingsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly authRepository = inject(LocalAuthRepository);
   readonly permissions = inject(RolePermissionService);
+  private readonly featureDiscovery = inject(FeatureDiscoveryService);
+
+  showEnergyAlertBuilder = false;
 
   readonly settings = this.settingsStore.settings;
   readonly loading = this.settingsStore.loading;
@@ -345,6 +350,19 @@ export class SettingsComponent implements OnInit {
       ),
       'info',
     );
+  }
+
+  openEnergyAlertBuilder(): void {
+    this.showEnergyAlertBuilder = true;
+  }
+
+  closeEnergyAlertBuilder(): void {
+    this.showEnergyAlertBuilder = false;
+  }
+
+  restartFeatureTour(): void {
+    this.featureDiscovery.reset();
+    this.feedback.showToast(this.translate.instant('featureDiscovery.toast.restarted'), 'success');
   }
 
   async saveChanges(): Promise<void> {
