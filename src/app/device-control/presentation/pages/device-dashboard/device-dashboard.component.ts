@@ -56,21 +56,23 @@ export class DeviceDashboardComponent implements OnInit {
   onTurnOnAll(): void {
     if (!this.feedback.confirmAction(this.translate.instant('myDevices.confirm.turnOnAll'))) return;
 
-    const failed = this.store.turnOnAll();
-    if (failed.length) {
-      this.feedback.showToast(
-        this.translate.instant('myDevices.toast.turnOnAllPartial', { devices: failed.join(', ') }),
-        'warning',
-      );
-      return;
-    }
-    this.feedback.showToast(this.translate.instant('myDevices.toast.turnOnAll'), 'success');
+    this.store.turnOnAll().subscribe(failed => {
+      if (failed.length) {
+        this.feedback.showToast(
+          this.translate.instant('myDevices.toast.turnOnAllPartial', { devices: failed.join(', ') }),
+          'warning',
+        );
+        return;
+      }
+      this.feedback.showToast(this.translate.instant('myDevices.toast.turnOnAll'), 'success');
+    });
   }
 
   onEcoMode(): void {
     if (!this.feedback.confirmAction(this.translate.instant('myDevices.confirm.ecoMode'))) return;
-    this.store.applyEcoMode();
-    this.feedback.showToast(this.translate.instant('myDevices.toast.ecoMode'), 'info');
+    this.store.applyEcoMode().subscribe(() => {
+      this.feedback.showToast(this.translate.instant('myDevices.toast.ecoMode'), 'info');
+    });
   }
 
   roomMatchesSearch(room: Room): boolean {
@@ -165,7 +167,7 @@ export class DeviceDashboardComponent implements OnInit {
   }
 
   onScene(sceneId: string): void {
-    this.store.activateScene(sceneId);
+    this.store.activateScene(sceneId).subscribe();
   }
 
   openDevice(roomId: string, deviceId: string): void {

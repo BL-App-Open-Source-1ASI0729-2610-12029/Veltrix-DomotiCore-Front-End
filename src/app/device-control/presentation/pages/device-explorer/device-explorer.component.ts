@@ -21,7 +21,8 @@ import {
 import { BusinessDevicesNavComponent } from '../../components/business-devices-nav/business-devices-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadJsonFile } from '../../../../shared/utils/download-file.util';
+import { downloadJsonFile, downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 type MapLayer = 'floor' | 'zones';
@@ -72,6 +73,7 @@ export class DeviceExplorerComponent implements OnInit, AfterViewInit, OnDestroy
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
   private readonly route = inject(ActivatedRoute);
+  private readonly exportApi = inject(ExportApiService);
 
   ngOnInit(): void {
     this.store.load();
@@ -144,6 +146,20 @@ export class DeviceExplorerComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onExportResult(): void {
+    if (this.exportApi.hasApi()) {
+      this.exportApi.export('devices', 'csv').subscribe({
+        next: ({ blob, filename }) => {
+          downloadBlobFile(filename, blob);
+          this.feedback.showToast(this.translate.instant('deviceExplorer.toast.exportReady'), 'success');
+        },
+        error: () => this.exportResultLocal(),
+      });
+      return;
+    }
+    this.exportResultLocal();
+  }
+
+  private exportResultLocal(): void {
     const stamp = new Date().toISOString().slice(0, 10);
     downloadJsonFile(`device-explorer-${stamp}.json`, {
       exportedAt: new Date().toISOString(),

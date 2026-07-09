@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
+import { IntegrationsApiService } from '../../../infrastructure/integrations-api.service';
+import { BusinessProfileStore } from '../../../application/business-profile.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 interface SyncActivityPoint {
@@ -197,8 +199,11 @@ interface SyncActivityPoint {
     }
   `]
 })
-export class SyncStatusComponent {
+export class SyncStatusComponent implements OnInit {
   readonly icons = GOOGLE_ICONS;
+
+  private readonly integrationsApi = inject(IntegrationsApiService);
+  private readonly profileStore = inject(BusinessProfileStore);
 
   lastSync = signal(24.7);
   pendingSync = signal(18);
@@ -213,6 +218,23 @@ export class SyncStatusComponent {
     { labelKey: 'syncStatus.hours.9pm', value: 31 },
     { labelKey: 'syncStatus.hours.12am', value: 14 },
   ]);
+
+  ngOnInit(): void {
+    this.profileStore.load().subscribe(profile => {
+      this.lastSync.set(profile.syncInterval);
+    });
+
+    this.integrationsApi.getIntegrations().subscribe(data => {
+      const integrations = data.connectedIntegrations ?? [];
+      const schedules = data.schedules ?? [];
+      const total = integrations.length || 1;
+      const online = integrations.filter(item => item.status === 'online').length;
+      const disconnected = integrations.filter(item => !item.connected).length;
+
+      this.reliability.set(Math.round((online / total) * 1000) / 10);
+      this.pendingSync.set(Math.max(disconnected * 6, schedules.filter(item => item.enabled).length));
+    });
+  }
 
   readonly activityPoints = computed(() => this.activityData());
 

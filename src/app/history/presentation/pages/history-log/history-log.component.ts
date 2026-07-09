@@ -6,6 +6,8 @@ import { ActivityStreamStore } from '../../../application/activity-stream.store'
 import { DateRangeFilter } from '../../../domain/model/activity-stream.entity';
 import { ActivityAction, ActivityDeviceType, ActivityStatus } from '../../../infrastructure/activity-stream-response';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
+import { downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { HistoryNavComponent } from '../../components/history-nav/history-nav.component';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
@@ -18,6 +20,7 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 export class HistoryLogComponent implements OnInit {
   readonly store = inject(ActivityStreamStore);
   readonly icons = GOOGLE_ICONS;
+  private readonly exportApi = inject(ExportApiService);
 
   readonly dateRanges: DateRangeFilter[] = ['last_24h', 'last_7d', 'last_30d'];
   readonly deviceTypes: (ActivityDeviceType | 'all')[] = [
@@ -83,6 +86,17 @@ export class HistoryLogComponent implements OnInit {
   }
 
   onExportCsv(): void {
+    if (this.exportApi.hasApi()) {
+      this.exportApi.export('activity', 'csv').subscribe({
+        next: ({ blob, filename }) => downloadBlobFile(filename, blob),
+        error: () => this.exportCsvLocal(),
+      });
+      return;
+    }
+    this.exportCsvLocal();
+  }
+
+  private exportCsvLocal(): void {
     const csv = this.store.exportCsv();
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { IntegrationsApiService, ConnectedIntegration } from '../../../infrastructure/integrations-api.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -152,30 +153,55 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
     }
   `]
 })
-export class ConnectedServicesComponent {
+export class ConnectedServicesComponent implements OnInit {
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
+  private readonly integrationsApi = inject(IntegrationsApiService);
 
   services = signal<Array<{
-    id: number;
+    id: string;
     nameKey?: string;
     name?: string;
     typeKey?: string;
     type?: string;
     online: boolean;
     active: boolean;
-  }>>([
-    { id: 1, nameKey: 'connectedServices.samples.livingRoomLight.name', typeKey: 'connectedServices.samples.livingRoomLight.type', online: true, active: true },
-    { id: 2, nameKey: 'connectedServices.samples.kitchenThermostat.name', typeKey: 'connectedServices.samples.kitchenThermostat.type', online: true, active: false },
-    { id: 3, nameKey: 'connectedServices.samples.frontDoorCamera.name', typeKey: 'connectedServices.samples.frontDoorCamera.type', online: false, active: false },
-    { id: 4, nameKey: 'connectedServices.samples.bedroomSpeaker.name', typeKey: 'connectedServices.samples.bedroomSpeaker.type', online: true, active: true },
-  ]);
+  }>>([]);
+
+  ngOnInit(): void {
+    this.integrationsApi.getIntegrations().subscribe(data => {
+      const mapped = (data.connectedIntegrations ?? []).map(item => this.mapIntegration(item));
+      if (mapped.length) {
+        this.services.set(mapped);
+        return;
+      }
+      this.services.set(this.defaultServices());
+    });
+  }
+
+  private defaultServices() {
+    return [
+      { id: 'lighting-hub', nameKey: 'integrations.samples.lightingHub', type: 'Veltrix Lighting', online: true, active: true },
+      { id: 'hvac-bridge', nameKey: 'integrations.samples.hvacBridge', type: 'ClimateSync', online: false, active: false },
+    ];
+  }
+
+  private mapIntegration(item: ConnectedIntegration) {
+    return {
+      id: item.id,
+      nameKey: item.nameKey,
+      name: item.name ?? item.provider,
+      type: item.provider,
+      online: item.status === 'online',
+      active: item.connected,
+    };
+  }
 
   private getServiceName(service: { nameKey?: string; name?: string }): string {
     return service.nameKey ? this.translate.instant(service.nameKey) : (service.name ?? '');
   }
 
-  toggleService(service: { nameKey?: string; name?: string; active: boolean; online: boolean }) {
+  toggleService(service: { id: string; nameKey?: string; name?: string; active: boolean; online: boolean }) {
     const displayName = this.getServiceName(service);
 
     if (!service.online && !service.active) {
@@ -186,16 +212,35 @@ export class ConnectedServicesComponent {
       return;
     }
 
-    service.active = !service.active;
-    this.services.set([...this.services()]);
+    const nextActive = !service.active;
+    const updated = this.services().map(item =>
+      item.id === service.id
+        ? { ...item, active: nextActive }
+        : item,
+    );
+    this.services.set(updated);
+
+    this.integrationsApi
+      .patchIntegrations({
+        connectedIntegrations: updated.map(item => ({
+          id: item.id,
+          nameKey: item.nameKey,
+          name: item.name,
+          provider: item.type ?? item.name,
+          connected: item.active,
+          status: item.online ? 'online' : 'offline',
+        })),
+      })
+      .subscribe();
+
     this.feedback.showToast(
       this.translate.instant('connectedServices.toast.toggled', {
         name: displayName,
         status: this.translate.instant(
-          service.active ? 'connectedServices.status.enabled' : 'connectedServices.status.disabled'
+          nextActive ? 'connectedServices.status.enabled' : 'connectedServices.status.disabled'
         ),
       }),
-      service.active ? 'success' : 'info'
+      nextActive ? 'success' : 'info'
     );
   }
 }

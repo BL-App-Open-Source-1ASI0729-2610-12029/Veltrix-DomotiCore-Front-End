@@ -27,4 +27,12 @@ export class BusinessProfileStore {
       finalize(() => this.saving.set(false)),
     );
   }
+
+  regenerateApiKey(): Observable<BusinessProfile> {
+    this.saving.set(true);
+    return this.api.regenerateApiKey().pipe(
+      tap(saved => this.profile.set(saved)),
+      finalize(() => this.saving.set(false)),
+    );
+  }
 }

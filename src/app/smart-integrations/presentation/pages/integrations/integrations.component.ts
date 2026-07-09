@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BoundedContextsOverviewComponent } from '../../../../shared/presentation/components/bounded-contexts-overview/bounded-contexts-overview.component';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
+import { BusinessProfileStore } from '../../../application/business-profile.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 interface UploadedDocument {
   name: string;
   uploadedAt: string;
 }
-
-const INTEGRATIONS_STORAGE_KEY = 'domoticore-integrations-config';
 
 @Component({
   selector: 'app-integrations',
@@ -654,6 +653,7 @@ export class IntegrationsComponent implements OnInit {
 
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
+  private readonly profileStore = inject(BusinessProfileStore);
 
   businessName = signal('Sterling Energy Solutions LLC');
   tin = signal('XX-XXXX5678');
@@ -663,7 +663,12 @@ export class IntegrationsComponent implements OnInit {
   readonly showUpgradeModal = signal(false);
 
   ngOnInit(): void {
-    this.loadSavedConfiguration();
+    this.profileStore.load().subscribe(profile => {
+      this.businessName.set(profile.businessName);
+      this.tin.set(profile.tin);
+      this.address.set(profile.address);
+      this.apiKey.set(profile.apiKey);
+    });
   }
 
   apiUsageSummary(): string {
@@ -675,23 +680,27 @@ export class IntegrationsComponent implements OnInit {
   }
 
   saveConfiguration(): void {
-    const payload = {
-      businessName: this.businessName(),
-      tin: this.tin(),
-      address: this.address(),
-      apiKey: this.apiKey(),
-      documents: this.uploadedDocuments(),
-    };
-    localStorage.setItem(INTEGRATIONS_STORAGE_KEY, JSON.stringify(payload));
-    this.feedback.showToast(this.translate.instant('integrations.toast.configSaved'), 'success');
+    const current = this.profileStore.profile();
+    this.profileStore
+      .save({
+        ...current,
+        businessName: this.businessName(),
+        tin: this.tin(),
+        address: this.address(),
+        apiKey: this.apiKey(),
+      })
+      .subscribe(() => {
+        this.feedback.showToast(this.translate.instant('integrations.toast.configSaved'), 'success');
+      });
   }
 
   generateNewKey(): void {
     if (!this.feedback.confirmAction(this.translate.instant('common.confirm.generateApiKey'))) return;
 
-    const suffix = Math.random().toString(36).slice(2, 10);
-    this.apiKey.set(`dc_live_${suffix}_regenerated`);
-    this.feedback.showToast(this.translate.instant('integrations.toast.keyGenerated'), 'success');
+    this.profileStore.regenerateApiKey().subscribe(profile => {
+      this.apiKey.set(profile.apiKey);
+      this.feedback.showToast(this.translate.instant('integrations.toast.keyGenerated'), 'success');
+    });
   }
 
   uploadDocumentation(): void {
@@ -724,27 +733,5 @@ export class IntegrationsComponent implements OnInit {
   submitUpgrade(): void {
     this.closeUpgradeModal();
     this.feedback.showToast(this.translate.instant('integrations.toast.upgradeSubmitted'), 'success');
-  }
-
-  private loadSavedConfiguration(): void {
-    const raw = localStorage.getItem(INTEGRATIONS_STORAGE_KEY);
-    if (!raw) return;
-
-    try {
-      const saved = JSON.parse(raw) as {
-        businessName?: string;
-        tin?: string;
-        address?: string;
-        apiKey?: string;
-        documents?: UploadedDocument[];
-      };
-      if (saved.businessName) this.businessName.set(saved.businessName);
-      if (saved.tin) this.tin.set(saved.tin);
-      if (saved.address) this.address.set(saved.address);
-      if (saved.apiKey) this.apiKey.set(saved.apiKey);
-      if (saved.documents?.length) this.uploadedDocuments.set(saved.documents);
-    } catch {
-      // Ignore invalid persisted config.
-    }
   }
 }

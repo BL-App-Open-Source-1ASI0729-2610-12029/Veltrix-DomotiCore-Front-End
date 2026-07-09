@@ -21,6 +21,17 @@ export function downloadTextFile(filename: string, content: string, mimeType = '
   downloadBlob(filename, content, mimeType);
 }
 
+export function downloadBlobFile(filename: string, blob: Blob): void {
+  if (typeof document === 'undefined') return;
+
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 function downloadBlob(filename: string, content: string, mimeType: string): void {
   if (typeof document === 'undefined') return;
 

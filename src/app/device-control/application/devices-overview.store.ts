@@ -1,17 +1,28 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, tap, finalize } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { DevicesOverview } from '../domain/model/devices-overview.entity';
 import { SmartDevice } from '../domain/model/smart-device.entity';
 import { createDefaultDeviceDetail, DeviceDetail } from '../domain/model/device-detail.entity';
 import { DevicesOverviewApiService } from '../infrastructure/devices-overview-api.service';
 import { DeviceDetailApiService } from '../infrastructure/device-detail-api.service';
+import { DeviceBulkControlApiService } from '../infrastructure/device-bulk-control-api.service';
+import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
+import { DevicesOverviewAssembler } from '../infrastructure/devices-overview-assembler';
 
 export type NewDeviceType = 'climate' | 'generic';
+
+const SCENE_ID_MAP: Record<string, string> = {
+  'good-night': 'night-mode',
+  morning: 'morning-routine',
+};
 
 @Injectable({ providedIn: 'root' })
 export class DevicesOverviewStore {
   private readonly api = inject(DevicesOverviewApiService);
   private readonly detailApi = inject(DeviceDetailApiService);
+  private readonly bulkApi = inject(DeviceBulkControlApiService);
+  private readonly automationApi = inject(AutomationApiService);
 
   readonly overview = signal<DevicesOverview | null>(null);
   readonly loading = signal(false);
@@ -41,10 +52,49 @@ export class DevicesOverviewStore {
   }
 
   refreshOverview(): Observable<DevicesOverview> {
-    return this.loadOverview();
+    this.loading.set(true);
+
+    if (!this.bulkApi.hasApi()) {
+      return this.loadOverview();
+    }
+
+    return this.api.refreshOverview().pipe(
+      tap(response => {
+        if (response.overview) {
+          this.overview.set(DevicesOverviewAssembler.toDomain(response.overview));
+        }
+      }),
+      switchMap(() => this.loadOverview()),
+      finalize(() => this.loading.set(false)),
+    );
   }
 
-  turnOnAll(): string[] {
+  turnOnAll(): Observable<string[]> {
+    const current = this.overview();
+    if (!current) {
+      return of([]);
+    }
+
+    if (!this.bulkApi.hasApi()) {
+      return of(this.turnOnAllLocal());
+    }
+
+    return this.bulkApi.bulkToggle('on').pipe(
+      switchMap(result =>
+        this.api.refreshOverview().pipe(
+          tap(response => {
+            if (response.overview) {
+              this.overview.set(DevicesOverviewAssembler.toDomain(response.overview));
+            }
+          }),
+          map(() => result.failed?.map(item => item.name ?? item.id) ?? []),
+        ),
+      ),
+      catchError(() => of(this.turnOnAllLocal())),
+    );
+  }
+
+  private turnOnAllLocal(): string[] {
     const current = this.overview();
     if (!current) return [];
 
@@ -85,26 +135,33 @@ export class DevicesOverviewStore {
     return failed;
   }
 
-  renameDevice(roomId: string, deviceId: string, name: string): void {
+  applyEcoMode(): Observable<void> {
     const current = this.overview();
-    if (!current) return;
+    if (!current) {
+      return of(undefined);
+    }
 
-    const rooms = current.rooms.map(room => {
-      if (room.id !== roomId) return room;
-      return {
-        ...room,
-        devices: room.devices.map(device =>
-          device.id === deviceId ? { ...device, name } : device,
-        ),
-      };
-    });
+    if (!this.bulkApi.hasApi()) {
+      this.applyEcoModeLocal();
+      return of(undefined);
+    }
 
-    const updated = { ...current, rooms };
-    this.overview.set(updated);
-    this.saveOverview(updated);
+    return this.automationApi.activateEcoMode().pipe(
+      switchMap(() => this.api.refreshOverview()),
+      tap(response => {
+        if (response.overview) {
+          this.overview.set(DevicesOverviewAssembler.toDomain(response.overview));
+        }
+      }),
+      map(() => undefined),
+      catchError(() => {
+        this.applyEcoModeLocal();
+        return of(undefined);
+      }),
+    );
   }
 
-  applyEcoMode(): void {
+  private applyEcoModeLocal(): void {
     const current = this.overview();
     if (!current) return;
 
@@ -133,6 +190,25 @@ export class DevicesOverviewStore {
           ? room.devices.filter(device => device.active && device.connection === 'online').length
           : room.activeDeviceCount,
     }));
+
+    const updated = { ...current, rooms };
+    this.overview.set(updated);
+    this.saveOverview(updated);
+  }
+
+  renameDevice(roomId: string, deviceId: string, name: string): void {
+    const current = this.overview();
+    if (!current) return;
+
+    const rooms = current.rooms.map(room => {
+      if (room.id !== roomId) return room;
+      return {
+        ...room,
+        devices: room.devices.map(device =>
+          device.id === deviceId ? { ...device, name } : device,
+        ),
+      };
+    });
 
     const updated = { ...current, rooms };
     this.overview.set(updated);
@@ -236,11 +312,38 @@ export class DevicesOverviewStore {
     });
   }
 
-  activateScene(sceneId: string): void {
+  activateScene(sceneId: string): Observable<void> {
     const current = this.overview();
-    if (!current) return;
+    if (!current) {
+      return of(undefined);
+    }
 
     this.activeSceneId.set(sceneId);
+    const backendSceneId = SCENE_ID_MAP[sceneId] ?? sceneId;
+
+    if (!this.bulkApi.hasApi()) {
+      this.activateSceneLocal(sceneId);
+      return of(undefined);
+    }
+
+    return this.automationApi.executeScene(backendSceneId).pipe(
+      switchMap(() => this.api.refreshOverview()),
+      tap(response => {
+        if (response.overview) {
+          this.overview.set(DevicesOverviewAssembler.toDomain(response.overview));
+        }
+      }),
+      map(() => undefined),
+      catchError(() => {
+        this.activateSceneLocal(sceneId);
+        return of(undefined);
+      }),
+    );
+  }
+
+  private activateSceneLocal(sceneId: string): void {
+    const current = this.overview();
+    if (!current) return;
 
     const turnOffLiving = sceneId === 'good-night';
     const turnOnMorning = sceneId === 'morning';

@@ -1,9 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
-import { GOOGLE_ICONS } from '../../shared/constants/google-icons';
+import { GOOGLE_ICONS, GoogleIconKey } from '../../shared/constants/google-icons';
 import { AlertEntity } from '../domain/model/alert.entity';
 import { DeviceEntity } from '../domain/model/device.entity';
 import { StatisticEntity } from '../domain/model/statistic.entity';
+import { DashboardApiService } from '../infrastructure/dashboard-api.service';
 
 export interface EnergyDataPoint {
   time: string;
@@ -33,6 +36,9 @@ export interface EnergyData {
   providedIn: 'root'
 })
 export class DashboardStore {
+  private readonly api = inject(DashboardApiService);
+
+  readonly loading = signal(false);
 
   statistics = signal<StatisticEntity[]>([
     {
@@ -196,7 +202,49 @@ export class DashboardStore {
 
   setEnergyRange(range: string) {
     this.currentEnergyRange.set(range);
-    this.currentEnergyData.set(this.energyData()[range]);
+    const data = this.energyData()[range];
+    if (data) {
+      this.currentEnergyData.set(data);
+    }
+  }
+
+  load(): Observable<void> {
+    this.loading.set(true);
+    return this.api.getDashboard().pipe(
+      tap(response => {
+        if (response.statistics?.length) {
+          this.statistics.set(response.statistics.map(stat => ({
+            ...stat,
+            icon: this.resolveIcon(stat.icon),
+          })));
+        }
+        if (response.alerts) {
+          this.alerts.set(response.alerts);
+        }
+        if (response.devices?.length) {
+          this.devices.set(response.devices.map(device => ({
+            ...device,
+            icon: this.resolveIcon(device.icon),
+          })));
+        }
+        if (response.energyData && Object.keys(response.energyData).length > 0) {
+          this.energyData.set(response.energyData);
+          this.setEnergyRange(this.currentEnergyRange());
+        }
+      }),
+      map(() => undefined),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  private resolveIcon(icon: string): string {
+    if (!icon) {
+      return GOOGLE_ICONS.deviceHub;
+    }
+    if (icon.startsWith('http')) {
+      return icon;
+    }
+    return GOOGLE_ICONS[icon as GoogleIconKey] ?? GOOGLE_ICONS.deviceHub;
   }
 
 }

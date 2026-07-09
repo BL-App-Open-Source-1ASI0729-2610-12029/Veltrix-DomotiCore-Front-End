@@ -15,7 +15,8 @@ import { BusinessReportsNavComponent } from '../../components/business-reports-n
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { APP_CURRENT_YEAR } from '../../../../shared/constants/app.constants';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile, downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
@@ -45,6 +46,7 @@ export class BusinessReportsComponent implements OnInit {
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly exportApi = inject(ExportApiService);
 
   private readonly chartBaseY = 220;
 
@@ -154,6 +156,10 @@ export class BusinessReportsComponent implements OnInit {
   }
 
   onExportPdf(): void {
+    this.runServerExport('energy-consumption', 'pdf', 'month', () => this.exportPdfLocal());
+  }
+
+  private exportPdfLocal(): void {
     const report = this.store.report();
     if (!report) return;
 
@@ -176,6 +182,10 @@ export class BusinessReportsComponent implements OnInit {
   }
 
   onExportCsv(): void {
+    this.runServerExport('energy-consumption', 'csv', 'month', () => this.exportCsvLocal());
+  }
+
+  private exportCsvLocal(): void {
     const report = this.store.report();
     if (!report) return;
 
@@ -201,6 +211,10 @@ export class BusinessReportsComponent implements OnInit {
   }
 
   onExportExcel(): void {
+    this.runServerExport('energy-consumption', 'excel', 'month', () => this.exportExcelLocal());
+  }
+
+  private exportExcelLocal(): void {
     const report = this.store.report();
     if (!report) return;
 
@@ -223,6 +237,32 @@ export class BusinessReportsComponent implements OnInit {
 
     downloadExcelFile(`domoticore-reports-${this.store.selectedPeriod()}`, rows);
     this.feedback.showToast(this.translate.instant('businessReports.toast.exportExcel'), 'success');
+  }
+
+  private runServerExport(
+    dataset: 'energy-consumption' | 'alerts' | 'devices' | 'activity',
+    format: 'csv' | 'excel' | 'pdf',
+    period: string | undefined,
+    fallback: () => void,
+  ): void {
+    if (!this.exportApi.hasApi()) {
+      fallback();
+      return;
+    }
+
+    this.exportApi.export(dataset, format, period).subscribe({
+      next: ({ blob, filename }) => {
+        downloadBlobFile(filename, blob);
+        const toastKey =
+          format === 'pdf'
+            ? 'businessReports.toast.exportPdf'
+            : format === 'excel'
+              ? 'businessReports.toast.exportExcel'
+              : 'businessReports.toast.exportCsv';
+        this.feedback.showToast(this.translate.instant(toastKey), 'success');
+      },
+      error: () => fallback(),
+    });
   }
 
   onSelectPeriod(event: Event): void {

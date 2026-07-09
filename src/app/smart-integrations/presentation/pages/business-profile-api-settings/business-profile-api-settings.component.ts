@@ -1639,9 +1639,10 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
     if (!this.canEditProfile()) return;
     if (!this.feedback.confirmAction(this.translate.instant('common.confirm.generateApiKey'))) return;
 
-    const suffix = Math.random().toString(36).slice(2, 10);
-    this.apiKey.set(`dc_live_${suffix}_regenerated`);
-    this.feedback.showToast(this.translate.instant('businessProfile.toast.keyGenerated'), 'success');
+    this.profileStore.regenerateApiKey().subscribe(profile => {
+      this.apiKey.set(profile.apiKey);
+      this.feedback.showToast(this.translate.instant('businessProfile.toast.keyGenerated'), 'success');
+    });
   }
 
   copyApiKey(): void {

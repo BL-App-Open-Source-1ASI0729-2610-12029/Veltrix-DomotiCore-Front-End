@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../../../../history/presentation/styles/reports-animations.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
 
   readonly icons = GOOGLE_ICONS;
 
@@ -55,6 +55,10 @@ export class DashboardComponent {
 
   newDeviceName = '';
   newDeviceType = 'climate';
+
+  ngOnInit(): void {
+    this.dashboardStore.load().subscribe();
+  }
 
   filteredDevices = computed(() => {
     const filter = this.deviceFilter();

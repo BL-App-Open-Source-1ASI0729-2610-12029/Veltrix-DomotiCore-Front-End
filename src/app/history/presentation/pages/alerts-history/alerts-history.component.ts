@@ -13,7 +13,8 @@ import {
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile, downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
@@ -36,6 +37,7 @@ export class AlertsHistoryComponent implements OnInit {
 
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
+  private readonly exportApi = inject(ExportApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -126,6 +128,18 @@ export class AlertsHistoryComponent implements OnInit {
   }
 
   onExportCsv(): void {
+    this.runServerExport('alerts', 'csv', undefined, () => this.exportAlertsCsvLocal());
+  }
+
+  onExportExcel(): void {
+    this.runServerExport('alerts', 'excel', undefined, () => this.exportAlertsExcelLocal());
+  }
+
+  onExportPdf(): void {
+    this.runServerExport('alerts', 'pdf', undefined, () => this.exportAlertsPdfLocal());
+  }
+
+  private exportAlertsCsvLocal(): void {
     const entries = this.store.filteredEntries();
     const rows: string[][] = [
       [
@@ -148,7 +162,7 @@ export class AlertsHistoryComponent implements OnInit {
     this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportCsv'), 'success');
   }
 
-  onExportExcel(): void {
+  private exportAlertsExcelLocal(): void {
     const entries = this.store.filteredEntries();
     const rows: string[][] = [
       [
@@ -171,7 +185,7 @@ export class AlertsHistoryComponent implements OnInit {
     this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportExcel'), 'success');
   }
 
-  onExportPdf(): void {
+  private exportAlertsPdfLocal(): void {
     const entries = this.store.filteredEntries();
     const lines = [
       this.translate.instant('alertsHistory.title'),
@@ -189,6 +203,32 @@ export class AlertsHistoryComponent implements OnInit {
 
     downloadTextFile('domoticore-alerts-history.txt', lines.join('\n'));
     this.feedback.showToast(this.translate.instant('alertsHistory.toast.exportPdf'), 'success');
+  }
+
+  private runServerExport(
+    dataset: 'energy-consumption' | 'alerts' | 'devices' | 'activity',
+    format: 'csv' | 'excel' | 'pdf',
+    period: string | undefined,
+    fallback: () => void,
+  ): void {
+    if (!this.exportApi.hasApi()) {
+      fallback();
+      return;
+    }
+
+    this.exportApi.export(dataset, format, period).subscribe({
+      next: ({ blob, filename }) => {
+        downloadBlobFile(filename, blob);
+        const toastKey =
+          format === 'pdf'
+            ? 'alertsHistory.toast.exportPdf'
+            : format === 'excel'
+              ? 'alertsHistory.toast.exportExcel'
+              : 'alertsHistory.toast.exportCsv';
+        this.feedback.showToast(this.translate.instant(toastKey), 'success');
+      },
+      error: () => fallback(),
+    });
   }
 
   onToggleFilters(event: Event): void {

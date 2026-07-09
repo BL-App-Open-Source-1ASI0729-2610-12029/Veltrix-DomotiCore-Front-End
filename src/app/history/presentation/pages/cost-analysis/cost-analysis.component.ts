@@ -6,7 +6,8 @@ import { BillingBarResponse, RoiUpgradeStatus } from '../../../infrastructure/co
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { downloadCsvFile, downloadExcelFile, downloadTextFile } from '../../../../shared/utils/download-file.util';
+import { downloadCsvFile, downloadExcelFile, downloadTextFile, downloadBlobFile } from '../../../../shared/utils/download-file.util';
+import { ExportApiService } from '../../../../shared/services/export-api.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { PreferredExportFormat, SettingsStore } from '../../../../settings/application/settings.store';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
@@ -26,6 +27,7 @@ export class CostAnalysisComponent implements OnInit {
 
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
+  private readonly exportApi = inject(ExportApiService);
 
   readonly auditFilterOptions: AuditFilterKey[] = ['last6Months', 'last12Months', 'yearToDate'];
 
@@ -193,6 +195,10 @@ export class CostAnalysisComponent implements OnInit {
   }
 
   onExportPdf(): void {
+    this.runServerExport('energy-consumption', 'pdf', 'week', () => this.exportPdfLocal());
+  }
+
+  private exportPdfLocal(): void {
     const data = this.store.data();
     if (!data) return;
 
@@ -213,6 +219,10 @@ export class CostAnalysisComponent implements OnInit {
   }
 
   onExportCsv(): void {
+    this.runServerExport('energy-consumption', 'csv', 'week', () => this.exportCsvLocal());
+  }
+
+  private exportCsvLocal(): void {
     const rows: string[][] = [
       [
         this.translate.instant('costAnalysis.audit.columns.period'),
@@ -231,6 +241,10 @@ export class CostAnalysisComponent implements OnInit {
   }
 
   onExportExcel(): void {
+    this.runServerExport('energy-consumption', 'excel', 'week', () => this.exportExcelLocal());
+  }
+
+  private exportExcelLocal(): void {
     const rows: string[][] = [
       [
         this.translate.instant('costAnalysis.audit.columns.period'),
@@ -246,6 +260,32 @@ export class CostAnalysisComponent implements OnInit {
 
     downloadExcelFile('domoticore-cost-analysis', rows);
     this.feedback.showToast(this.translate.instant('costAnalysis.toast.exportExcel'), 'success');
+  }
+
+  private runServerExport(
+    dataset: 'energy-consumption' | 'alerts' | 'devices' | 'activity',
+    format: 'csv' | 'excel' | 'pdf',
+    period: string | undefined,
+    fallback: () => void,
+  ): void {
+    if (!this.exportApi.hasApi()) {
+      fallback();
+      return;
+    }
+
+    this.exportApi.export(dataset, format, period).subscribe({
+      next: ({ blob, filename }) => {
+        downloadBlobFile(filename, blob);
+        const toastKey =
+          format === 'pdf'
+            ? 'costAnalysis.toast.exportPdf'
+            : format === 'excel'
+              ? 'costAnalysis.toast.exportExcel'
+              : 'costAnalysis.toast.exportCsv';
+        this.feedback.showToast(this.translate.instant(toastKey), 'success');
+      },
+      error: () => fallback(),
+    });
   }
 
   onRecalculateRoi(): void {

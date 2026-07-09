@@ -289,4 +289,30 @@ export class AutomationApiService {
   private baseUrl(): string {
     return environment.apiUrl.replace(/\/$/, '');
   }
+
+  activateEcoMode(): Observable<{ ecoModeActive?: boolean; devicesTurnedOff?: string[] }> {
+    if (!this.api.hasApi()) {
+      return of({ ecoModeActive: true, devicesTurnedOff: [] });
+    }
+
+    return this.http
+      .post<{ ecoModeActive?: boolean; devicesTurnedOff?: string[] }>(
+        `${this.baseUrl()}/automation/activate-eco-mode`,
+        {},
+      )
+      .pipe(catchError(() => of({ ecoModeActive: true, devicesTurnedOff: [] })));
+  }
+
+  executeScene(sceneId: string): Observable<{ executed?: boolean; sceneId?: string }> {
+    if (!this.api.hasApi()) {
+      return of({ executed: false, sceneId });
+    }
+
+    return this.http
+      .post<{ executed?: boolean; sceneId?: string }>(
+        `${this.baseUrl()}/automation/scenes/${sceneId}/execute`,
+        {},
+      )
+      .pipe(catchError(() => of({ executed: false, sceneId })));
+  }
 }
