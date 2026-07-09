@@ -30,6 +30,7 @@ export interface EnergyIntelligenceResponse {
   dailyAverageLabel: string;
   dailyAverageBars: number[];
   ecoTip: string;
+  ecoTipKey?: string;
   devices: DeviceConsumptionResponse[];
   savingsSuggestions?: SavingsSuggestionResponse[];
   anomalies?: ConsumptionAnomalyResponse[];

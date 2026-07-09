@@ -15,6 +15,7 @@ export class HistoryAssembler {
       dailyAverageLabel: dto.dailyAverageLabel,
       dailyAverageBars: [...dto.dailyAverageBars],
       ecoTip: dto.ecoTip,
+      ecoTipKey: dto.ecoTipKey,
       devices: dto.devices.map(device => ({ ...device })),
       savingsSuggestions: (dto.savingsSuggestions ?? []).map(item => ({ ...item })),
       anomalies: (dto.anomalies ?? []).map(item => ({ ...item })),

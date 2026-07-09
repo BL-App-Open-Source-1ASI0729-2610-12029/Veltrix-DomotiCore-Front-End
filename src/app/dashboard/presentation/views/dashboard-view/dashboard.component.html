@@ -101,18 +101,39 @@
                          (mouseenter)="onPointHover(point, $event)"
                          (mouseleave)="onPointLeave()"/>
                </g>
+
+               <g *ngIf="peakLabelPosition() as pos" class="peak-label-svg">
+                 <rect
+                   [attr.x]="pos.x - 34"
+                   [attr.y]="pos.placeBelow ? pos.y + 10 : pos.y - 44"
+                   width="68"
+                   height="32"
+                   rx="8"
+                   fill="#2949c7"
+                 />
+                 <text
+                   [attr.x]="pos.x"
+                   [attr.y]="pos.placeBelow ? pos.y + 26 : pos.y - 28"
+                   text-anchor="middle"
+                   fill="#ffffff"
+                   font-size="11"
+                   font-weight="700"
+                 >
+                   {{ currentEnergyData().peak }} {{ currentEnergyData().unit }}
+                 </text>
+                 <text
+                   [attr.x]="pos.x"
+                   [attr.y]="pos.placeBelow ? pos.y + 37 : pos.y - 17"
+                   text-anchor="middle"
+                   fill="#ffffff"
+                   font-size="9"
+                   font-weight="600"
+                 >
+                   {{ 'dashboard.peakLabel' | translate }}
+                 </text>
+               </g>
              </svg>
              }
-
-             <div class="peak-badge"
-                  *ngIf="peakPoint() && peakBadgePosition() as pos"
-                  [style.left.%]="pos.left"
-                  [style.top.%]="pos.top">
-               <span class="peak-badge__value">
-                 {{ currentEnergyData().peak }} {{ currentEnergyData().unit }}
-               </span>
-               <span class="peak-badge__label">{{ 'dashboard.peakLabel' | translate }}</span>
-             </div>
 
              <div class="chart-tooltip" *ngIf="hoveredPoint()"
                   [style.left.px]="tooltipPosition().x"

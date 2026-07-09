@@ -150,4 +150,9 @@ export class NotificationsCenterComponent implements OnInit {
     const circumference = 2 * Math.PI * 42;
     return circumference - (percent / 100) * circumference;
   }
+
+  getDowntimeMinutes(uptimePercent: number): number {
+    const monthMinutes = 30 * 24 * 60;
+    return Math.max(0, Math.round(((100 - uptimePercent) / 100) * monthMinutes));
+  }
 }

@@ -149,6 +149,30 @@
         <span class="insight-badge">{{ insights.uptimeStatusKey | translate }}</span>
       </div>
       <p class="insight-metric">{{ insights.uptimePercent }}%</p>
+      <div class="uptime-meta">
+        <div class="uptime-meta__item">
+          <span>{{ 'historyNotifications.insights.targetSla' | translate }}</span>
+          <strong>99.90%</strong>
+        </div>
+        <div class="uptime-meta__item">
+          <span>{{ 'historyNotifications.insights.downtimeMonth' | translate }}</span>
+          <strong>{{ getDowntimeMinutes(insights.uptimePercent) }} min</strong>
+        </div>
+      </div>
+      <ul class="uptime-status-list">
+        <li>
+          <span class="uptime-status-dot uptime-status-dot--ok"></span>
+          {{ 'historyNotifications.insights.gatewayOnline' | translate }}
+        </li>
+        <li>
+          <span class="uptime-status-dot uptime-status-dot--ok"></span>
+          {{ 'historyNotifications.insights.cloudSync' | translate }}
+        </li>
+        <li>
+          <span class="uptime-status-dot" [class.uptime-status-dot--ok]="insights.uptimePercent >= 99.9"></span>
+          {{ 'historyNotifications.insights.devicesConnected' | translate }}
+        </li>
+      </ul>
       <div class="insight-progress">
         <div class="insight-progress__fill" [style.width.%]="insights.uptimePercent"></div>
       </div>

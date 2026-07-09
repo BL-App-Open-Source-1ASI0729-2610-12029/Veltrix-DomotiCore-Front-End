@@ -150,7 +150,7 @@
 
       <article class="insight-card insight-card--eco insight-card--animate">
         <img [src]="icons.energySavingsLeaf" alt="" class="ui-icon insight-card__icon insight-card__icon--eco" />
-        <p class="insight-card__eco-text">{{ data.ecoTip }}</p>
+        <p class="insight-card__eco-text">{{ data.ecoTipKey ? (data.ecoTipKey | translate) : data.ecoTip }}</p>
       </article>
 
       <article class="insight-card insight-card--animate">
@@ -166,16 +166,18 @@
         <p>{{ 'history.autoOptimization.description' | translate }}</p>
       </article>
     </aside>
-  </div>
 
-  <section class="insights-grid card" *ngIf="data.savingsSuggestions.length">
-    <h2 class="section-title">{{ 'history.savingsSuggestions' | translate }}</h2>
-    <article class="savings-card" *ngFor="let suggestion of data.savingsSuggestions">
-      <h3>{{ suggestion.titleKey ? (suggestion.titleKey | translate) : suggestion.title }}</h3>
-      <p>{{ suggestion.descriptionKey ? (suggestion.descriptionKey | translate) : suggestion.description }}</p>
-      <strong>{{ suggestion.estimatedSavingKwh }} kWh</strong>
-    </article>
-  </section>
+    <section class="savings-row card" *ngIf="data.savingsSuggestions.length">
+      <h2 class="section-title">{{ 'history.savingsSuggestions' | translate }}</h2>
+      <div class="savings-row__grid">
+        <article class="savings-card" *ngFor="let suggestion of data.savingsSuggestions">
+          <h3>{{ suggestion.titleKey ? (suggestion.titleKey | translate) : suggestion.title }}</h3>
+          <p>{{ suggestion.descriptionKey ? (suggestion.descriptionKey | translate) : suggestion.description }}</p>
+          <strong>{{ suggestion.estimatedSavingKwh }} kWh</strong>
+        </article>
+      </div>
+    </section>
+  </div>
 
   <section class="insights-grid card" *ngIf="data.anomalies.length">
     <h2 class="section-title">{{ 'history.anomalies' | translate }}</h2>

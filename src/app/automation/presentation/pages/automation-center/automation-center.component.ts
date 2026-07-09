@@ -77,6 +77,30 @@ export class AutomationCenterComponent implements OnInit {
     return map[icon] ?? GOOGLE_ICONS.settings;
   }
 
+  getActiveDaysSummary(activeDays: boolean[]): string {
+    if (!activeDays.some(Boolean)) {
+      return this.translate.instant('automation.schedule.paused');
+    }
+
+    if (activeDays.every(Boolean)) {
+      return this.translate.instant('automation.schedule.everyDay');
+    }
+
+    if (activeDays.slice(0, 5).every(Boolean) && !activeDays[5] && !activeDays[6]) {
+      return this.translate.instant('automation.schedule.weekdays');
+    }
+
+    if (!activeDays.slice(0, 5).some(Boolean) && activeDays[5] && activeDays[6]) {
+      return this.translate.instant('automation.schedule.weekends');
+    }
+
+    const labels = this.dayLabelKeys
+      .map((key, index) => (activeDays[index] ? this.translate.instant(key) : null))
+      .filter((label): label is string => Boolean(label));
+
+    return labels.join(' · ');
+  }
+
   onNewAutomation(): void {
     this.newAutomationName = '';
     this.newAutomationTrigger = 'time';

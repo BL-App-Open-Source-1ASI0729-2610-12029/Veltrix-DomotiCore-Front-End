@@ -10,6 +10,7 @@
       {
         "id": "living-room",
         "name": "Living Room",
+        "nameKey": "myDevices.livingRoom",
         "icon": "sofa",
         "layout": "featured",
         "activeDeviceCount": 0,
@@ -66,6 +67,7 @@
       {
         "id": "kitchen",
         "name": "Kitchen",
+        "nameKey": "myDevices.kitchen",
         "icon": "refrigerator",
         "layout": "compact",
         "devices": [
@@ -92,6 +94,7 @@
       {
         "id": "master-bedroom",
         "name": "Master Bedroom",
+        "nameKey": "myDevices.masterBedroom",
         "icon": "bed",
         "layout": "suite",
         "description": "Optimized for rest and relaxation with smart climate control.",

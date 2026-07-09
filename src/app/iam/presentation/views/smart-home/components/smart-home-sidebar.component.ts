@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../../application/auth.service';
+import { SecurityStore } from '../../../../../security/application/security.store';
 import { SMART_HOME_NAV_ITEMS } from '../../../../domain/model/account-navigation.entity';
 import { GOOGLE_ICONS } from '../../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../../shared/services/ui-feedback.service';
@@ -39,12 +40,21 @@ import { MATERIAL_IMPORTS } from '../../../../../shared/material';
         </mat-nav-list>
 
         <div class="view-sidebar__footer">
-          <mat-card appearance="outlined" class="status-card status-card--home">
+          <mat-card
+            appearance="outlined"
+            class="status-card"
+            [class.status-card--home]="security.allLocksSecured()"
+            [class.status-card--alert]="!security.allLocksSecured()"
+          >
             <mat-card-content>
               <span class="status-card__label">{{ 'sidebar.securityStatus' | translate }}</span>
               <span class="status-card__value">
                 <span class="status-dot"></span>
-                {{ 'sidebar.fullyProtected' | translate }}
+                {{
+                  security.allLocksSecured()
+                    ? ('sidebar.fullyProtected' | translate)
+                    : ('security.partiallyProtected' | translate)
+                }}
               </span>
             </mat-card-content>
           </mat-card>
@@ -62,15 +72,20 @@ import { MATERIAL_IMPORTS } from '../../../../../shared/material';
   `,
   styleUrls: ['../../view-sidebar.shared.css', './smart-home-sidebar.component.css'],
 })
-export class SmartHomeSidebarComponent {
+export class SmartHomeSidebarComponent implements OnInit {
   @Input() isOpen = false;
   @Output() closeSidebar = new EventEmitter<void>();
 
   readonly navItems = SMART_HOME_NAV_ITEMS;
   readonly icons = GOOGLE_ICONS;
+  readonly security = inject(SecurityStore);
 
   private readonly auth = inject(AuthService);
   private readonly feedback = inject(UiFeedbackService);
+
+  ngOnInit(): void {
+    this.security.ensureLocksLoaded();
+  }
 
   onSignOut(): void {
     this.auth.logout();

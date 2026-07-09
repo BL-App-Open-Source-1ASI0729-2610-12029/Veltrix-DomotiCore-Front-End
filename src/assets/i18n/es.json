@@ -332,6 +332,11 @@
       "description": "Aplica balanceo adaptativo de carga cuando se detecta consumo inusual.",
       "enabled": "Optimización automática activada.",
       "disabled": "Optimización automática desactivada."
+    },
+    "ecoTip": {
+      "day": "Bajar el termostato solo 2°C podría ahorrarte 0,6 kWh hoy.",
+      "week": "Bajar el termostato solo 2°C podría ahorrarte 4,2 kWh esta semana.",
+      "month": "Bajar el termostato solo 2°C podría ahorrarte 18,4 kWh este mes."
     }
   },
   "historyNotifications": {
@@ -396,6 +401,11 @@
     "insights": {
       "uptimeTitle": "Confiabilidad de Uptime",
       "optimal": "ÓPTIMO",
+      "targetSla": "Objetivo SLA",
+      "downtimeMonth": "Inactividad estimada (30 días)",
+      "gatewayOnline": "Gateway principal en línea",
+      "cloudSync": "Sincronización en la nube estable",
+      "devicesConnected": "Dispositivos conectados sin interrupciones",
       "storageTitle": "Gestión de Almacenamiento",
       "storageDescription": "Los registros y capturas se conservan 90 días antes del archivo automático.",
       "storageUsage": "{{used}}GB de {{total}}GB"
@@ -434,6 +444,16 @@
     "eventVolume": "Volumen de Eventos",
     "securityAlerts": "Alertas de Seguridad",
     "hoursAgo": "hace {{hours}} hora(s)",
+    "eventsLabel": "eventos",
+    "alertsLabel": "alertas",
+    "peakDay": "Día pico",
+    "healthStatus": {
+      "optimal": "ÓPTIMO"
+    },
+    "alerts": {
+      "unexpectedEntry": "Entrada inesperada",
+      "autoLock": "Bloqueo automático activado"
+    },
     "dateRange": {
       "last_24h": "Últimas 24 horas",
       "last_7d": "Últimos 7 días",
@@ -1232,6 +1252,12 @@
     "suggestionAutomationTitle": "Automatización por Sugerencia",
     "days": {
       "mon": "L", "tue": "M", "wed": "X", "thu": "J", "fri": "V", "sat": "S", "sun": "D"
+    },
+    "schedule": {
+      "everyDay": "Todos los días",
+      "weekdays": "Lunes a viernes",
+      "weekends": "Fines de semana",
+      "paused": "Sin días activos"
     },
     "mock": {
       "scenes": {

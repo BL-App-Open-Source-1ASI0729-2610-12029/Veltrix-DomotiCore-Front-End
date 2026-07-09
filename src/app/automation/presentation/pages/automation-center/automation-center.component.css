@@ -268,22 +268,36 @@
   margin-bottom: 1rem;
 }
 
+.upcoming-schedule {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  letter-spacing: 0.02em;
+}
+
 .day-pill {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.day-pill--inactive {
+  background: transparent;
+  border: 1.5px dashed var(--gray-300);
   color: var(--gray-400);
-  background: var(--surface-muted);
 }
 
 .day-pill--active {
-  background: #1a2f7a;
+  background: #2949c7;
   color: #fff;
+  box-shadow: 0 2px 8px rgba(41, 73, 199, 0.28);
 }
 
 .upcoming-card__footer {

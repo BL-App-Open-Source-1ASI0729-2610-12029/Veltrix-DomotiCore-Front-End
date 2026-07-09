@@ -14,6 +14,7 @@ export interface SmartDeviceResponse {
 export interface RoomResponse {
   id: string;
   name: string;
+  nameKey?: string;
   icon: string;
   layout: 'featured' | 'compact' | 'suite';
   activeDeviceCount?: number;

@@ -324,17 +324,17 @@ export class DashboardComponent {
     this.currentEnergyData().dataPoints.find((point) => point.status === 'peak') ?? null,
   );
 
-  peakBadgePosition = computed(() => {
+  peakLabelPosition = computed(() => {
     const data = this.currentEnergyData();
     const peakIndex = data.dataPoints.findIndex((point) => point.status === 'peak');
     if (peakIndex === -1) return null;
 
-    const x = this.getPointX(peakIndex, data.dataPoints.length);
-    const y = this.getPointY(data.peak, data.peak);
+    const peakY = this.getPointY(data.peak, data.peak);
 
     return {
-      left: (x / this.chartLayout.width) * 100,
-      top: Math.max(8, (y / this.chartLayout.height) * 100),
+      x: this.getPointX(peakIndex, data.dataPoints.length),
+      y: peakY,
+      placeBelow: peakY < 52,
     };
   });
 

@@ -332,6 +332,11 @@
       "description": "Apply adaptive load balancing when unusual consumption is detected.",
       "enabled": "Automatic optimization enabled.",
       "disabled": "Automatic optimization disabled."
+    },
+    "ecoTip": {
+      "day": "Lowering your thermostat by just 2°C could save you 0.6 kWh today.",
+      "week": "Lowering your thermostat by just 2°C could save you 4.2 kWh this week.",
+      "month": "Lowering your thermostat by just 2°C could save you 18.4 kWh this month."
     }
   },
   "historyNotifications": {
@@ -396,6 +401,11 @@
     "insights": {
       "uptimeTitle": "Uptime Reliability",
       "optimal": "OPTIMAL",
+      "targetSla": "SLA target",
+      "downtimeMonth": "Estimated downtime (30 days)",
+      "gatewayOnline": "Primary gateway online",
+      "cloudSync": "Cloud sync stable",
+      "devicesConnected": "Devices connected without interruptions",
       "storageTitle": "Storage Management",
       "storageDescription": "Activity logs and snapshots are retained for 90 days before automatic archival.",
       "storageUsage": "{{used}}GB of {{total}}GB"
@@ -434,6 +444,16 @@
     "eventVolume": "Event Volume",
     "securityAlerts": "Security Alerts",
     "hoursAgo": "{{hours}} hour(s) ago",
+    "eventsLabel": "events",
+    "alertsLabel": "alerts",
+    "peakDay": "Peak day",
+    "healthStatus": {
+      "optimal": "OPTIMAL"
+    },
+    "alerts": {
+      "unexpectedEntry": "Unexpected entry",
+      "autoLock": "Auto-lock activated"
+    },
     "dateRange": {
       "last_24h": "Last 24 Hours",
       "last_7d": "Last 7 Days",
@@ -1232,6 +1252,12 @@
     "suggestionAutomationTitle": "Smart Suggestion Automation",
     "days": {
       "mon": "M", "tue": "T", "wed": "W", "thu": "T", "fri": "F", "sat": "S", "sun": "S"
+    },
+    "schedule": {
+      "everyDay": "Every day",
+      "weekdays": "Monday to Friday",
+      "weekends": "Weekends",
+      "paused": "No active days"
     },
     "mock": {
       "scenes": {

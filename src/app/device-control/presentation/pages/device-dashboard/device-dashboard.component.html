@@ -61,7 +61,7 @@
               <img [src]="getIcon(room.icon)" alt="" class="ui-icon ui-icon--md" />
             </span>
             <div>
-              <h2>{{ room.name }}</h2>
+              <h2>{{ room.nameKey ? (room.nameKey | translate) : room.name }}</h2>
               <p>{{ room.activeDeviceCount }} {{ 'myDevices.activeDevices' | translate }}</p>
             </div>
           </div>
@@ -132,7 +132,7 @@
               <img [src]="getIcon(room.icon)" alt="" class="ui-icon ui-icon--md" />
             </span>
             <div>
-              <h2>{{ room.name }}</h2>
+              <h2>{{ room.nameKey ? (room.nameKey | translate) : room.name }}</h2>
               <p class="suite-description">{{ room.description }}</p>
             </div>
           </div>
@@ -166,8 +166,8 @@
                   {{ device.statusLabel }}
                 </p>
               </div>
-              <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate">
-                <mat-icon>category</mat-icon>
+              <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate" [matTooltip]="'myDevices.classify' | translate">
+                <mat-icon>label</mat-icon>
               </button>
               <label
                 *ngIf="!device.statusLabel || device.id === 'air-purifier' || device.id === 'bedside-speaker'"
@@ -216,7 +216,7 @@
           <span class="room-icon room-icon--kitchen">
             <img [src]="getIcon(room.icon)" alt="" class="ui-icon ui-icon--md" />
           </span>
-          <h2>{{ room.name }}</h2>
+          <h2>{{ room.nameKey ? (room.nameKey | translate) : room.name }}</h2>
         </div>
 
         <div class="compact-device-list">
@@ -236,8 +236,8 @@
                 {{ 'myDevices.battery' | translate }}: {{ battery }}
               </p>
             </div>
-            <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate">
-              <mat-icon>category</mat-icon>
+            <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate" [matTooltip]="'myDevices.classify' | translate">
+              <mat-icon>label</mat-icon>
             </button>
             <label
               class="toggle-switch toggle-switch--small"

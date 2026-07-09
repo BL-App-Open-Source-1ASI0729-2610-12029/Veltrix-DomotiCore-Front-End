@@ -60,8 +60,84 @@ const MOCK_SCHEDULES: GroupScheduleResponse[] = [
 ];
 
 const MOCK_INSIGHTS: EfficiencyInsightResponse = { savingsPercent: 12.4, totalSavedKwh: 1240, co2AvoidedTons: 0.85 };
-const MOCK_SCENES: ActiveSceneResponse[] = [];
-const MOCK_UPCOMING: UpcomingEventResponse[] = [];
+const MOCK_SCENES: ActiveSceneResponse[] = [
+  {
+    id: 'away-mode',
+    name: 'Away Mode',
+    nameKey: 'automation.mock.scenes.awayMode.name',
+    description: 'When everyone leaves home',
+    descriptionKey: 'automation.mock.scenes.awayMode.description',
+    icon: 'home',
+    iconBg: '#eef3ff',
+    active: false,
+  },
+  {
+    id: 'morning-routine',
+    name: 'Morning Routine',
+    nameKey: 'automation.mock.scenes.morningRoutine.name',
+    description: 'Weekdays at 6:30 AM',
+    descriptionKey: 'automation.mock.scenes.morningRoutine.description',
+    icon: 'light_mode',
+    iconBg: '#fff7ed',
+    active: true,
+  },
+  {
+    id: 'movie-night',
+    name: 'Movie Night',
+    nameKey: 'automation.mock.scenes.movieNight.name',
+    description: 'Dim lights, close blinds',
+    descriptionKey: 'automation.mock.scenes.movieNight.description',
+    icon: 'tv',
+    iconBg: '#f5f3ff',
+    active: false,
+  },
+  {
+    id: 'night-mode',
+    name: 'Night Mode',
+    nameKey: 'automation.mock.scenes.nightMode.name',
+    description: 'Activates at 11:00 PM',
+    descriptionKey: 'automation.mock.scenes.nightMode.description',
+    icon: 'dark_mode',
+    iconBg: '#eef3ff',
+    active: true,
+  },
+];
+
+const MOCK_UPCOMING: UpcomingEventResponse[] = [
+  {
+    id: 'evt-lights',
+    time: '10:00 PM',
+    title: 'TURN OFF ALL LIGHTS',
+    titleKey: 'automation.mock.events.turnOffLights.title',
+    activeDays: [true, true, true, true, true, false, false],
+    footerIcon: 'lightbulb',
+    footerText: '24 connected devices',
+    footerTextKey: 'automation.mock.events.turnOffLights.footer',
+    active: true,
+  },
+  {
+    id: 'evt-morning',
+    time: '07:00 AM',
+    title: 'MORNING WAKE UP',
+    titleKey: 'automation.mock.events.morningWakeup.title',
+    activeDays: [true, true, true, true, true, false, false],
+    footerIcon: 'thermostat',
+    footerText: 'Target: 22°C',
+    footerTextKey: 'automation.mock.events.morningWakeup.footer',
+    active: true,
+  },
+  {
+    id: 'evt-security',
+    time: '06:00 PM',
+    title: 'EVENING SECURITY CHECK',
+    titleKey: 'automation.mock.events.eveningSecurity.title',
+    activeDays: [true, true, true, true, true, true, true],
+    footerIcon: 'shield',
+    footerText: 'Perimeter sensors',
+    footerTextKey: 'automation.mock.events.eveningSecurity.footer',
+    active: false,
+  },
+];
 const MOCK_SUGGESTION: SmartSuggestionResponse = {
   message: 'Based on your usage patterns, we suggest creating an automation to turn off the living room TV when no motion is detected for 30 minutes.',
   messageKey: 'automation.mock.suggestion.message',

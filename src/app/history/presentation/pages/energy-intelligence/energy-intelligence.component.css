@@ -663,6 +663,23 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+.savings-row {
+  grid-column: 1 / -1;
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.savings-row__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .savings-row__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .insights-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

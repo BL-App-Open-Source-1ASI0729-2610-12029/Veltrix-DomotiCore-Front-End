@@ -37,12 +37,14 @@
       {
         "id": "sa-1",
         "title": "Unexpected Entry",
+        "titleKey": "historyLog.alerts.unexpectedEntry",
         "hoursAgo": 1,
         "type": "warning"
       },
       {
         "id": "sa-2",
         "title": "Auto-lock Activated",
+        "titleKey": "historyLog.alerts.autoLock",
         "hoursAgo": 3,
         "type": "info"
       }

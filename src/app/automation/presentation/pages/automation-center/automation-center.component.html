@@ -80,11 +80,13 @@
             </label>
           </div>
           <h3 class="upcoming-card__title">{{ event.titleKey ? (event.titleKey | translate) : event.title }}</h3>
+          <p class="upcoming-schedule">{{ getActiveDaysSummary(event.activeDays) }}</p>
           <div class="day-pills">
             <span
               *ngFor="let dayKey of dayLabelKeys; let i = index"
               class="day-pill"
               [class.day-pill--active]="event.activeDays[i]"
+              [class.day-pill--inactive]="!event.activeDays[i]"
             >{{ dayKey | translate }}</span>
           </div>
           <div class="upcoming-card__footer">

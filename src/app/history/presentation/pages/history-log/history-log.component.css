@@ -397,6 +397,73 @@
   color: var(--gray-900);
 }
 
+.summary-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.summary-badge,
+.summary-stat-pill {
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.summary-badge--success {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.summary-stat-pill {
+  background: #eef3ff;
+  color: #2949c7;
+}
+
+.summary-stat-pill--alert {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.summary-highlight {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  color: var(--gray-500);
+}
+
+.summary-highlight strong {
+  color: var(--gray-900);
+}
+
+.health-ring {
+  width: 72px;
+  height: 72px;
+  margin: 0 0 0.75rem;
+}
+
+.health-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.health-ring__track {
+  fill: none;
+  stroke: var(--surface-muted);
+  stroke-width: 3;
+}
+
+.health-ring__value {
+  fill: none;
+  stroke: #22c55e;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
 .summary-card__icon {
   width: 40px;
   height: 40px;

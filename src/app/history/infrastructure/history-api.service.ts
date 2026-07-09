@@ -87,6 +87,7 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
     dailyAverageLabel: 'Stable vs last 30 days',
     dailyAverageBars: [42, 55, 48, 62, 58, 70, 65],
     ecoTip: 'Lowering your thermostat by just 2°C could save you 0.6 kWh today.',
+    ecoTipKey: 'history.ecoTip.day',
     devices: SHARED_DEVICES.map(device => ({
       ...device,
       consumptionKwh: +(device.consumptionKwh / 7).toFixed(1),
@@ -122,6 +123,7 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
     dailyAverageLabel: 'Stable vs last 30 days',
     dailyAverageBars: [42, 55, 48, 62, 58, 70, 65],
     ecoTip: 'Lowering your thermostat by just 2°C could save you 4.2 kWh this week.',
+    ecoTipKey: 'history.ecoTip.week',
     devices: SHARED_DEVICES,
     savingsSuggestions: SHARED_SAVINGS,
     anomalies: SHARED_ANOMALIES,
@@ -148,6 +150,7 @@ const MOCK_BY_PERIOD: Record<EnergyPeriod, EnergyIntelligenceResponse> = {
     dailyAverageLabel: 'Stable vs last 30 days',
     dailyAverageBars: [38, 52, 46, 60, 55, 68, 62],
     ecoTip: 'Lowering your thermostat by just 2°C could save you 18.4 kWh this month.',
+    ecoTipKey: 'history.ecoTip.month',
     devices: SHARED_DEVICES.map(device => ({
       ...device,
       consumptionKwh: +(device.consumptionKwh * 4.3).toFixed(1),

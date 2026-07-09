@@ -272,7 +272,10 @@ body {
 .chart-body {
   position: relative;
   min-height: 240px;
-  overflow: hidden;
+}
+
+.peak-label-svg {
+  pointer-events: none;
 }
 
 .chart-body svg {
@@ -364,37 +367,6 @@ body {
   fill: #ff9800;
   stroke: #fff;
   stroke-width: 2;
-}
-
-.peak-badge {
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 8px));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 6px 10px;
-  background: var(--primary-color);
-  color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(41, 73, 199, 0.35);
-  pointer-events: none;
-  z-index: 2;
-  white-space: nowrap;
-}
-
-.peak-badge__value {
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.peak-badge__label {
-  font-size: 10px;
-  font-weight: 600;
-  opacity: 0.9;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
 }
 
 .chart-legend {

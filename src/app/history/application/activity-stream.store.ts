@@ -17,7 +17,7 @@ export class ActivityStreamStore {
   readonly summary = signal<HistorySummary | null>(null);
   readonly loading = signal(false);
   readonly searchQuery = signal('');
-  readonly dateRange = signal<DateRangeFilter>('last_24h');
+  readonly dateRange = signal<DateRangeFilter>('last_7d');
   readonly deviceType = signal<ActivityDeviceType | 'all'>('all');
   readonly currentPage = signal(1);
 

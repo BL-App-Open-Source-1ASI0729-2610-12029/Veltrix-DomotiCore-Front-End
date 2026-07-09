@@ -26,6 +26,7 @@ export interface ActivityStreamEntryResponse {
 export interface SecurityAlertResponse {
   id: string;
   title: string;
+  titleKey?: string;
   hoursAgo: number;
   type: 'warning' | 'info' | 'critical';
 }

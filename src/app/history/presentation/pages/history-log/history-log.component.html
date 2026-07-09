@@ -124,13 +124,22 @@
   </mat-card>
 
   <div class="summary-row" *ngIf="store.summary() as summary">
-    <mat-card class="card content-card summary-card">
+    <mat-card class="card content-card summary-card summary-card--health">
       <mat-card-content>
-      <div class="summary-card__icon summary-card__icon--health">
-        <img [src]="icons.checkCircle" alt="" class="ui-icon ui-icon--md" />
+      <div class="summary-card__top">
+        <div class="summary-card__icon summary-card__icon--health">
+          <img [src]="icons.checkCircle" alt="" class="ui-icon ui-icon--md" />
+        </div>
+        <span class="summary-badge summary-badge--success">{{ 'historyLog.healthStatus.optimal' | translate }}</span>
       </div>
       <h3>{{ 'historyLog.systemHealth' | translate }}</h3>
       <p class="summary-metric">{{ 'historyLog.uptime' | translate }}: <strong>{{ summary.uptimePercent }}%</strong></p>
+      <div class="health-ring" aria-hidden="true">
+        <svg viewBox="0 0 36 36">
+          <path class="health-ring__track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path class="health-ring__value" [attr.stroke-dasharray]="summary.uptimePercent + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+        </svg>
+      </div>
       <div class="progress-bar">
         <div class="progress-bar__fill" [style.width.%]="summary.uptimePercent"></div>
       </div>
@@ -138,12 +147,16 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="card content-card summary-card">
+    <mat-card class="card content-card summary-card summary-card--volume">
       <mat-card-content>
-      <div class="summary-card__icon summary-card__icon--volume">
-        <img [src]="icons.barChart" alt="" class="ui-icon ui-icon--md" />
+      <div class="summary-card__top">
+        <div class="summary-card__icon summary-card__icon--volume">
+          <img [src]="icons.barChart" alt="" class="ui-icon ui-icon--md" />
+        </div>
+        <span class="summary-stat-pill">{{ getTotalEventVolume() }} {{ 'historyLog.eventsLabel' | translate }}</span>
       </div>
       <h3>{{ 'historyLog.eventVolume' | translate }}</h3>
+      <p class="summary-highlight">{{ 'historyLog.peakDay' | translate }}: <strong>{{ getPeakDayLabel() }}</strong></p>
       <div class="volume-chart">
         <div class="volume-bar" *ngFor="let day of summary.eventVolumeByDay">
           <div
@@ -157,10 +170,13 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="card content-card summary-card">
+    <mat-card class="card content-card summary-card summary-card--security">
       <mat-card-content>
-      <div class="summary-card__icon summary-card__icon--security">
-        <img [src]="icons.warning" alt="" class="ui-icon ui-icon--md" />
+      <div class="summary-card__top">
+        <div class="summary-card__icon summary-card__icon--security">
+          <img [src]="icons.warning" alt="" class="ui-icon ui-icon--md" />
+        </div>
+        <span class="summary-stat-pill summary-stat-pill--alert">{{ summary.securityAlerts.length }} {{ 'historyLog.alertsLabel' | translate }}</span>
       </div>
       <h3>{{ 'historyLog.securityAlerts' | translate }}</h3>
       <div class="alert-list">
@@ -172,7 +188,7 @@
         >
           <img [src]="getAlertIcon(alert.type)" alt="" class="ui-icon ui-icon--sm" />
           <div>
-            <strong>{{ alert.title }}</strong>
+            <strong>{{ alert.titleKey ? (alert.titleKey | translate) : alert.title }}</strong>
             <small>{{ 'historyLog.hoursAgo' | translate:{ hours: alert.hoursAgo } }}</small>
           </div>
         </div>

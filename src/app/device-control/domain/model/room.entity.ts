@@ -5,6 +5,7 @@ export type RoomLayout = 'featured' | 'compact' | 'suite';
 export interface Room {
   id: string;
   name: string;
+  nameKey?: string;
   icon: string;
   layout: RoomLayout;
   activeDeviceCount?: number;

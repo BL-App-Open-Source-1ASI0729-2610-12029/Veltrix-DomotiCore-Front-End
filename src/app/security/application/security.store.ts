@@ -57,7 +57,20 @@ export class SecurityStore {
     });
   });
 
-  readonly allLocksSecured = computed(() => this.locks().every(lock => lock.secured));
+  readonly allLocksSecured = computed(() => {
+    const locks = this.locks();
+    return locks.length > 0 && locks.every(lock => lock.secured);
+  });
+
+  private locksLoaded = false;
+
+  ensureLocksLoaded(): void {
+    if (this.locksLoaded) return;
+    this.locksLoaded = true;
+    this.api.getLocks().subscribe({
+      next: locks => this.locks.set(locks),
+    });
+  }
 
   loadAuthorizedUsers(): void {
     this.api.getAuthorizedUsers().subscribe({

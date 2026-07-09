@@ -24,7 +24,7 @@ export class HistoryLogComponent implements OnInit {
     'all', 'lighting', 'sensor', 'climate', 'camera', 'appliance',
   ];
 
-  selectedDateRange: DateRangeFilter = 'last_24h';
+  selectedDateRange: DateRangeFilter = 'last_7d';
   selectedDeviceType: ActivityDeviceType | 'all' = 'all';
   openMenuId: string | null = null;
   readonly pendingDeleteId = signal<string | null>(null);
@@ -58,6 +58,18 @@ export class HistoryLogComponent implements OnInit {
   getMaxEventVolume(): number {
     const days = this.store.summary()?.eventVolumeByDay ?? [];
     return Math.max(...days.map(d => d.value), 1);
+  }
+
+  getTotalEventVolume(): number {
+    const days = this.store.summary()?.eventVolumeByDay ?? [];
+    return days.reduce((total, day) => total + day.value, 0);
+  }
+
+  getPeakDayLabel(): string {
+    const days = this.store.summary()?.eventVolumeByDay ?? [];
+    if (!days.length) return '—';
+    const peak = days.reduce((best, day) => (day.value > best.value ? day : best), days[0]);
+    return peak.day;
   }
 
   onSearch(event: Event): void {
