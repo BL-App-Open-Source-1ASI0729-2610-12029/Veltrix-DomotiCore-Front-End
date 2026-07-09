@@ -1790,6 +1790,14 @@
       "addDeviceNavigating": "Opening explorer with network scan..."
     }
   },
+  "accessDenied": {
+    "title": "Section not available",
+    "segmentMessage": "This section is not enabled for your account type. Some areas are only available in Smart Home or Small Business mode.",
+    "permissionMessage": "You do not have permission to access this section. Contact your administrator if you need access.",
+    "genericMessage": "This section is not available for your current session.",
+    "hint": "You can return to your home screen and continue with the sections available to you.",
+    "backHome": "Go to home"
+  },
   "onboarding": {
     "eyebrow": "Initial setup",
     "title": "Set up your DomotiCore space",

@@ -1,8 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { GOOGLE_ICONS } from '../../shared/constants/google-icons';
 import { ThemeService } from '../../shared/services/theme.service';
 import { SettingsApiService } from '../infrastructure/settings-api.service';
 
-export const DEFAULT_PROFILE_PHOTO = 'assets/icons/shared/profile-admin.jpg';
+export const DEFAULT_PROFILE_PHOTO = GOOGLE_ICONS.person;
 
 export type PreferredExportFormat = 'csv' | 'excel' | 'pdf';
 

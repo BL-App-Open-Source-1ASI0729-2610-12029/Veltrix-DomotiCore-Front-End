@@ -15,6 +15,7 @@ import { UiFeedbackService } from '../../../shared/services/ui-feedback.service'
 import { SecurityStore } from '../../../security/application/security.store';
 import { AuthorizedUser } from '../../../security/domain/model/authorized-user.entity';
 import { AccessLevel } from '../../../security/infrastructure/security-response';
+import { SegmentNavigationService } from '../../../iam/application/segment-navigation.service';
 import { AuthService } from '../../../iam/application/auth.service';
 import { RolePermissionService } from '../../../iam/application/role-permission.service';
 import { LocalAuthRepository } from '../../../iam/infrastructure/local-auth.repository';
@@ -47,6 +48,7 @@ export class SettingsComponent implements OnInit {
   private readonly securityStore = inject(SecurityStore);
   private readonly feedback = inject(UiFeedbackService);
   private readonly router = inject(Router);
+  private readonly segmentNav = inject(SegmentNavigationService);
   private readonly translate = inject(TranslateService);
   private readonly theme = inject(ThemeService);
   private readonly auth = inject(AuthService);
@@ -463,10 +465,10 @@ export class SettingsComponent implements OnInit {
 
   manageAllHubs(): void {
     if (this.isBusinessMode()) {
-      this.router.navigate(['/app/users/business-profile']);
+      this.segmentNav.navigate(['/app/users/business-profile']);
       return;
     }
-    this.router.navigate(['/app/smart-integrations/connected-services']);
+    this.segmentNav.navigate(['/app/devices/gateway']);
   }
 
   manageRetention(): void {

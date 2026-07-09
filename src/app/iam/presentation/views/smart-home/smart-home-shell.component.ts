@@ -69,6 +69,6 @@ export class SmartHomeShellComponent {
   );
 
   private isSettingsUrl(url: string): boolean {
-    return url.includes('/settings');
+    return url.includes('/settings') || url.includes('/access-denied');
   }
 }

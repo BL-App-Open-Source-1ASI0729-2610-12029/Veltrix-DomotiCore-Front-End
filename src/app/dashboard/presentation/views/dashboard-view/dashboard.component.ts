@@ -8,6 +8,7 @@ import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { DeviceEntity, DeviceUsageCategory } from '../../../domain/model/device.entity';
 import { AlertEntity } from '../../../domain/model/alert.entity';
+import { SegmentNavigationService } from '../../../../iam/application/segment-navigation.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 @Component({
@@ -23,6 +24,7 @@ export class DashboardComponent {
 
   private dashboardStore = inject(DashboardStore);
   private router = inject(Router);
+  private segmentNav = inject(SegmentNavigationService);
   private feedback = inject(UiFeedbackService);
   private translate = inject(TranslateService);
 
@@ -99,7 +101,7 @@ export class DashboardComponent {
   }
 
   onViewAllAlerts() {
-    this.router.navigate(['/app/alerts']);
+    this.segmentNav.navigate(['/app/history/notifications']);
   }
 
   onAddAlert() {

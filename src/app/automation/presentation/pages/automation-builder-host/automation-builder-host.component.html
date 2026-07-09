@@ -1,3 +1,3 @@
-@if (auth.getAccountType() === 'smart-home') {
+@if (auth.getEffectiveAccountType() === 'smart-home') {
   <app-automation-builder />
 }

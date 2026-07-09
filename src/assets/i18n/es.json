@@ -1790,6 +1790,14 @@
       "addDeviceNavigating": "Abriendo explorador con escaneo de red..."
     }
   },
+  "accessDenied": {
+    "title": "Sección no disponible",
+    "segmentMessage": "Esta sección no está habilitada para tu tipo de cuenta. Algunas áreas solo están disponibles en modo Hogar Inteligente o Pequeños Negocios.",
+    "permissionMessage": "No tienes permisos para acceder a esta sección. Contacta a tu administrador si necesitas acceso.",
+    "genericMessage": "Esta sección no está disponible en tu sesión actual.",
+    "hint": "Puedes volver a tu pantalla principal y continuar con las secciones disponibles para ti.",
+    "backHome": "Ir al inicio"
+  },
   "onboarding": {
     "eyebrow": "Configuración inicial",
     "title": "Configura tu espacio DomotiCore",

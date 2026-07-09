@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../../iam/application/auth.service';
+import { SegmentNavigationService } from '../../../../iam/application/segment-navigation.service';
 import { NotificationFeedStore } from '../../../application/notification-feed.store';
 import {
   GroupedNotificationFeed,
@@ -16,12 +18,20 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
 type FeedSectionKey = keyof GroupedNotificationFeed;
 
-const DETAIL_ROUTES: Record<string, string[]> = {
+const SMART_HOME_DETAIL_ROUTES: Record<string, string[]> = {
   'nf-1': ['/app/history/energy'],
   'nf-2': ['/app/automation/center'],
   'nf-3': ['/app/devices'],
-  'nf-4': ['/app/smart-integrations/connected-services'],
+  'nf-4': ['/app/devices/gateway'],
   'nf-5': ['/app/security'],
+};
+
+const SMALL_BUSINESS_DETAIL_ROUTES: Record<string, string[]> = {
+  'nf-1': ['/app/reports/cost-analysis'],
+  'nf-2': ['/app/automation/center'],
+  'nf-3': ['/app/devices'],
+  'nf-4': ['/app/smart-integrations/connected-services'],
+  'nf-5': ['/app/operations-hub'],
 };
 
 @Component({
@@ -34,7 +44,8 @@ export class NotificationsCenterComponent implements OnInit {
   readonly store = inject(NotificationFeedStore);
   private readonly feedback = inject(UiFeedbackService);
   private readonly translate = inject(TranslateService);
-  private readonly router = inject(Router);
+  private readonly segmentNav = inject(SegmentNavigationService);
+  private readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
 
   readonly icons = GOOGLE_ICONS;
@@ -102,8 +113,12 @@ export class NotificationsCenterComponent implements OnInit {
   onAction(item: NotificationFeedItem, action: NotificationAction): void {
     if (action.id === 'view') {
       this.store.markAsRead(item.id);
-      const route = DETAIL_ROUTES[item.id] ?? ['/app/history/activity'];
-      this.router.navigate(route);
+      const routes =
+        this.auth.getEffectiveAccountType() === 'small-business'
+          ? SMALL_BUSINESS_DETAIL_ROUTES
+          : SMART_HOME_DETAIL_ROUTES;
+      const route = routes[item.id] ?? ['/app/history/activity'];
+      this.segmentNav.navigate(route);
       return;
     }
 
@@ -122,9 +137,11 @@ export class NotificationsCenterComponent implements OnInit {
 
     if (action.id === 'shop') {
       this.store.markAsRead(item.id);
-      this.router.navigate(['/app/smart-integrations/connected-services'], {
-        queryParams: { order: 'battery' },
-      });
+      const route =
+        this.auth.getEffectiveAccountType() === 'small-business'
+          ? ['/app/smart-integrations/connected-services']
+          : ['/app/devices'];
+      this.segmentNav.navigate(route, { queryParams: { order: 'battery' } });
       this.feedback.showToast(this.translate.instant('historyNotifications.toast.openingStore'), 'info');
     }
   }

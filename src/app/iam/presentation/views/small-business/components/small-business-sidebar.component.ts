@@ -18,7 +18,7 @@ import { MATERIAL_IMPORTS } from '../../../../../shared/material';
       <div class="view-sidebar__content">
         <div class="view-sidebar__header">
           <div class="brand">
-            <img src="assets/icons/shared/image.png" [alt]="'navbar.logoAlt' | translate" class="brand__logo brand__logo--business" />
+            <img [src]="icons.deviceHub" [alt]="'navbar.logoAlt' | translate" class="brand__logo brand__logo--business" />
             <div>
               <h1 class="brand__name">{{ 'app.title' | translate }}</h1>
               <p class="brand__tagline">{{ 'views.smallBusiness.tagline' | translate }}</p>

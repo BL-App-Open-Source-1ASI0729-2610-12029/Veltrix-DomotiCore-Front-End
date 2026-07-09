@@ -1,0 +1,13 @@
+<section class="access-denied">
+  <div class="access-denied__card">
+    <div class="access-denied__icon" aria-hidden="true">
+      <img [src]="icons.lock" alt="" class="ui-icon ui-icon--lg" />
+    </div>
+    <h1>{{ 'accessDenied.title' | translate }}</h1>
+    <p>{{ messageKey() | translate }}</p>
+    <p class="access-denied__hint">{{ 'accessDenied.hint' | translate }}</p>
+    <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="goHome()">
+      {{ 'accessDenied.backHome' | translate }}
+    </button>
+  </div>
+</section>
