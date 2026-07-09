@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { DevicesOverview } from '../domain/model/devices-overview.entity';
 import { SmartDevice } from '../domain/model/smart-device.entity';
@@ -9,6 +9,7 @@ import { DeviceDetailApiService } from '../infrastructure/device-detail-api.serv
 import { DeviceBulkControlApiService } from '../infrastructure/device-bulk-control-api.service';
 import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
 import { DevicesOverviewAssembler } from '../infrastructure/devices-overview-assembler';
+import { UiFeedbackService } from '../../shared/services/ui-feedback.service';
 
 export type NewDeviceType = 'climate' | 'generic' | 'lighting';
 
@@ -23,9 +24,11 @@ export class DevicesOverviewStore {
   private readonly detailApi = inject(DeviceDetailApiService);
   private readonly bulkApi = inject(DeviceBulkControlApiService);
   private readonly automationApi = inject(AutomationApiService);
+  private readonly feedback = inject(UiFeedbackService);
 
   readonly overview = signal<DevicesOverview | null>(null);
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly activeSceneId = signal<string | null>(null);
 
   readonly featuredRoom = computed(() =>
@@ -42,10 +45,15 @@ export class DevicesOverviewStore {
 
   loadOverview(): Observable<DevicesOverview> {
     this.loading.set(true);
+    this.loadError.set(false);
     return this.api.getOverview().pipe(
-      tap({
-        next: data => this.overview.set(data),
-        error: () => undefined,
+      tap(data => {
+        this.overview.set(data);
+        this.loadError.set(false);
+      }),
+      catchError(error => {
+        this.loadError.set(true);
+        return throwError(() => error);
       }),
       finalize(() => this.loading.set(false)),
     );
@@ -260,6 +268,10 @@ export class DevicesOverviewStore {
   private saveOverview(overview: DevicesOverview): void {
     this.api.saveOverview(overview).subscribe({
       next: data => this.overview.set(data),
+      error: () => {
+        this.feedback.showToast('No se pudo guardar el estado del dispositivo. Recargando…', 'error');
+        this.loadOverview().subscribe();
+      },
     });
   }
 
@@ -302,18 +314,51 @@ export class DevicesOverviewStore {
       ?.devices.find(device => device.id === deviceId);
     if (!toggledDevice) return;
 
-    this.detailApi.getById(deviceId).subscribe({
+    this.syncDetailAfterToggle(roomId, toggledDevice);
+  }
+
+  private syncDetailAfterToggle(roomId: string, device: SmartDevice): void {
+    const active = device.active;
+    const powerLoadKw = active ? (device.powerUsageW ?? 0) / 1000 : 0;
+
+    this.detailApi.getById(device.id).subscribe({
       next: detail => {
-        const active = toggledDevice.active;
         this.detailApi
-          .update({
+          .upsert({
             ...detail,
             active,
-            powerLoadKw: active ? detail.powerLoadKw || 1.4 : 0,
+            powerLoadKw: active ? detail.powerLoadKw || powerLoadKw || 0.3 : 0,
           })
-          .subscribe();
+          .subscribe({
+            error: () =>
+              this.feedback.showToast('No se pudo sincronizar el estado del dispositivo.', 'error'),
+          });
       },
-      error: () => undefined,
+      error: () => {
+        const roomName = this.getRoomName(roomId);
+        const deviceType =
+          device.usageCategory === 'lighting' || device.icon === 'lightbulb'
+            ? 'lighting'
+            : device.icon === 'acUnit' || device.icon === 'thermostat'
+              ? 'climate'
+              : 'generic';
+        const detail = createDefaultDeviceDetail(
+          device.id,
+          roomId,
+          roomName,
+          device.name,
+          device.icon,
+          deviceType,
+        );
+        detail.active = active;
+        detail.connection = device.connection;
+        detail.powerLoadKw = powerLoadKw;
+
+        this.detailApi.upsert(detail).subscribe({
+          error: () =>
+            this.feedback.showToast('No se pudo sincronizar el estado del dispositivo.', 'error'),
+        });
+      },
     });
   }
 

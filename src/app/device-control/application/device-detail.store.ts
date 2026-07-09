@@ -68,13 +68,21 @@ export class DeviceDetailStore {
         this.detail.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.api.getById(deviceId).subscribe({
+          next: data => {
+            this.detail.set(data);
+            this.loading.set(false);
+          },
+          error: () => this.loading.set(false),
+        });
+      },
     });
   }
 
   private persist(detail: DeviceDetail): void {
     this.saving.set(true);
-    this.api.update(detail).subscribe({
+    this.api.upsert(detail).subscribe({
       next: data => {
         this.detail.set(data);
         this.saving.set(false);

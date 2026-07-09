@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, map, switchMap } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { Observable, map, of, switchMap } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 import { GOOGLE_ICONS, GoogleIconKey } from '../../shared/constants/google-icons';
 import { AlertEntity } from '../domain/model/alert.entity';
@@ -259,14 +259,29 @@ export class DashboardStore {
       return this.reload();
     }
 
+    const nextActive = !device.active;
+
     return this.detailApi.getById(device.id).pipe(
       switchMap(detail =>
-        this.detailApi.update({
+        this.detailApi.upsert({
           ...detail,
-          active: !detail.active,
-          powerLoadKw: !detail.active ? detail.powerLoadKw || 1.0 : 0,
+          active: nextActive,
+          powerLoadKw: nextActive ? detail.powerLoadKw || 1.0 : 0,
         }),
       ),
+      catchError(() => {
+        const fallback = createDefaultDeviceDetail(
+          device.id!,
+          'living-room',
+          'Living Room',
+          device.name ?? device.id!,
+          device.icon ?? 'moreHoriz',
+          'generic',
+        );
+        fallback.active = nextActive;
+        fallback.powerLoadKw = nextActive ? 0.3 : 0;
+        return this.detailApi.upsert(fallback);
+      }),
       switchMap(() => this.reload()),
       map(() => undefined),
     );
@@ -306,7 +321,7 @@ export class DashboardStore {
 
     return this.detailApi.getById(target.id).pipe(
       switchMap(detail =>
-        this.detailApi.update({
+        this.detailApi.upsert({
           ...detail,
           active: false,
           powerLoadKw: 0,

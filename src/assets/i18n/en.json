@@ -163,6 +163,9 @@
     "turnOnAll": "Turn ON All",
     "ecoMode": "Eco Mode",
     "gateway": "Gateway",
+    "loading": "Loading devices…",
+    "loadFailed": "Could not load devices. Check your connection and try again.",
+    "retry": "Retry",
     "battery": "Battery",
     "batteryUnavailable": "Battery data unavailable",
     "classify": "Classify",
@@ -181,6 +184,7 @@
     "toast": {
       "refreshed": "Device status refreshed.",
       "refreshFailed": "Could not refresh devices. Check your connection.",
+      "loadFailed": "Could not load devices.",
       "turnOnAll": "All online devices were turned on.",
       "turnOnAllPartial": "Some devices stayed offline: {{devices}}",
       "ecoMode": "Eco mode reduced high-consumption devices.",

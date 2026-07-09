@@ -3,6 +3,18 @@
   padding-bottom: 2rem;
 }
 
+.devices-page--loading,
+.devices-page--error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 280px;
+  text-align: center;
+  color: #64748b;
+}
+
 .device-tile--clickable,
 .compact-device--clickable {
   cursor: pointer;

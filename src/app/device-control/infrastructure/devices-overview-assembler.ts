@@ -9,11 +9,11 @@ export class DevicesOverviewAssembler {
       totalConsumptionKwh: dto.totalConsumptionKwh,
       consumptionComparison: dto.consumptionComparison,
       consumptionComparisonKey: dto.consumptionComparisonKey,
-      rooms: dto.rooms.map(room => ({
+      rooms: (dto.rooms ?? []).map(room => ({
         ...room,
-        devices: room.devices.map(device => ({ ...device })),
+        devices: (room.devices ?? []).map(device => ({ ...device })),
       })),
-      scenes: dto.scenes.map(scene => ({ ...scene })),
+      scenes: (dto.scenes ?? []).map(scene => ({ ...scene })),
     };
   }
 }

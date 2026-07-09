@@ -43,7 +43,18 @@ export class DeviceDashboardComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       this.searchQuery.set(params.get('q') ?? '');
     });
-    this.store.loadOverview().subscribe();
+    this.loadDevices();
+  }
+
+  onRetryLoad(): void {
+    this.loadDevices();
+  }
+
+  private loadDevices(): void {
+    this.store.loadOverview().subscribe({
+      error: () =>
+        this.feedback.showToast(this.translate.instant('myDevices.toast.loadFailed'), 'error'),
+    });
   }
 
   onRefresh(): void {

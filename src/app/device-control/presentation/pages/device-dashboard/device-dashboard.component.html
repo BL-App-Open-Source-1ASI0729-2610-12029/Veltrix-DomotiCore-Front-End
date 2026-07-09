@@ -1,3 +1,14 @@
+<div class="devices-page devices-page--loading" *ngIf="store.loading() && !store.overview()">
+  <p>{{ 'myDevices.loading' | translate }}</p>
+</div>
+
+<div class="devices-page devices-page--error" *ngIf="store.loadError() && !store.overview() && !store.loading()">
+  <p>{{ 'myDevices.loadFailed' | translate }}</p>
+  <button type="button" mat-flat-button color="primary" (click)="onRetryLoad()">
+    {{ 'myDevices.retry' | translate }}
+  </button>
+</div>
+
 <div class="devices-page" *ngIf="store.overview() as overview">
 
   <header class="page-header">

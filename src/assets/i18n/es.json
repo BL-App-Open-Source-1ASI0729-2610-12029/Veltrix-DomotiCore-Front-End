@@ -163,6 +163,9 @@
     "turnOnAll": "Encender todo",
     "ecoMode": "Modo ahorro",
     "gateway": "Gateway",
+    "loading": "Cargando dispositivos…",
+    "loadFailed": "No se pudieron cargar los dispositivos. Verifica tu conexión e intenta de nuevo.",
+    "retry": "Reintentar",
     "battery": "Batería",
     "batteryUnavailable": "Información de batería no disponible",
     "classify": "Clasificar",
@@ -181,6 +184,7 @@
     "toast": {
       "refreshed": "Estado de dispositivos actualizado.",
       "refreshFailed": "No se pudo actualizar. Verifica tu conexión.",
+      "loadFailed": "No se pudieron cargar los dispositivos.",
       "turnOnAll": "Todos los dispositivos en línea fueron encendidos.",
       "turnOnAllPartial": "Algunos dispositivos siguieron desconectados: {{devices}}",
       "ecoMode": "El modo ahorro redujo dispositivos de alto consumo.",
