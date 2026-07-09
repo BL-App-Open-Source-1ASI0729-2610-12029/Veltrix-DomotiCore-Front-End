@@ -731,13 +731,19 @@
         "title": "Invitación al equipo",
         "message": "{{inviter}} te invitó al equipo como {{role}}. Zonas: {{zones}}.",
         "resent": "{{inviter}} reenvió tu invitación como {{role}}. Zonas: {{zones}}.",
-        "time": "Recién llegada"
+        "time": "Recién llegada",
+        "toast": "{{inviter}} te invitó como {{role}}. Revisa la campanita.",
+        "accept": "Aceptar",
+        "decline": "Rechazar"
       }
     },
     "toast": {
       "memberInvited": "Invitación enviada a {{name}}.",
       "memberUpdated": "{{name}} actualizado correctamente.",
       "inviteResent": "Invitación reenviada a {{name}}.",
+      "inviteAccepted": "Invitación aceptada. Ya tienes acceso según tu rol.",
+      "inviteDeclined": "Invitación rechazada.",
+      "inviteAcceptFailed": "No se pudo aceptar la invitación. Intenta de nuevo.",
       "memberArchived": "{{name}} movido a miembros archivados.",
       "memberRestored": "{{name}} restaurado como miembro activo.",
       "memberRemoved": "{{name}} eliminado del equipo.",
@@ -1967,6 +1973,8 @@
   "overlay": {
     "notifications": "Notificaciones",
     "markAllRead": "Marcar todas como leídas",
+    "markRead": "Marcar como leída",
+    "noNotifications": "No tienes notificaciones pendientes.",
     "helpCenter": "Centro de Ayuda",
     "gotIt": "Entendido",
     "helpIntro": {

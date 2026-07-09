@@ -731,13 +731,19 @@
         "title": "Team invitation",
         "message": "{{inviter}} invited you to the team as {{role}}. Zones: {{zones}}.",
         "resent": "{{inviter}} resent your invitation as {{role}}. Zones: {{zones}}.",
-        "time": "Just now"
+        "time": "Just now",
+        "toast": "{{inviter}} invited you as {{role}}. Check the bell icon.",
+        "accept": "Accept",
+        "decline": "Decline"
       }
     },
     "toast": {
       "memberInvited": "Invitation sent to {{name}}.",
       "memberUpdated": "{{name}} updated successfully.",
       "inviteResent": "Invitation resent to {{name}}.",
+      "inviteAccepted": "Invitation accepted. You now have access based on your role.",
+      "inviteDeclined": "Invitation declined.",
+      "inviteAcceptFailed": "Could not accept the invitation. Please try again.",
       "memberArchived": "{{name}} moved to archived members.",
       "memberRestored": "{{name}} restored to active members.",
       "memberRemoved": "{{name}} removed from the team.",
@@ -1967,6 +1973,8 @@
   "overlay": {
     "notifications": "Notifications",
     "markAllRead": "Mark all as read",
+    "markRead": "Mark as read",
+    "noNotifications": "You have no pending notifications.",
     "helpCenter": "Help Center",
     "gotIt": "Got it",
     "helpIntro": {

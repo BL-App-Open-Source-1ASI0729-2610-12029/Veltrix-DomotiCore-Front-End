@@ -29,11 +29,7 @@ export class UiFeedbackService {
   readonly helpOpen = signal(false);
   readonly helpTopic = signal('general');
 
-  readonly notifications = signal<AppNotification[]>([
-    { id: 1, titleKey: 'overlay.sampleNotifications.highConsumption.title', messageKey: 'overlay.sampleNotifications.highConsumption.message', timeKey: 'overlay.sampleNotifications.highConsumption.time', read: false },
-    { id: 2, titleKey: 'overlay.sampleNotifications.automationDone.title', messageKey: 'overlay.sampleNotifications.automationDone.message', timeKey: 'overlay.sampleNotifications.automationDone.time', read: false },
-    { id: 3, titleKey: 'overlay.sampleNotifications.deviceOnline.title', messageKey: 'overlay.sampleNotifications.deviceOnline.message', timeKey: 'overlay.sampleNotifications.deviceOnline.time', read: true },
-  ]);
+  readonly notifications = signal<AppNotification[]>([]);
 
   showToast(message: string, type: ToastType = 'info', durationMs = 3500): void {
     const id = ++this.toastCounter;
@@ -81,6 +77,10 @@ export class UiFeedbackService {
       const withoutDuplicate = items.filter(item => item.id !== notification.id);
       return [notification, ...withoutDuplicate];
     });
+  }
+
+  removeNotification(id: number): void {
+    this.notifications.update(items => items.filter(item => item.id !== id));
   }
 
   markAllNotificationsRead(): void {

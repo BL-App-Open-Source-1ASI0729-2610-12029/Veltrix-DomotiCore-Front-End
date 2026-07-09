@@ -31,7 +31,7 @@
     <div class="loading-bar__fill"></div>
   </div>
 
-  <section class="zone-section" *ngFor="let zone of overview.zones" [hidden]="!zoneVisible(zone.name, zoneDeviceNames(zone))">
+  <section class="zone-section" *ngFor="let zone of overview.zones" [hidden]="!zoneVisible(zone, zoneDeviceNames(zone))">
     <div class="zone-section__head">
       <h2>{{ zoneTitle(zone) }}</h2>
       <button
@@ -61,7 +61,7 @@
             <input
               type="checkbox"
               [checked]="device.active"
-              [disabled]="device.status === 'offline'"
+              [disabled]="device.status === 'offline' || !canControlZone(zone.id)"
               (change)="store.toggleCard(zone.id, device.id)"
             />
             <span class="toggle-slider"></span>
@@ -124,11 +124,11 @@
             </td>
             <td>{{ row.loadKw }} kW</td>
             <td (click)="$event.stopPropagation()">
-              <label class="toggle-switch" [class.toggle-switch--disabled]="row.status === 'OFFLINE'">
+              <label class="toggle-switch" [class.toggle-switch--disabled]="row.status === 'OFFLINE' || !canControlZone(zone.id)">
                 <input
                   type="checkbox"
                   [checked]="row.active"
-                  [disabled]="row.status === 'OFFLINE'"
+                  [disabled]="row.status === 'OFFLINE' || !canControlZone(zone.id)"
                   (change)="store.toggleTableRow(zone.id, row.id)"
                 />
                 <span class="toggle-slider"></span>
@@ -147,6 +147,7 @@
             <input
               type="checkbox"
               [checked]="lighting.active"
+              [disabled]="!canControlZone(zone.id)"
               (change)="store.toggleLighting(zone.id)"
             />
             <span class="toggle-slider"></span>

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -6,6 +6,7 @@ import { AuthService } from '../../application/auth.service';
 import { ThemeService } from '../../../shared/services/theme.service';
 import { SettingsStore } from '../../../settings/application/settings.store';
 import { TeamInvitationService } from '../../../team-management/application/team-invitation.service';
+import { TeamMembershipService } from '../../../team-management/application/team-membership.service';
 import { SmartHomeShellComponent } from './smart-home/smart-home-shell.component';
 import { SmallBusinessShellComponent } from './small-business/small-business-shell.component';
 
@@ -29,13 +30,14 @@ import { SmallBusinessShellComponent } from './small-business/small-business-she
     }
   `,
 })
-export class AccountShellComponent implements OnInit {
+export class AccountShellComponent implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   private readonly translate = inject(TranslateService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly theme = inject(ThemeService);
   private readonly settingsStore = inject(SettingsStore);
   private readonly teamInvitations = inject(TeamInvitationService);
+  private readonly teamMembership = inject(TeamMembershipService);
 
   sidebarOpen = true;
 
@@ -47,9 +49,14 @@ export class AccountShellComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.theme.init();
       this.settingsStore.fetchSettings();
-      this.teamInvitations.syncForCurrentUser(this.auth.currentUser);
+      this.teamMembership.sync();
+      this.teamInvitations.startPolling(this.auth.currentUser);
       this.sidebarOpen = window.innerWidth >= 1025;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.teamInvitations.stopPolling();
   }
 
   onToggleSidebar(): void {

@@ -3,6 +3,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BusinessDevicesStore } from '../../../application/business-devices.store';
+import { TeamMembershipService } from '../../../../team-management/application/team-membership.service';
 import {
   BusinessDeviceTableRowResponse,
   BusinessZoneResponse,
@@ -22,6 +23,7 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
 })
 export class BusinessDeviceManagementComponent implements OnInit {
   readonly store = inject(BusinessDevicesStore);
+  readonly membership = inject(TeamMembershipService);
   readonly icons = GOOGLE_ICONS;
 
   readonly showAddEnvironmentModal = signal(false);
@@ -78,11 +80,16 @@ export class BusinessDeviceManagementComponent implements OnInit {
     this.feedback.showToast(this.translate.instant('businessDevices.toast.turnAllOn'), 'success');
   }
 
-  zoneVisible(zoneName: string, deviceNames: string[]): boolean {
+  zoneVisible(zone: BusinessZoneResponse, deviceNames: string[]): boolean {
+    if (!this.membership.canAccessZone(zone.id)) return false;
     const query = this.searchQuery().trim();
     if (!query) return true;
-    if (matchesSearchQuery(zoneName, query)) return true;
+    if (matchesSearchQuery(zone.name, query)) return true;
     return deviceNames.some(name => matchesSearchQuery(name, query));
+  }
+
+  canControlZone(zoneId: string): boolean {
+    return this.membership.canControlDevices(zoneId);
   }
 
   zoneDeviceNames(zone: BusinessZoneResponse): string[] {

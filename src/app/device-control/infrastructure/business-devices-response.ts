@@ -52,6 +52,7 @@ export interface BusinessZoneResponse {
 }
 
 export interface BusinessDevicesOverviewResponse {
+  id?: string;
   activeDeviceCount: number;
   zoneCount: number;
   totalConsumptionKw: number;

@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../../iam/application/auth.service';
 import { TeamInvitationService } from '../../../../team-management/application/team-invitation.service';
 import { GOOGLE_ICONS } from '../../../constants/google-icons';
 import { AppNotification, UiFeedbackService } from '../../../services/ui-feedback.service';
@@ -28,12 +29,31 @@ import { MATERIAL_IMPORTS } from '../../../material';
               *ngFor="let item of feedback.notifications()"
               class="notification-item"
               [class.notification-item--unread]="!item.read"
-              (click)="onNotificationClick(item)"
             >
               <strong>{{ item.titleKey | translate }}</strong>
               <p>{{ item.messageKey | translate:item.messageParams }}</p>
               <small>{{ item.timeKey | translate }}</small>
+              <div class="notification-actions" *ngIf="item.invitationId">
+                <button type="button" mat-flat-button color="primary" (click)="onAccept(item)">
+                  {{ 'teamManagement.notifications.invite.accept' | translate }}
+                </button>
+                <button type="button" mat-stroked-button (click)="onDecline(item)">
+                  {{ 'teamManagement.notifications.invite.decline' | translate }}
+                </button>
+              </div>
+              <button
+                *ngIf="!item.invitationId"
+                type="button"
+                mat-button
+                class="notification-mark-read"
+                (click)="onNotificationClick(item)"
+              >
+                {{ 'overlay.markRead' | translate }}
+              </button>
             </article>
+            <p class="notification-empty" *ngIf="!feedback.notifications().length">
+              {{ 'overlay.noNotifications' | translate }}
+            </p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -116,7 +136,6 @@ import { MATERIAL_IMPORTS } from '../../../material';
       padding: 0.85rem;
       border-radius: 12px;
       border: 1px solid #e5e7eb;
-      cursor: pointer;
     }
 
     .notification-item--unread {
@@ -135,6 +154,25 @@ import { MATERIAL_IMPORTS } from '../../../material';
       margin: 0;
       color: #6b7280;
       font-size: 0.85rem;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .notification-mark-read {
+      margin-top: 0.5rem;
+      padding: 0;
+    }
+
+    .notification-empty {
+      color: #6b7280;
+      text-align: center;
+      margin: 1rem 0 0;
+      font-size: 0.9rem;
     }
 
     .help-intro {
@@ -189,7 +227,8 @@ import { MATERIAL_IMPORTS } from '../../../material';
     }
 
     :root[data-theme='dark'] .notification-item p,
-    :root[data-theme='dark'] .notification-item small {
+    :root[data-theme='dark'] .notification-item small,
+    :root[data-theme='dark'] .notification-empty {
       color: var(--gray-400);
     }
 
@@ -238,12 +277,25 @@ export class AppOverlayComponent {
   readonly icons = GOOGLE_ICONS;
   private readonly translate = inject(TranslateService);
   private readonly teamInvitations = inject(TeamInvitationService);
+  private readonly auth = inject(AuthService);
 
   onNotificationClick(item: AppNotification): void {
     this.feedback.markNotificationRead(item.id);
     if (item.invitationId) {
       this.teamInvitations.markInvitationRead(item.invitationId);
     }
+  }
+
+  onAccept(item: AppNotification): void {
+    if (!item.invitationId) return;
+    this.teamInvitations.acceptInvitation(item.invitationId, this.auth.currentUser);
+    this.feedback.markNotificationRead(item.id);
+  }
+
+  onDecline(item: AppNotification): void {
+    if (!item.invitationId) return;
+    this.teamInvitations.declineInvitation(item.invitationId, this.auth.currentUser);
+    this.feedback.markNotificationRead(item.id);
   }
 
   readonly helpTopics = [

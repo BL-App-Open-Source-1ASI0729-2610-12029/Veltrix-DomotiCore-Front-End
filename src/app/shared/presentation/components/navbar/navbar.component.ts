@@ -61,7 +61,17 @@ import { MATERIAL_IMPORTS } from '../../../material';
       <div class="navbar-end">
         <app-language-switcher></app-language-switcher>
 
-        <button mat-icon-button type="button" class="btn-icon" [matTooltip]="'overlay.notifications' | translate" (click)="onNotifications()">
+        <button
+          mat-icon-button
+          type="button"
+          class="btn-icon"
+          [matBadge]="feedback.unreadCount() > 0 ? feedback.unreadCount() : null"
+          matBadgeColor="warn"
+          matBadgeSize="small"
+          [matBadgeHidden]="feedback.unreadCount() === 0"
+          [matTooltip]="'overlay.notifications' | translate"
+          (click)="onNotifications()"
+        >
           <mat-icon>notifications</mat-icon>
         </button>
 
@@ -89,9 +99,8 @@ export class NavbarComponent implements OnInit {
   readonly icons = GOOGLE_ICONS;
   readonly settingsStore = inject(SettingsStore);
   readonly auth = inject(AuthService);
-
+  readonly feedback = inject(UiFeedbackService);
   private readonly permissions = inject(RolePermissionService);
-  private readonly feedback = inject(UiFeedbackService);
   private readonly teamInvitations = inject(TeamInvitationService);
   private readonly globalSearch = inject(GlobalSearchService);
   private readonly router = inject(Router);
@@ -100,7 +109,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     if (this.auth.isAuthenticated()) {
       this.settingsStore.fetchSettings();
-      this.teamInvitations.syncForCurrentUser(this.auth.currentUser);
+      this.teamInvitations.startPolling(this.auth.currentUser);
     }
   }
 

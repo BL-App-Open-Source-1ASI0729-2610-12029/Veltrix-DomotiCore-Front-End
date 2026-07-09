@@ -3,7 +3,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import {
-
   BusinessDeviceCardResponse,
 
   BusinessDeviceTableRowResponse,
@@ -17,6 +16,7 @@ import {
 import { BusinessDevicesApiService } from '../infrastructure/business-devices-api.service';
 import { DeviceBulkControlApiService } from '../infrastructure/device-bulk-control-api.service';
 import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
+import { UiFeedbackService } from '../../shared/services/ui-feedback.service';
 
 
 
@@ -53,6 +53,7 @@ export class BusinessDevicesStore {
   private readonly api = inject(BusinessDevicesApiService);
   private readonly bulkApi = inject(DeviceBulkControlApiService);
   private readonly automationApi = inject(AutomationApiService);
+  private readonly feedback = inject(UiFeedbackService);
 
 
 
@@ -743,9 +744,17 @@ export class BusinessDevicesStore {
     const current = this.overview();
     if (!current || !this.api.hasApi()) return;
 
-    this.api.updateOverview(current).subscribe({
+    const payload: BusinessDevicesOverviewResponse = {
+      ...current,
+      id: current.id ?? 'default',
+    };
+
+    this.api.updateOverview(payload).subscribe({
       next: data => this.overview.set(data),
-      error: () => undefined,
+      error: () => {
+        this.feedback.showToast('No se pudo guardar el estado del dispositivo. Recargando…', 'error');
+        this.load().subscribe();
+      },
     });
   }
 

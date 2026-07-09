@@ -112,8 +112,7 @@ export class BusinessDevicesApiService {
   getOverview(): Observable<BusinessDevicesOverviewResponse> {
     if (this.api.hasApi()) {
       return this.api
-        .getObjectWithParams<BusinessDevicesOverviewResponse>('business-devices/overview', {})
-        .pipe(catchError(() => this.mockOverview()));
+        .getObjectWithParams<BusinessDevicesOverviewResponse>('business-devices/overview', {});
     }
     return this.mockOverview();
   }
@@ -123,9 +122,10 @@ export class BusinessDevicesApiService {
       return of(overview);
     }
 
+    const payload = { ...overview, id: overview.id ?? 'default' };
+
     return this.http
-      .patch<BusinessDevicesOverviewResponse>(`${this.baseUrl()}/business-devices/overview`, overview)
-      .pipe(catchError(() => of(overview)));
+      .patch<BusinessDevicesOverviewResponse>(`${this.baseUrl()}/business-devices/overview`, payload);
   }
 
   private baseUrl(): string {

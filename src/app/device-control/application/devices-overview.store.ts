@@ -297,9 +297,14 @@ export class DevicesOverviewStore {
     this.overview.set(updated);
     this.saveOverview(updated);
 
+    const toggledDevice = rooms
+      .find(room => room.id === roomId)
+      ?.devices.find(device => device.id === deviceId);
+    if (!toggledDevice) return;
+
     this.detailApi.getById(deviceId).subscribe({
       next: detail => {
-        const active = !detail.active;
+        const active = toggledDevice.active;
         this.detailApi
           .update({
             ...detail,

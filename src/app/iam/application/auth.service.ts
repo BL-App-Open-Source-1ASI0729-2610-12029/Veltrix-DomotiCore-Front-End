@@ -7,6 +7,7 @@ import { AuthFailureReason, AuthLoginResult, AuthRegisterResult } from './auth-r
 import { SettingsStore } from '../../settings/application/settings.store';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { TeamInvitationService } from '../../team-management/application/team-invitation.service';
+import { TeamMembershipService } from '../../team-management/application/team-membership.service';
 import { AccountType, getAccountTypeRoute, isOnboardingComplete } from '../domain/model/account-type.entity';
 import { AuthUser, createLocalUser, stripPassword } from '../domain/model/auth-user.entity';
 import { normalizePlatformRole } from '../domain/model/platform-role.entity';
@@ -29,6 +30,10 @@ export class AuthService {
     return this.injector.get(TeamInvitationService);
   }
 
+  private get teamMembership(): TeamMembershipService {
+    return this.injector.get(TeamMembershipService);
+  }
+
   constructor() {
     this.loadSession();
   }
@@ -44,7 +49,8 @@ export class AuthService {
       this.currentUser = JSON.parse(raw) as AuthUser;
       this.cache.setUserScope(this.currentUser.id);
       if (this.currentUser?.email) {
-        this.teamInvitations.syncForCurrentUser(this.currentUser);
+        this.teamInvitations.startPolling(this.currentUser);
+        this.teamMembership.sync();
       }
     } catch {
       this.currentUser = null;
@@ -86,7 +92,8 @@ export class AuthService {
     this.persistSession(user);
     this.settingsStore.reset();
     this.settingsStore.fetchSettings();
-    this.teamInvitations.syncForCurrentUser(user);
+    this.teamInvitations.startPolling(user);
+    this.teamMembership.sync();
     this.refreshUserInBackground(user);
     return of(user);
   }
@@ -278,6 +285,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.teamInvitations.stopPolling();
     this.currentUser = null;
     localStorage.removeItem(AUTH_SESSION_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
