@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { requireBusinessProfile } from '../../iam/application/role.guard';
+import { requireBusinessProfile } from '../../iam/infrastructure/role.guard';
 
 /** Pequeños Negocios — usuarios y perfil empresarial */
 export const teamManagementRoutes: Routes = [

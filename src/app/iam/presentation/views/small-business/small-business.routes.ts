@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { isSmallBusinessAccount } from '../../../application/account-type.guard';
-import { requireTeamManagement } from '../../../application/role.guard';
+import { isSmallBusinessAccount } from '../../../infrastructure/account-type.guard';
+import { requireTeamManagement } from '../../../infrastructure/role.guard';
 
 /** Pequeños Negocios y Emprendedores — rutas visibles tras login */
 export const smallBusinessRoutes: Routes = [
@@ -16,7 +16,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'devices',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../device-control/business-device.routes').then(m => m.businessDeviceRoutes),
+      import('../../../../device-control/presentation/business-device.routes').then(m => m.businessDeviceRoutes),
   },
   {
     path: 'reports',
@@ -30,7 +30,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'smart-integrations',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../smart-integrations/presentation/routes/smart-integrations.routes').then(
+      import('../../../../smart-integrations/presentation/smart-integrations.routes').then(
         m => m.smartIntegrationsRoutes,
       ),
   },
@@ -38,7 +38,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'automation',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
+      import('../../../../automation/presentation/automation.routes').then(m => m.automationRoutes),
   },
   {
     path: 'users',

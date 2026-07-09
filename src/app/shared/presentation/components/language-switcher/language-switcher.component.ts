@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { MATERIAL_IMPORTS } from '../../material';
+import { MATERIAL_IMPORTS } from '../../../material';
 
 @Component({
   selector: 'app-language-switcher',

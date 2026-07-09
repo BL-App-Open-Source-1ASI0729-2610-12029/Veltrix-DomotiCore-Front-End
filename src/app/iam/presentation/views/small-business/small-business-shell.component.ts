@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppOverlayComponent } from '../../../../shared/components/app-overlay/app-overlay.component';
-import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
+import { AppOverlayComponent } from '../../../../shared/presentation/components/app-overlay/app-overlay.component';
+import { NavbarComponent } from '../../../../shared/presentation/components/navbar/navbar.component';
 import { SmallBusinessSidebarComponent } from './components/small-business-sidebar.component';
 
 @Component({

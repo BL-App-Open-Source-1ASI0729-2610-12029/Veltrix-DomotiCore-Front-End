@@ -3,7 +3,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiWarmupService } from '../../services/api-warmup.service';
+import { ApiWarmupService } from '../../../services/api-warmup.service';
 
 @Component({
   selector: 'app-auth-layout',

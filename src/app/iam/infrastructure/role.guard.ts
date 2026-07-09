@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
 import { PlatformPermission } from '../domain/model/platform-role.entity';
-import { AuthService } from './auth.service';
-import { RolePermissionService } from './role-permission.service';
+import { AuthService } from '../application/auth.service';
+import { RolePermissionService } from '../application/role-permission.service';
 
 export function requirePermission(
   permission: PlatformPermission,

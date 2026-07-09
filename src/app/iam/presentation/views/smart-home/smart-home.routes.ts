@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { isSmartHomeAccount } from '../../../application/account-type.guard';
+import { isSmartHomeAccount } from '../../../infrastructure/account-type.guard';
 
 /** Hogares Inteligentes — rutas visibles tras login */
 export const smartHomeRoutes: Routes = [
@@ -13,19 +13,19 @@ export const smartHomeRoutes: Routes = [
     path: 'security',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../security/presentation/routes/security.routes').then(m => m.securityRoutes),
+      import('../../../../security/presentation/security.routes').then(m => m.securityRoutes),
   },
   {
     path: 'devices',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../device-control/device-control.routes').then(m => m.deviceControlRoutes),
+      import('../../../../device-control/presentation/device-control.routes').then(m => m.deviceControlRoutes),
   },
   {
     path: 'automation',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
+      import('../../../../automation/presentation/automation.routes').then(m => m.automationRoutes),
   },
   {
     path: 'history',

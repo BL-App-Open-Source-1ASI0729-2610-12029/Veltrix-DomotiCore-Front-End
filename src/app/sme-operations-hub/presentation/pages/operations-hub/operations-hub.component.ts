@@ -13,7 +13,7 @@ import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import {
   FacilityInteractiveMapComponent,
   FacilityMapMarker,
-} from '../../../../shared/components/facility-interactive-map/facility-interactive-map.component';
+} from '../../../../shared/presentation/components/facility-interactive-map/facility-interactive-map.component';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { downloadJsonFile } from '../../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';

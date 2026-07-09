@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { MATERIAL_IMPORTS } from '../../material';
+import { MATERIAL_IMPORTS } from '../../../material';
 
 @Component({
   selector: 'app-bounded-contexts-overview',

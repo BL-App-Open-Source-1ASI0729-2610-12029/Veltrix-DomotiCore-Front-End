@@ -4,8 +4,8 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
-import { AppOverlayComponent } from '../../../../shared/components/app-overlay/app-overlay.component';
-import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
+import { AppOverlayComponent } from '../../../../shared/presentation/components/app-overlay/app-overlay.component';
+import { NavbarComponent } from '../../../../shared/presentation/components/navbar/navbar.component';
 import { SmartHomeSidebarComponent } from './components/smart-home-sidebar.component';
 
 @Component({

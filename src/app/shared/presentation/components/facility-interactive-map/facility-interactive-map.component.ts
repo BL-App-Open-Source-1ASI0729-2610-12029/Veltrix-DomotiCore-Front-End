@@ -11,8 +11,8 @@ import {
   signal,
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { GOOGLE_ICONS } from '../../constants/google-icons';
-import { MATERIAL_IMPORTS } from '../../material';
+import { GOOGLE_ICONS } from '../../../constants/google-icons';
+import { MATERIAL_IMPORTS } from '../../../material';
 
 export interface FacilityMapMarker {
   id: string;

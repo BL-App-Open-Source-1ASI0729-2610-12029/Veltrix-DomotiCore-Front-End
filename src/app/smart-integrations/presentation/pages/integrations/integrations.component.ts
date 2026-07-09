@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BoundedContextsOverviewComponent } from '../../../../shared/components/bounded-contexts-overview/bounded-contexts-overview.component';
+import { BoundedContextsOverviewComponent } from '../../../../shared/presentation/components/bounded-contexts-overview/bounded-contexts-overview.component';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 

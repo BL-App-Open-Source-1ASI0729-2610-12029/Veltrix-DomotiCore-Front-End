@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { onboardingRouteGuard } from '../application/onboarding-route.guard';
+import { onboardingRouteGuard } from '../infrastructure/onboarding-route.guard';
 
 export const iamRoutes: Routes = [
   {

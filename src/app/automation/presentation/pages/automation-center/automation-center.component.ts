@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AutomationStore } from '../../../application/automation.store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
-import { PageToolbarActionsComponent } from '../../../../shared/components/page-toolbar-actions/page-toolbar-actions.component';
+import { PageToolbarActionsComponent } from '../../../../shared/presentation/components/page-toolbar-actions/page-toolbar-actions.component';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
 import { AutomationNavComponent } from '../../components/automation-nav/automation-nav.component';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';

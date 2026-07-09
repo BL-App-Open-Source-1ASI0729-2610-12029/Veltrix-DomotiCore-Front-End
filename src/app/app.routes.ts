@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
-import { AuthGuard } from './iam/application/auth.guard';
-import { onboardingGuard } from './iam/application/onboarding.guard';
+import { AuthGuard } from './iam/infrastructure/auth.guard';
+import { onboardingGuard } from './iam/infrastructure/onboarding.guard';
 import { smartHomeRoutes } from './iam/presentation/views/smart-home/smart-home.routes';
 import { smallBusinessRoutes } from './iam/presentation/views/small-business/small-business.routes';
 
@@ -14,7 +14,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadComponent: () =>
-      import('./shared/layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+      import('./shared/presentation/layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
       {
         path: '',

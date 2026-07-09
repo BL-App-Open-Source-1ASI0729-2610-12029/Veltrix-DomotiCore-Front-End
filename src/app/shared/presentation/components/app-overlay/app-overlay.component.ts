@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { GOOGLE_ICONS } from '../../constants/google-icons';
-import { UiFeedbackService } from '../../services/ui-feedback.service';
-import { MATERIAL_IMPORTS } from '../../material';
+import { GOOGLE_ICONS } from '../../../constants/google-icons';
+import { UiFeedbackService } from '../../../services/ui-feedback.service';
+import { MATERIAL_IMPORTS } from '../../../material';
 
 @Component({
   selector: 'app-overlay',

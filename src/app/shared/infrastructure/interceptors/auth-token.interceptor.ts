@@ -6,8 +6,8 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AUTH_TOKEN_KEY, ACTIVE_SEGMENT_KEY } from '../../iam/infrastructure/auth-api-endpoint';
-import { environment } from '../../../environments/environment';
+import { AUTH_TOKEN_KEY, ACTIVE_SEGMENT_KEY } from '../../../iam/infrastructure/auth-api-endpoint';
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {

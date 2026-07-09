@@ -2,15 +2,15 @@ import { Component, Output, EventEmitter, Input, OnInit, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { AuthService } from '../../../iam/application/auth.service';
-import { RolePermissionService } from '../../../iam/application/role-permission.service';
-import { AccountType } from '../../../iam/domain/model/account-type.entity';
-import { SettingsStore } from '../../../settings/application/settings.store';
-import { GOOGLE_ICONS } from '../../constants/google-icons';
-import { GlobalSearchService } from '../../services/global-search.service';
-import { UiFeedbackService } from '../../services/ui-feedback.service';
+import { AuthService } from '../../../../iam/application/auth.service';
+import { RolePermissionService } from '../../../../iam/application/role-permission.service';
+import { AccountType } from '../../../../iam/domain/model/account-type.entity';
+import { SettingsStore } from '../../../../settings/application/settings.store';
+import { GOOGLE_ICONS } from '../../../constants/google-icons';
+import { GlobalSearchService } from '../../../services/global-search.service';
+import { UiFeedbackService } from '../../../services/ui-feedback.service';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import { MATERIAL_IMPORTS } from '../../material';
+import { MATERIAL_IMPORTS } from '../../../material';
 
 @Component({
   selector: 'app-navbar',
