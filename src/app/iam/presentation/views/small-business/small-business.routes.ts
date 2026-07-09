@@ -16,13 +16,13 @@ export const smallBusinessRoutes: Routes = [
     path: 'devices',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../../device-control/business-device.routes').then(m => m.businessDeviceRoutes),
+      import('../../../../device-control/business-device.routes').then(m => m.businessDeviceRoutes),
   },
   {
     path: 'reports',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../../history/presentation/business-reports.routes').then(
+      import('../../../../history/presentation/business-reports.routes').then(
         m => m.businessReportsRoutes,
       ),
   },
@@ -38,7 +38,7 @@ export const smallBusinessRoutes: Routes = [
     path: 'automation',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
+      import('../../../../automation/presentation/routes/automation.routes').then(m => m.automationRoutes),
   },
   {
     path: 'users',

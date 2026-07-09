@@ -15,7 +15,7 @@ import { MATERIAL_IMPORTS } from '../../../../shared/material';
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule, ...MATERIAL_IMPORTS],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css', '../../../../../history/presentation/styles/reports-animations.css']
+  styleUrls: ['./dashboard.component.css', '../../../../history/presentation/styles/reports-animations.css']
 })
 export class DashboardComponent {
 
