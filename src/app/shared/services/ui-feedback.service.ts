@@ -16,6 +16,7 @@ export interface AppNotification {
   timeKey: string;
   read: boolean;
   messageParams?: Record<string, string>;
+  invitationId?: string;
 }
 
 @Injectable({ providedIn: 'root' })

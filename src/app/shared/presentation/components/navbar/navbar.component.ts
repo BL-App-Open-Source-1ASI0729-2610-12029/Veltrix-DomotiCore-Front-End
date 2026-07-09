@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../../iam/application/auth.service';
 import { RolePermissionService } from '../../../../iam/application/role-permission.service';
 import { AccountType } from '../../../../iam/domain/model/account-type.entity';
+import { TeamInvitationService } from '../../../../team-management/application/team-invitation.service';
 import { SettingsStore } from '../../../../settings/application/settings.store';
 import { GOOGLE_ICONS } from '../../../constants/google-icons';
 import { GlobalSearchService } from '../../../services/global-search.service';
@@ -91,6 +92,7 @@ export class NavbarComponent implements OnInit {
 
   private readonly permissions = inject(RolePermissionService);
   private readonly feedback = inject(UiFeedbackService);
+  private readonly teamInvitations = inject(TeamInvitationService);
   private readonly globalSearch = inject(GlobalSearchService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
@@ -98,6 +100,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     if (this.auth.isAuthenticated()) {
       this.settingsStore.fetchSettings();
+      this.teamInvitations.syncForCurrentUser(this.auth.currentUser);
     }
   }
 
@@ -121,6 +124,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onNotifications(): void {
+    this.teamInvitations.syncForCurrentUser(this.auth.currentUser);
     this.feedback.toggleNotifications();
   }
 

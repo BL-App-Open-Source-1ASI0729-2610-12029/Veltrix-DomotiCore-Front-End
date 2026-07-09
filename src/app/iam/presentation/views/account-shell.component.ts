@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../application/auth.service';
 import { ThemeService } from '../../../shared/services/theme.service';
 import { SettingsStore } from '../../../settings/application/settings.store';
+import { TeamInvitationService } from '../../../team-management/application/team-invitation.service';
 import { SmartHomeShellComponent } from './smart-home/smart-home-shell.component';
 import { SmallBusinessShellComponent } from './small-business/small-business-shell.component';
 
@@ -34,6 +35,7 @@ export class AccountShellComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly theme = inject(ThemeService);
   private readonly settingsStore = inject(SettingsStore);
+  private readonly teamInvitations = inject(TeamInvitationService);
 
   sidebarOpen = true;
 
@@ -45,6 +47,7 @@ export class AccountShellComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.theme.init();
       this.settingsStore.fetchSettings();
+      this.teamInvitations.syncForCurrentUser(this.auth.currentUser);
       this.sidebarOpen = window.innerWidth >= 1025;
     }
   }

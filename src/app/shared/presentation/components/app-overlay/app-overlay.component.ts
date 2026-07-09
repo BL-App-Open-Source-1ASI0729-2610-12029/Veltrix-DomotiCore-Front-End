@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TeamInvitationService } from '../../../../team-management/application/team-invitation.service';
 import { GOOGLE_ICONS } from '../../../constants/google-icons';
-import { UiFeedbackService } from '../../../services/ui-feedback.service';
+import { AppNotification, UiFeedbackService } from '../../../services/ui-feedback.service';
 import { MATERIAL_IMPORTS } from '../../../material';
 
 @Component({
@@ -27,7 +28,7 @@ import { MATERIAL_IMPORTS } from '../../../material';
               *ngFor="let item of feedback.notifications()"
               class="notification-item"
               [class.notification-item--unread]="!item.read"
-              (click)="feedback.markNotificationRead(item.id)"
+              (click)="onNotificationClick(item)"
             >
               <strong>{{ item.titleKey | translate }}</strong>
               <p>{{ item.messageKey | translate:item.messageParams }}</p>
@@ -236,6 +237,14 @@ export class AppOverlayComponent {
   readonly feedback = inject(UiFeedbackService);
   readonly icons = GOOGLE_ICONS;
   private readonly translate = inject(TranslateService);
+  private readonly teamInvitations = inject(TeamInvitationService);
+
+  onNotificationClick(item: AppNotification): void {
+    this.feedback.markNotificationRead(item.id);
+    if (item.invitationId) {
+      this.teamInvitations.markInvitationRead(item.invitationId);
+    }
+  }
 
   readonly helpTopics = [
     { titleKey: 'overlay.helpTopics.dashboard.title', descriptionKey: 'overlay.helpTopics.dashboard.description' },
