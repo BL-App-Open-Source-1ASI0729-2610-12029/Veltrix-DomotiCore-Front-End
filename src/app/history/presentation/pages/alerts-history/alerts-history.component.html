@@ -32,43 +32,14 @@
   </div>
 
   <section class="summary-grid reports-summary-stagger">
-    <article class="summary-card">
-      <div class="summary-card__icon summary-card__icon--critical">
-        <img [src]="icons.emergency" alt="" class="ui-icon ui-icon--sm" />
+    <article class="summary-card summary-card--animate" *ngFor="let card of summaryCards(data); let i = index" [style.animation-delay.ms]="80 + i * 70">
+      <div class="summary-card__icon" [ngClass]="card.iconClass">
+        <mat-icon>{{ card.icon }}</mat-icon>
       </div>
-      <div>
-        <span class="summary-card__label">{{ 'alertsHistory.summary.criticalAlerts' | translate }}</span>
-        <strong class="summary-card__value">{{ data.summary.criticalAlerts }}</strong>
-      </div>
-    </article>
-
-    <article class="summary-card">
-      <div class="summary-card__icon summary-card__icon--warning">
-        <img [src]="icons.factory" alt="" class="ui-icon ui-icon--sm" />
-      </div>
-      <div>
-        <span class="summary-card__label">{{ 'alertsHistory.summary.deviceFailures' | translate }}</span>
-        <strong class="summary-card__value">{{ formatPadded(data.summary.deviceFailures) }}</strong>
-      </div>
-    </article>
-
-    <article class="summary-card">
-      <div class="summary-card__icon summary-card__icon--blue">
-        <img [src]="icons.automation" alt="" class="ui-icon ui-icon--sm" />
-      </div>
-      <div>
-        <span class="summary-card__label">{{ 'alertsHistory.summary.energyPeaks' | translate }}</span>
-        <strong class="summary-card__value">{{ data.summary.energyPeaks }}</strong>
-      </div>
-    </article>
-
-    <article class="summary-card">
-      <div class="summary-card__icon summary-card__icon--success">
-        <img [src]="icons.shield" alt="" class="ui-icon ui-icon--sm" />
-      </div>
-      <div>
-        <span class="summary-card__label">{{ 'alertsHistory.summary.resolution' | translate }}</span>
-        <strong class="summary-card__value">{{ data.summary.resolutionPercent }}%</strong>
+      <div class="summary-card__content">
+        <span class="summary-card__label">{{ card.labelKey | translate }}</span>
+        <strong class="summary-card__value">{{ card.value }}</strong>
+        <span class="summary-card__hint" *ngIf="card.hintKey">{{ card.hintKey | translate }}</span>
       </div>
     </article>
   </section>
@@ -153,49 +124,96 @@
   </section>
 
   <section class="insights-grid">
-    <article class="panel insight-card insight-card--frequency">
-      <h2>{{ 'alertsHistory.insights.alertFrequency' | translate }}</h2>
-      <div class="donut-chart donut-animate" [style.--donut-percent]="data.alertFrequency.percent">
-        <div class="donut-chart__inner">
-          <strong>{{ data.alertFrequency.percent }}%</strong>
-        </div>
+    <article class="panel insight-card insight-card--frequency insight-card--animate">
+      <div class="insight-card__header">
+        <h2>{{ 'alertsHistory.insights.alertFrequency' | translate }}</h2>
+        <span class="insight-pill">{{ data.alertFrequency.percent }}%</span>
       </div>
-      <div class="insight-card__meta">
-        <img [src]="icons.trendingUp" alt="" class="ui-icon ui-icon--sm" />
-        <div>
-          <strong>{{ data.alertFrequency.locationKey | translate }}</strong>
-          <span>{{ data.alertFrequency.primaryAlertKey | translate }}</span>
+      <div class="insight-card__body insight-card__body--split">
+        <div class="donut-chart donut-animate" [style.--donut-percent]="data.alertFrequency.percent">
+          <div class="donut-chart__inner">
+            <strong>{{ data.alertFrequency.percent }}%</strong>
+          </div>
+        </div>
+        <div class="insight-detail-list">
+          <div class="insight-detail">
+            <span>{{ 'alertsHistory.insights.topLocation' | translate }}</span>
+            <strong>{{ data.alertFrequency.locationKey | translate }}</strong>
+          </div>
+          <div class="insight-detail">
+            <span>{{ 'alertsHistory.insights.topAlertType' | translate }}</span>
+            <strong>{{ data.alertFrequency.primaryAlertKey | translate }}</strong>
+          </div>
+          <div class="insight-detail insight-detail--accent">
+            <mat-icon>trending_up</mat-icon>
+            <span>{{ 'alertsHistory.insights.frequencyTrend' | translate }}</span>
+          </div>
         </div>
       </div>
     </article>
 
-    <article class="panel insight-card">
-      <h2>{{ 'alertsHistory.insights.meanTime' | translate }}</h2>
+    <article class="panel insight-card insight-card--animate" style="animation-delay: 80ms">
+      <div class="insight-card__header">
+        <h2>{{ 'alertsHistory.insights.meanTime' | translate }}</h2>
+        <span class="insight-pill insight-pill--success">{{ 'alertsHistory.insights.targetTime' | translate }}</span>
+      </div>
       <div class="mean-time">
-        <img [src]="icons.accessTime" alt="" class="ui-icon ui-icon--md" />
-        <strong>{{ data.meanTimeToResolve.minutes }}m {{ data.meanTimeToResolve.seconds }}s</strong>
+        <div class="mean-time__icon-wrap">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div>
+          <strong>{{ data.meanTimeToResolve.minutes }}m {{ data.meanTimeToResolve.seconds }}s</strong>
+          <p class="mean-time__trend" [class.mean-time__trend--improved]="data.meanTimeToResolve.trendImproved">
+            <mat-icon>{{ data.meanTimeToResolve.trendImproved ? 'trending_down' : 'trending_up' }}</mat-icon>
+            {{ data.meanTimeToResolve.trendPercent }}% {{ 'alertsHistory.insights.fromLastWeek' | translate }}
+          </p>
+        </div>
       </div>
-      <p class="mean-time__trend" [class.mean-time__trend--improved]="data.meanTimeToResolve.trendImproved">
-        <img
-          [src]="data.meanTimeToResolve.trendImproved ? icons.trendingDown : icons.trendingUp"
-          alt=""
-          class="ui-icon ui-icon--sm"
-        />
-        {{ data.meanTimeToResolve.trendPercent }}% {{ 'alertsHistory.insights.fromLastWeek' | translate }}
-      </p>
+      <div class="resolution-breakdown">
+        <div class="resolution-breakdown__item">
+          <span>{{ 'alertsHistory.insights.criticalResolved' | translate }}</span>
+          <strong>88%</strong>
+        </div>
+        <div class="resolution-breakdown__item">
+          <span>{{ 'alertsHistory.insights.avgAcknowledge' | translate }}</span>
+          <strong>2m 10s</strong>
+        </div>
+      </div>
     </article>
 
-    <article class="panel insight-card">
-      <h2>{{ 'alertsHistory.insights.systemIntegrity' | translate }}</h2>
-      <div class="integrity-row">
-        <img [src]="icons.shield" alt="" class="ui-icon ui-icon--md" />
-        <div class="integrity-bar">
-          <div class="integrity-bar__fill" [style.width.%]="data.systemIntegrity.stabilityPercent"></div>
+    <article class="panel insight-card insight-card--integrity insight-card--animate" style="animation-delay: 160ms">
+      <div class="insight-card__header">
+        <h2>{{ 'alertsHistory.insights.systemIntegrity' | translate }}</h2>
+        <span class="integrity-labels__optimal">{{ data.systemIntegrity.statusKey | translate }}</span>
+      </div>
+      <div class="integrity-score">
+        <div class="integrity-ring" aria-hidden="true">
+          <svg viewBox="0 0 36 36">
+            <path class="integrity-ring__track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="integrity-ring__value" [attr.stroke-dasharray]="data.systemIntegrity.stabilityPercent + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <strong>{{ data.systemIntegrity.stabilityPercent }}%</strong>
         </div>
+        <ul class="integrity-checklist">
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            {{ 'alertsHistory.insights.gatewayStable' | translate }}
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            {{ 'alertsHistory.insights.sensorsOnline' | translate }}
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            {{ 'alertsHistory.insights.automationHealthy' | translate }}
+          </li>
+        </ul>
+      </div>
+      <div class="integrity-bar">
+        <div class="integrity-bar__fill progress-fill--animate" [style.width.%]="data.systemIntegrity.stabilityPercent"></div>
       </div>
       <div class="integrity-labels">
         <span>{{ 'alertsHistory.insights.stability' | translate }} {{ data.systemIntegrity.stabilityPercent }}%</span>
-        <span class="integrity-labels__optimal">{{ data.systemIntegrity.statusKey | translate }}</span>
       </div>
     </article>
   </section>

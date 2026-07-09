@@ -1042,9 +1042,13 @@
     "pagination": "Mostrando página {{page}} de {{total}}",
     "summary": {
       "criticalAlerts": "Alertas Críticas",
+      "criticalHint": "Requieren acción inmediata",
       "deviceFailures": "Fallos de Dispositivos",
+      "failuresHint": "Sensores y equipos fuera de línea",
       "energyPeaks": "Picos de Energía",
-      "resolution": "Resolución"
+      "peaksHint": "Eventos de sobreconsumo detectados",
+      "resolution": "Resolución",
+      "resolutionHint": "Alertas cerradas en el periodo"
     },
     "tabs": {
       "all": "Todos",
@@ -1119,11 +1123,20 @@
     "insights": {
       "alertFrequency": "Mayor Frecuencia de Alertas",
       "primaryAlertType": "Eventos de sobreconsumo",
+      "topLocation": "Ubicación principal",
+      "topAlertType": "Tipo más frecuente",
+      "frequencyTrend": "Tendencia al alza esta semana",
       "meanTime": "Tiempo Medio de Resolución",
+      "targetTime": "Objetivo < 15 min",
+      "criticalResolved": "Críticas resueltas",
+      "avgAcknowledge": "Tiempo de reconocimiento",
       "fromLastWeek": "respecto a la semana pasada",
       "systemIntegrity": "Integridad del Sistema",
       "stability": "ESTABILIDAD",
-      "integrityOptimal": "ÓPTIMO"
+      "integrityOptimal": "ÓPTIMO",
+      "gatewayStable": "Gateway estable",
+      "sensorsOnline": "Sensores en línea",
+      "automationHealthy": "Automatizaciones saludables"
     },
     "toast": {
       "exportCsv": "Registro de actividad exportado a CSV.",
@@ -1542,6 +1555,15 @@
     }
   },
   "integrations": {
+    "identity": {
+      "facilities": "Instalaciones",
+      "devices": "Dispositivos conectados",
+      "energyTier": "Nivel energético",
+      "tierValue": "Empresarial",
+      "complianceEnergy": "Cumplimiento energético verificado",
+      "complianceTax": "Documentación fiscal al día",
+      "complianceAudit": "Auditoría anual programada"
+    },
     "toast": {
       "configSaved": "Configuración empresarial guardada correctamente.",
       "keyGenerated": "Nueva clave de monitoreo API generada.",
@@ -2204,9 +2226,13 @@
     "exportAudit": "Exportar Auditoría",
     "exporting": "Exportando...",
     "dateRange": {
+      "label": "Periodo de análisis",
       "thisMonth": "Este Mes",
+      "thisMonthHint": "Jul 1 – hoy",
       "lastMonth": "Mes Anterior",
-      "thisQuarter": "Este Trimestre"
+      "lastMonthHint": "Jun 1 – Jun 30",
+      "thisQuarter": "Este Trimestre",
+      "thisQuarterHint": "Q3 2026"
     },
     "kpis": {
       "consumption": {

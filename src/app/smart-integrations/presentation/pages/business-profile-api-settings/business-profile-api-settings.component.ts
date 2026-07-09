@@ -137,7 +137,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                 <div class="doc-info">
                   <span class="doc-name">{{ documentDisplayName(document) }}</span>
                   <span class="doc-subtitle">
-                    {{ documentStatusKey(document.status) | translate }} ù {{ formatUploadedLabel(document) }}
+                    {{ documentStatusKey(document.status) | translate }} ? {{ formatUploadedLabel(document) }}
                   </span>
                 </div>
                 <button type="button" mat-icon-button class="download-btn" (click)="downloadDocument(document)" [attr.aria-label]="'businessProfile.downloadDocument' | translate">
@@ -195,16 +195,16 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
                 <div class="health-info">
                   <span class="health-label">{{ 'hooks.grafana' | translate }}</span>
                   <span class="health-status healthy">{{ 'integrationHealth.healthy' | translate }}</span>
+                  <span class="uptime">{{ 'integrationHealth.uptimeValue' | translate:{ percent: '99.8' } }}</span>
                 </div>
-                <span class="uptime">{{ 'integrationHealth.uptimeValue' | translate:{ percent: '99.8' } }}</span>
               </div>
               <div class="health-card">
                 <div class="health-icon sap">S</div>
                 <div class="health-info">
                   <span class="health-label">{{ 'integrationHealth.sapErp' | translate }}</span>
                   <span class="health-status healthy">{{ 'integrationHealth.healthy' | translate }}</span>
+                  <span class="uptime">{{ 'integrationHealth.uptimeValue' | translate:{ percent: '99.9' } }}</span>
                 </div>
-                <span class="uptime">{{ 'integrationHealth.uptimeValue' | translate:{ percent: '99.9' } }}</span>
               </div>
             </div>
           </section>
@@ -888,14 +888,15 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
     }
 
     .health-card {
-      display: flex;
-      align-items: center;
-      gap: 0.95rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.85rem;
+      align-items: start;
       padding: 1rem;
       border-radius: 16px;
       background: white;
       border: 1px solid #E5E7EB;
-      transition: all 0.2s ease;
+      transition: all 0.22s ease;
       position: relative;
     }
 
@@ -942,7 +943,7 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
     .health-info {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.3rem;
       flex: 1;
       min-width: 0;
     }
@@ -951,6 +952,8 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
       font-size: 0.92rem;
       font-weight: 700;
       color: #111827;
+      line-height: 1.3;
+      word-break: break-word;
     }
 
     .health-status {
@@ -975,10 +978,9 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
     }
 
     .uptime {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #6B7280;
-      white-space: nowrap;
-      text-align: right;
+      line-height: 1.35;
     }
 
     @media (max-width: 600px) {

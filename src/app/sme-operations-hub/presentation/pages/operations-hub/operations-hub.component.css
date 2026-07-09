@@ -210,6 +210,76 @@
   position: relative;
 }
 
+.period-segment {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0.45rem;
+  padding: 0.3rem;
+  border-radius: 14px;
+  background: var(--sme-card);
+  border: 1px solid var(--sme-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.period-segment__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 148px;
+  padding: 0.55rem 0.85rem !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--gray-600) !important;
+  transition: all 0.22s ease;
+}
+
+.period-segment__btn--active {
+  background: #eef3ff !important;
+  border-color: rgba(41, 73, 199, 0.18) !important;
+  color: var(--sme-navy) !important;
+  box-shadow: 0 4px 12px rgba(41, 73, 199, 0.12);
+}
+
+.period-segment__icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.period-segment__text {
+  display: grid;
+  gap: 0.1rem;
+  text-align: left;
+}
+
+.period-segment__text strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.period-segment__text small {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  line-height: 1.2;
+}
+
+.period-segment__btn--active .period-segment__text small {
+  color: var(--sme-navy);
+  opacity: 0.75;
+}
+
+.kpi-card__icon mat-icon,
+.device-chip__icon mat-icon,
+.alerts-panel__title mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
 .date-picker__btn {
   display: inline-flex;
   align-items: center;
@@ -907,6 +977,18 @@
 :root[data-theme='dark'] .facility-map h2,
 :root[data-theme='dark'] .device-chip__info h3 {
   color: var(--gray-100);
+}
+
+@media (max-width: 900px) {
+  .period-segment {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .period-segment__btn {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 :root[data-theme='dark'] .date-picker__menu button:hover {

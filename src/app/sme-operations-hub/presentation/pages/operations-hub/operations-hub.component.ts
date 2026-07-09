@@ -43,18 +43,18 @@ export class OperationsHubComponent {
   readonly selectedRange = this.store.selectedRange;
   readonly dataRefreshing = this.store.dataRefreshing;
 
-  showDateMenu = false;
-  exportingAudit = false;
+  readonly dateRangeOptions: {
+    range: SmeDateRange;
+    labelKey: string;
+    hintKey: string;
+    icon: string;
+  }[] = [
+    { range: 'thisMonth', labelKey: 'smeHub.dateRange.thisMonth', hintKey: 'smeHub.dateRange.thisMonthHint', icon: 'calendar_month' },
+    { range: 'lastMonth', labelKey: 'smeHub.dateRange.lastMonth', hintKey: 'smeHub.dateRange.lastMonthHint', icon: 'history' },
+    { range: 'thisQuarter', labelKey: 'smeHub.dateRange.thisQuarter', hintKey: 'smeHub.dateRange.thisQuarterHint', icon: 'date_range' },
+  ];
 
-  readonly dateRangeLabel = computed(() => {
-    const key =
-      this.selectedRange() === 'thisMonth'
-        ? 'smeHub.dateRange.thisMonth'
-        : this.selectedRange() === 'lastMonth'
-          ? 'smeHub.dateRange.lastMonth'
-          : 'smeHub.dateRange.thisQuarter';
-    return this.translate.instant(key);
-  });
+  exportingAudit = false;
 
   readonly maxBarTotal = computed(() => {
     const bars = this.loadBars();
@@ -72,7 +72,6 @@ export class OperationsHubComponent {
   );
 
   onSelectRange(range: SmeDateRange): void {
-    this.showDateMenu = false;
     const changed = this.store.setDateRange(range);
     if (changed) {
       this.feedback.showToast(this.translate.instant('smeHub.toast.rangeUpdated'), 'success');
@@ -142,6 +141,25 @@ export class OperationsHubComponent {
   donutOffset(percent: number): number {
     const circumference = 2 * Math.PI * 42;
     return circumference - (percent / 100) * circumference;
+  }
+
+  kpiMatIcon(kpi: { variant?: string }): string {
+    const map: Record<string, string> = {
+      consumption: 'bolt',
+      cost: 'receipt_long',
+      budget: 'savings',
+    };
+    return map[kpi.variant ?? ''] ?? 'insights';
+  }
+
+  deviceMatIcon(deviceId: string): string {
+    const map: Record<string, string> = {
+      hvac: 'ac_unit',
+      lighting: 'lightbulb',
+      production: 'precision_manufacturing',
+      servers: 'dns',
+    };
+    return map[deviceId] ?? 'device_hub';
   }
 
   private navigateTarget(route: string[], queryParams?: Record<string, string>): void {

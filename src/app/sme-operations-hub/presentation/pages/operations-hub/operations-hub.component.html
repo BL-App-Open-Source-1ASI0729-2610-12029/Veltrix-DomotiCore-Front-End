@@ -5,19 +5,26 @@
       <p>{{ 'smeHub.subtitle' | translate }}</p>
     </div>
     <div class="sme-hub__header-actions">
-      <div class="date-picker" [class.date-picker--open]="showDateMenu">
-        <button type="button" mat-stroked-button class="date-picker__btn" (click)="showDateMenu = !showDateMenu">
-          <img [src]="icons.calendarMonth" alt="" class="ui-icon ui-icon--sm" />
-          {{ dateRangeLabel() }}
+      <div class="period-segment" role="tablist" [attr.aria-label]="'smeHub.dateRange.label' | translate">
+        <button
+          type="button"
+          mat-stroked-button
+          class="period-segment__btn"
+          *ngFor="let option of dateRangeOptions"
+          [class.period-segment__btn--active]="selectedRange() === option.range"
+          (click)="onSelectRange(option.range)"
+          role="tab"
+          [attr.aria-selected]="selectedRange() === option.range"
+        >
+          <mat-icon class="period-segment__icon">{{ option.icon }}</mat-icon>
+          <span class="period-segment__text">
+            <strong>{{ option.labelKey | translate }}</strong>
+            <small>{{ option.hintKey | translate }}</small>
+          </span>
         </button>
-        <div class="date-picker__menu" *ngIf="showDateMenu">
-          <button type="button" mat-button [class.active]="selectedRange() === 'thisMonth'" (click)="onSelectRange('thisMonth')">{{ 'smeHub.dateRange.thisMonth' | translate }}</button>
-          <button type="button" mat-button [class.active]="selectedRange() === 'lastMonth'" (click)="onSelectRange('lastMonth')">{{ 'smeHub.dateRange.lastMonth' | translate }}</button>
-          <button type="button" mat-button [class.active]="selectedRange() === 'thisQuarter'" (click)="onSelectRange('thisQuarter')">{{ 'smeHub.dateRange.thisQuarter' | translate }}</button>
-        </div>
       </div>
       <button type="button" mat-flat-button color="primary" class="btn-primary" [class.btn-primary--loading]="exportingAudit" [disabled]="exportingAudit" (click)="onExportAudit()">
-        <img [src]="icons.download" alt="" class="ui-icon ui-icon--sm" />
+        <mat-icon>download</mat-icon>
         {{ exportingAudit ? ('smeHub.exporting' | translate) : ('smeHub.exportAudit' | translate) }}
       </button>
     </div>
@@ -41,11 +48,11 @@
             <h2 class="kpi-card__value">{{ kpi.value }} <span>{{ kpi.unit }}</span></h2>
           </div>
           <div class="kpi-card__icon kpi-card__icon--blue">
-            <img [src]="kpi.icon" alt="" class="ui-icon ui-icon--md" />
+            <mat-icon>{{ kpiMatIcon(kpi) }}</mat-icon>
           </div>
         </div>
         <div class="kpi-card__trend kpi-card__trend--down" *ngIf="kpi.trend">
-          <img [src]="icons.trendingUp" alt="" class="ui-icon ui-icon--sm" />
+          <mat-icon>trending_up</mat-icon>
           {{ kpi.trend.value }}
         </div>
         <div class="kpi-card__progress">
@@ -61,7 +68,7 @@
             <h2 class="kpi-card__value">{{ kpi.value }}</h2>
           </div>
           <div class="kpi-card__icon kpi-card__icon--blue">
-            <img [src]="kpi.icon" alt="" class="ui-icon ui-icon--md" />
+            <mat-icon>{{ kpiMatIcon(kpi) }}</mat-icon>
           </div>
         </div>
         <span class="kpi-card__badge" *ngIf="kpi.projectedKey">
@@ -129,7 +136,7 @@
     <article class="alerts-panel sme-animate sme-animate--up" style="animation-delay: 500ms">
       <div class="alerts-panel__header">
         <div class="alerts-panel__title">
-          <img [src]="icons.warning" alt="" class="ui-icon ui-icon--sm" />
+          <mat-icon>warning</mat-icon>
           <h2>{{ 'smeHub.alerts.title' | translate }}</h2>
         </div>
         <span class="alerts-panel__badge">{{ criticalAlertCount() }} {{ 'smeHub.alerts.critical' | translate }}</span>
@@ -166,14 +173,14 @@
       (keydown.enter)="onDeviceClick(device)"
     >
       <div class="device-chip__icon">
-        <img [src]="device.icon" alt="" class="ui-icon ui-icon--sm" />
+        <mat-icon>{{ deviceMatIcon(device.id) }}</mat-icon>
       </div>
       <div class="device-chip__info">
         <h3>{{ device.nameKey | translate }}</h3>
         <span class="device-chip__status">{{ device.statusKey | translate }}</span>
       </div>
       <span class="device-chip__power">{{ device.power }}</span>
-      <img [src]="icons.arrowForward" alt="" class="device-chip__arrow ui-icon ui-icon--sm" />
+      <mat-icon class="device-chip__arrow">arrow_forward</mat-icon>
     </article>
   </section>
 
@@ -208,7 +215,7 @@
       </div>
       <button type="button" matRipple class="sustainability-card__action" (click)="onSolarIntegration()">
         <div class="sustainability-card__action-icon">
-          <img [src]="icons.solarPower" alt="" class="ui-icon ui-icon--sm" />
+          <mat-icon>solar_power</mat-icon>
         </div>
         <div>
           <h3>{{ 'smeHub.sustainability.solarTitle' | translate }}</h3>
@@ -216,7 +223,7 @@
         </div>
         <span class="sustainability-card__schedule">
           {{ 'smeHub.sustainability.solarScheduled' | translate }}
-          <img [src]="icons.arrowForward" alt="" class="ui-icon ui-icon--sm" />
+          <mat-icon class="device-chip__arrow">arrow_forward</mat-icon>
         </span>
       </button>
     </article>

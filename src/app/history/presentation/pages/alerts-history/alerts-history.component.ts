@@ -8,6 +8,7 @@ import {
   AlertLogEntryResponse,
   AlertLogTab,
   AlertPriority,
+  AlertsHistoryResponse,
 } from '../../../infrastructure/alerts-history-response';
 import { BusinessReportsNavComponent } from '../../components/business-reports-nav/business-reports-nav.component';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
@@ -240,5 +241,38 @@ export class AlertsHistoryComponent implements OnInit {
       }),
       'info',
     );
+  }
+
+  summaryCards(data: AlertsHistoryResponse) {
+    return [
+      {
+        icon: 'emergency',
+        iconClass: 'summary-card__icon--critical',
+        labelKey: 'alertsHistory.summary.criticalAlerts',
+        value: String(data.summary.criticalAlerts),
+        hintKey: 'alertsHistory.summary.criticalHint',
+      },
+      {
+        icon: 'factory',
+        iconClass: 'summary-card__icon--warning',
+        labelKey: 'alertsHistory.summary.deviceFailures',
+        value: this.formatPadded(data.summary.deviceFailures),
+        hintKey: 'alertsHistory.summary.failuresHint',
+      },
+      {
+        icon: 'bolt',
+        iconClass: 'summary-card__icon--blue',
+        labelKey: 'alertsHistory.summary.energyPeaks',
+        value: String(data.summary.energyPeaks),
+        hintKey: 'alertsHistory.summary.peaksHint',
+      },
+      {
+        icon: 'shield',
+        iconClass: 'summary-card__icon--success',
+        labelKey: 'alertsHistory.summary.resolution',
+        value: `${data.summary.resolutionPercent}%`,
+        hintKey: 'alertsHistory.summary.resolutionHint',
+      },
+    ];
   }
 }

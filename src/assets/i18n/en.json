@@ -1042,9 +1042,13 @@
     "pagination": "Showing page {{page}} of {{total}}",
     "summary": {
       "criticalAlerts": "Critical Alerts",
+      "criticalHint": "Require immediate action",
       "deviceFailures": "Device Failures",
+      "failuresHint": "Offline sensors and equipment",
       "energyPeaks": "Energy Peaks",
-      "resolution": "Resolution"
+      "peaksHint": "Over-consumption events detected",
+      "resolution": "Resolution",
+      "resolutionHint": "Alerts closed in the period"
     },
     "tabs": {
       "all": "All",
@@ -1119,11 +1123,20 @@
     "insights": {
       "alertFrequency": "Highest Alert Frequency",
       "primaryAlertType": "Over-consumption events",
+      "topLocation": "Top location",
+      "topAlertType": "Most frequent type",
+      "frequencyTrend": "Trending up this week",
       "meanTime": "Mean Time to Resolve",
+      "targetTime": "Target < 15 min",
+      "criticalResolved": "Critical resolved",
+      "avgAcknowledge": "Acknowledge time",
       "fromLastWeek": "from last week",
       "systemIntegrity": "System Integrity",
       "stability": "STABILITY",
-      "integrityOptimal": "OPTIMAL"
+      "integrityOptimal": "OPTIMAL",
+      "gatewayStable": "Gateway stable",
+      "sensorsOnline": "Sensors online",
+      "automationHealthy": "Automations healthy"
     },
     "toast": {
       "exportCsv": "Activity log exported to CSV.",
@@ -1542,6 +1555,15 @@
     }
   },
   "integrations": {
+    "identity": {
+      "facilities": "Facilities",
+      "devices": "Connected devices",
+      "energyTier": "Energy tier",
+      "tierValue": "Enterprise",
+      "complianceEnergy": "Energy compliance verified",
+      "complianceTax": "Tax documentation up to date",
+      "complianceAudit": "Annual audit scheduled"
+    },
     "toast": {
       "configSaved": "Business configuration saved successfully.",
       "keyGenerated": "New API monitoring key generated.",
@@ -2204,9 +2226,13 @@
     "exportAudit": "Export Audit",
     "exporting": "Exporting...",
     "dateRange": {
+      "label": "Analysis period",
       "thisMonth": "This Month",
+      "thisMonthHint": "Jul 1 – today",
       "lastMonth": "Last Month",
-      "thisQuarter": "This Quarter"
+      "lastMonthHint": "Jun 1 – Jun 30",
+      "thisQuarter": "This Quarter",
+      "thisQuarterHint": "Q3 2026"
     },
     "kpis": {
       "consumption": {
