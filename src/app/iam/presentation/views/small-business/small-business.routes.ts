@@ -52,6 +52,6 @@ export const smallBusinessRoutes: Routes = [
     path: 'settings',
     canMatch: [isSmallBusinessAccount],
     loadChildren: () =>
-      import('../../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
+      import('../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
   },
 ];

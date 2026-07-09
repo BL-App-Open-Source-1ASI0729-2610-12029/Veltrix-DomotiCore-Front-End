@@ -7,7 +7,7 @@ export const smartHomeRoutes: Routes = [
     path: 'dashboard',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../../dashboard/presentation/dashboard.routes').then(m => m.dashboardRoutes),
+      import('../../../../dashboard/presentation/dashboard.routes').then(m => m.dashboardRoutes),
   },
   {
     path: 'security',
@@ -37,6 +37,6 @@ export const smartHomeRoutes: Routes = [
     path: 'settings',
     canMatch: [isSmartHomeAccount],
     loadChildren: () =>
-      import('../../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
+      import('../../../../settings/presentation/settings.routes').then(m => m.settingsRoutes),
   },
 ];

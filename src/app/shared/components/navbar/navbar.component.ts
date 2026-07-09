@@ -5,7 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../iam/application/auth.service';
 import { RolePermissionService } from '../../../iam/application/role-permission.service';
 import { AccountType } from '../../../iam/domain/model/account-type.entity';
-import { SettingsStore } from '../../../../settings/application/settings.store';
+import { SettingsStore } from '../../../settings/application/settings.store';
 import { GOOGLE_ICONS } from '../../constants/google-icons';
 import { GlobalSearchService } from '../../services/global-search.service';
 import { UiFeedbackService } from '../../services/ui-feedback.service';

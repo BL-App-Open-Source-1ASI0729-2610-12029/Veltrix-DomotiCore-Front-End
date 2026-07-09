@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-import { GOOGLE_ICONS } from '../../app/shared/constants/google-icons';
+import { GOOGLE_ICONS } from '../../shared/constants/google-icons';
 import { AlertEntity } from '../domain/model/alert.entity';
 import { DeviceEntity } from '../domain/model/device.entity';
 import { StatisticEntity } from '../domain/model/statistic.entity';

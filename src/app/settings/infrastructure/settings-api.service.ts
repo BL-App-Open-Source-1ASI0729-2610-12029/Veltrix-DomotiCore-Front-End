@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiClientService } from '../../app/shared/services/api-client.service';
+import { ApiClientService } from '../../shared/services/api-client.service';
 import { SettingsState } from '../application/settings.store';
 
 export interface UserProfileResponse extends SettingsState {

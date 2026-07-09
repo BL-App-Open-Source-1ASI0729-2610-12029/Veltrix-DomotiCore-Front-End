@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../application/auth.service';
 import { ThemeService } from '../../../shared/services/theme.service';
-import { SettingsStore } from '../../../../settings/application/settings.store';
+import { SettingsStore } from '../../../settings/application/settings.store';
 import { SmartHomeShellComponent } from './smart-home/smart-home-shell.component';
 import { SmallBusinessShellComponent } from './small-business/small-business-shell.component';
 
