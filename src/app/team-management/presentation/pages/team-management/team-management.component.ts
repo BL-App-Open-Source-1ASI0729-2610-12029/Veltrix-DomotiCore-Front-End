@@ -523,6 +523,7 @@ export class TeamManagementComponent implements OnInit {
 
 
   onArchiveMember(member: TeamMemberResponse): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.archiveMember'))) return;
 
     this.store.archiveMember(member.id);
 
@@ -555,6 +556,7 @@ export class TeamManagementComponent implements OnInit {
 
 
   onRemoveMember(member: TeamMemberResponse): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.removeMember'))) return;
 
     this.store.removeMember(member.id);
 

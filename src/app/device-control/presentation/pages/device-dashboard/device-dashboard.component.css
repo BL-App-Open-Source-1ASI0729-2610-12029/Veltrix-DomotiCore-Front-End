@@ -23,8 +23,36 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+.category-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.category-chip {
+  border-radius: 999px !important;
+}
+
+.category-chip--active {
+  border-color: var(--primary-color, #2949c7) !important;
+  color: var(--primary-color, #2949c7) !important;
+  background: rgba(41, 73, 199, 0.08) !important;
+}
+
+.tile-classify-btn {
+  flex-shrink: 0;
+}
+
+.device-meta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--primary-color, #2949c7);
+  font-weight: 600;
 }
 
 .page-header__actions {

@@ -26,6 +26,22 @@
     </div>
   </header>
 
+  <div class="category-toolbar" *ngIf="store.overview()">
+    <button type="button" mat-stroked-button class="category-chip" [class.category-chip--active]="categoryFilter() === 'all'" (click)="onFilterCategory('all')">
+      {{ 'dashboard.all' | translate }}
+    </button>
+    <button
+      type="button"
+      mat-stroked-button
+      class="category-chip"
+      *ngFor="let category of usageCategories"
+      [class.category-chip--active]="categoryFilter() === category"
+      (click)="onFilterCategory(category)"
+    >
+      {{ categoryLabelKey(category) | translate }}
+    </button>
+  </div>
+
   <div *ngIf="store.loading()" class="loading-bar">
     <div class="loading-bar__fill"></div>
   </div>
@@ -139,11 +155,15 @@
               </span>
               <div class="device-tile__info">
                 <h3>{{ device.name }}</h3>
+                <p *ngIf="device.usageCategory" class="device-meta">{{ categoryLabelKey(device.usageCategory) | translate }}</p>
                 <p *ngIf="device.statusLabel" class="device-status device-status--label">
                   <span class="status-dot" [class.status-dot--active]="device.active"></span>
                   {{ device.statusLabel }}
                 </p>
               </div>
+              <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate">
+                <mat-icon>category</mat-icon>
+              </button>
               <label
                 *ngIf="!device.statusLabel || device.id === 'air-purifier' || device.id === 'bedside-speaker'"
                 class="toggle-switch toggle-switch--small"
@@ -193,11 +213,15 @@
             </span>
             <div class="compact-device__info">
               <h3>{{ device.name }}</h3>
+              <p *ngIf="device.usageCategory" class="device-meta">{{ categoryLabelKey(device.usageCategory) | translate }}</p>
               <p [class.is-offline]="device.connection === 'offline'">{{ getConnectionLabel(device) }}</p>
               <p class="device-battery" *ngIf="getBatteryLabel(device) as battery">
                 {{ 'myDevices.battery' | translate }}: {{ battery }}
               </p>
             </div>
+            <button type="button" mat-icon-button class="tile-classify-btn" (click)="openCategoryModal(room.id, device, $event)" [attr.aria-label]="'myDevices.classify' | translate">
+              <mat-icon>category</mat-icon>
+            </button>
             <label
               class="toggle-switch toggle-switch--small"
               [class.toggle-switch--disabled]="isToggleDisabled(device)"

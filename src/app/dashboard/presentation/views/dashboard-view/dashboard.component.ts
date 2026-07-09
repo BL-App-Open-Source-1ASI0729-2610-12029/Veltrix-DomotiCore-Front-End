@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DashboardStore, EnergyDataPoint } from '../../../application/dashboard.store';
 import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
-import { DeviceEntity } from '../../../domain/model/device.entity';
+import { DeviceEntity, DeviceUsageCategory } from '../../../domain/model/device.entity';
 import { AlertEntity } from '../../../domain/model/alert.entity';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 
@@ -39,22 +39,31 @@ export class DashboardComponent {
   selectedTimeRange = signal<string>('24h');
   chartRenderKey = signal(0);
   deviceFilter = signal<'all' | 'online' | 'offline'>('all');
+  categoryFilter = signal<DeviceUsageCategory | 'all'>('all');
 
   showDeviceModal = signal(false);
   showAddDeviceModal = signal(false);
   showEnergySaverModal = signal(false);
   showAlertModal = signal(false);
+  showCategoryModal = signal(false);
   shutdownPending = signal(false);
+
+  selectedCategory = signal<DeviceUsageCategory>('generic');
+  readonly usageCategories: DeviceUsageCategory[] = ['lighting', 'climate', 'security', 'entertainment', 'generic'];
 
   newDeviceName = '';
   newDeviceType = 'climate';
 
   filteredDevices = computed(() => {
     const filter = this.deviceFilter();
+    const category = this.categoryFilter();
     const all = this.devices();
-    if (filter === 'online') return all.filter(device => device.active);
-    if (filter === 'offline') return all.filter(device => !device.active);
-    return all;
+    return all.filter(device => {
+      if (filter === 'online' && !device.active) return false;
+      if (filter === 'offline' && device.active) return false;
+      if (category !== 'all' && (device.usageCategory ?? 'generic') !== category) return false;
+      return true;
+    });
   });
 
   deviceLabel(device: DeviceEntity): string {
@@ -67,6 +76,8 @@ export class DashboardComponent {
 
   onShutdownDevice() {
     if (this.shutdownPending()) return;
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.shutdownDevice'))) return;
+
     this.shutdownPending.set(true);
     this.feedback.showToast(this.translate.instant('dashboard.toast.shutdownInitiated'), 'warning');
 
@@ -217,6 +228,37 @@ export class DashboardComponent {
 
   onFilterDevices(filter: 'all' | 'online' | 'offline') {
     this.deviceFilter.set(filter);
+  }
+
+  onFilterCategory(category: DeviceUsageCategory | 'all') {
+    this.categoryFilter.set(category);
+  }
+
+  categoryLabelKey(category: DeviceUsageCategory | undefined): string {
+    return `myDevices.categories.${category ?? 'generic'}`;
+  }
+
+  openCategoryModal(device: DeviceEntity, event?: Event) {
+    event?.stopPropagation();
+    this.selectedDevice.set(device);
+    this.selectedCategory.set(device.usageCategory ?? 'generic');
+    this.showCategoryModal.set(true);
+  }
+
+  closeCategoryModal() {
+    this.showCategoryModal.set(false);
+  }
+
+  saveCategory() {
+    const device = this.selectedDevice();
+    if (!device?.id) return;
+
+    const category = this.selectedCategory();
+    this.devices.update(items =>
+      items.map(item => (item.id === device.id ? { ...item, usageCategory: category } : item)),
+    );
+    this.closeCategoryModal();
+    this.feedback.showToast(this.translate.instant('myDevices.toast.categorySaved'), 'success');
   }
 
   onTurnAllOn(): void {

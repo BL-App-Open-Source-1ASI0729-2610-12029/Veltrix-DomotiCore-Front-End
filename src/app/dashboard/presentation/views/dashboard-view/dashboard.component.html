@@ -213,6 +213,12 @@
             <img [src]="icons.power" alt="" class="ui-icon ui-icon--sm" />
             {{ 'dashboard.turnAllOn' | translate }}
           </button>
+          <div class="category-filters">
+            <button mat-stroked-button class="filter-btn" [class.active]="categoryFilter() === 'all'" (click)="onFilterCategory('all')">{{ 'dashboard.all' | translate }}</button>
+            <button mat-stroked-button class="filter-btn" *ngFor="let category of usageCategories" [class.active]="categoryFilter() === category" (click)="onFilterCategory(category)">
+              {{ categoryLabelKey(category) | translate }}
+            </button>
+          </div>
           <div class="device-filters">
           <button mat-stroked-button class="filter-btn" [class.active]="deviceFilter() === 'all'" (click)="onFilterDevices('all')">{{ 'dashboard.all' | translate }}</button>
           <button mat-stroked-button class="filter-btn" [class.active]="deviceFilter() === 'online'" (click)="onFilterDevices('online')">{{ 'dashboard.online' | translate }}</button>
@@ -243,10 +249,14 @@
 
           <div class="device-info">
             <h3>{{ deviceLabel(device) }}</h3>
+            <p *ngIf="device.usageCategory" class="device-category">{{ categoryLabelKey(device.usageCategory) | translate }}</p>
             <p>{{ deviceStatus(device) }}</p>
           </div>
 
           <div class="device-footer">
+            <button mat-stroked-button class="btn-device-action" (click)="openCategoryModal(device, $event)">
+              {{ 'myDevices.classify' | translate }}
+            </button>
             <button mat-stroked-button class="btn-device-action" (click)="onDeviceClick(device)">
               {{ 'dashboard.viewDetails' | translate }}
             </button>
@@ -286,13 +296,41 @@
       </button>
     </div>
     <p class="dashboard-modal__status">{{ deviceStatus(device) }}</p>
+    <p class="dashboard-modal__meta" *ngIf="device.usageCategory">
+      {{ 'myDevices.classifyLabel' | translate }}: <strong>{{ categoryLabelKey(device.usageCategory) | translate }}</strong>
+    </p>
     <p class="dashboard-modal__meta">
       {{ 'dashboard.statusLabel' | translate }}: <strong>{{ (device.active ? 'common.online' : 'common.offline') | translate }}</strong>
       <span *ngIf="device.live"> • {{ 'dashboard.liveFeedActive' | translate }}</span>
     </p>
     <div class="dashboard-modal__actions">
       <button type="button" mat-stroked-button class="btn-secondary" (click)="closeDeviceModal()">{{ 'common.close' | translate }}</button>
+      <button type="button" mat-stroked-button class="btn-secondary" (click)="openCategoryModal(device)">{{ 'myDevices.classify' | translate }}</button>
       <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="navigateToDevices()">{{ 'dashboard.manageInDevices' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showCategoryModal()" (click)="closeCategoryModal()">
+  <div class="dashboard-modal" (click)="$event.stopPropagation()" *ngIf="selectedDevice() as device">
+    <div class="dashboard-modal__header">
+      <h3>{{ 'myDevices.classifyTitle' | translate }}</h3>
+      <button type="button" mat-icon-button class="dashboard-modal__close" (click)="closeCategoryModal()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <p class="dashboard-modal__status">{{ deviceLabel(device) }}</p>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'myDevices.classifyLabel' | translate }}</mat-label>
+      <mat-select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)" name="usageCategory">
+        <mat-option *ngFor="let category of usageCategories" [value]="category">
+          {{ categoryLabelKey(category) | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="dashboard-modal__actions">
+      <button type="button" mat-stroked-button class="btn-secondary" (click)="closeCategoryModal()">{{ 'common.cancel' | translate }}</button>
+      <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="saveCategory()">{{ 'myDevices.saveCategory' | translate }}</button>
     </div>
   </div>
 </div>

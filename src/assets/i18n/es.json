@@ -1524,8 +1524,18 @@
     "changePositive": "Arriba 2% respecto a la última ejecución",
     "changeNegative": "+12% en cola",
     "changeStable": "Estable esta semana",
-    "chartPlaceholderLine1": "La visualización de actividad de sincronización iría aquí",
-    "chartPlaceholderLine2": "Gráfico de sincronización en tiempo real de la plataforma"
+    "chartCaption": "Trabajos de sincronización exitosos en las últimas 24 horas.",
+    "legend": "Sincronizaciones completadas",
+    "peakHour": "Hora pico",
+    "hours": {
+      "6am": "6 AM",
+      "9am": "9 AM",
+      "12pm": "12 PM",
+      "3pm": "3 PM",
+      "6pm": "6 PM",
+      "9pm": "9 PM",
+      "12am": "12 AM"
+    }
   },
   "dashboard": {
     "searchPlaceholder": "Buscar dispositivos, escenas...",
@@ -1878,6 +1888,17 @@
     "offline": "Desconectado",
     "on": "ENCENDIDO",
     "off": "APAGADO",
+    "confirm": {
+      "shutdownDevice": "¿Apagar este dispositivo de inmediato?",
+      "unlinkGateway": "¿Desvincular este gateway? Los nodos conectados dejarán de sincronizar.",
+      "revokeAccess": "¿Revocar el acceso de este usuario?",
+      "removePhoto": "¿Eliminar tu foto de perfil?",
+      "discardChanges": "¿Descartar los cambios sin guardar?",
+      "generateApiKey": "¿Generar una nueva clave API? La clave actual dejará de funcionar.",
+      "removeMember": "¿Eliminar permanentemente a este miembro del equipo?",
+      "archiveMember": "¿Archivar a este miembro del equipo?",
+      "deleteActivity": "¿Eliminar esta entrada del registro de actividad?"
+    },
     "enabled": "Activado",
     "disabled": "Desactivado",
     "severity": "Severidad",

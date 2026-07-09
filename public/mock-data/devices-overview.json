@@ -20,7 +20,8 @@
             "icon": "lightbulb",
             "connection": "online",
             "active": false,
-            "powerUsageW": 0
+            "powerUsageW": 0,
+            "usageCategory": "lighting"
           },
           {
             "id": "smart-ac",
@@ -28,7 +29,8 @@
             "icon": "acUnit",
             "connection": "online",
             "active": false,
-            "powerUsageW": 0
+            "powerUsageW": 0,
+            "usageCategory": "climate"
           },
           {
             "id": "entertainment-center",
@@ -36,7 +38,8 @@
             "icon": "tv",
             "connection": "online",
             "active": false,
-            "powerUsageW": 0
+            "powerUsageW": 0,
+            "usageCategory": "entertainment"
           },
           {
             "id": "floor-lamp",

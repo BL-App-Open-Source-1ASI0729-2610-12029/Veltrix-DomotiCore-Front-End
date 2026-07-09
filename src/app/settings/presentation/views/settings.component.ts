@@ -399,6 +399,8 @@ export class SettingsComponent implements OnInit {
   }
 
   removePhoto(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.removePhoto'))) return;
+
     this.formData = { ...this.formData, profilePhoto: this.defaultProfilePhoto };
     this.dirty = true;
     this.feedback.showToast(this.translate.instant('settings.toast.photoRemoved'), 'info');
@@ -524,6 +526,8 @@ export class SettingsComponent implements OnInit {
   }
 
   revokeGuestAccess(userId: string): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.revokeAccess'))) return;
+
     this.securityStore.revokeGuestAccess(userId);
     this.feedback.showToast(this.translate.instant('settings.toast.accessRevoked'), 'success');
   }

@@ -142,6 +142,8 @@ export class ZoneConfigurationComponent implements OnInit {
   }
 
   onDiscard(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.discardChanges'))) return;
+
     this.store.discardChanges();
     this.feedback.showToast(this.translate.instant('zoneConfiguration.toast.discarded'), 'info');
   }

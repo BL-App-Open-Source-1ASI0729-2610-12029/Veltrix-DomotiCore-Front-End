@@ -907,6 +907,25 @@ body {
   flex-wrap: wrap;
 }
 
+.category-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.device-category {
+  font-size: 0.78rem;
+  color: var(--primary-color, #2949c7);
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+}
+
+.device-footer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .btn-turn-all {
   display: inline-flex;
   align-items: center;

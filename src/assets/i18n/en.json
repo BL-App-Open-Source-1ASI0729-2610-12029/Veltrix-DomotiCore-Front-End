@@ -1524,8 +1524,18 @@
     "changePositive": "Up 2% vs last run",
     "changeNegative": "+12% in queue",
     "changeStable": "Stable this week",
-    "chartPlaceholderLine1": "Sync activity visualization would go here",
-    "chartPlaceholderLine2": "Real-time platform synchronization graph"
+    "chartCaption": "Successful sync jobs over the last 24 hours.",
+    "legend": "Sync jobs completed",
+    "peakHour": "Peak hour",
+    "hours": {
+      "6am": "6 AM",
+      "9am": "9 AM",
+      "12pm": "12 PM",
+      "3pm": "3 PM",
+      "6pm": "6 PM",
+      "9pm": "9 PM",
+      "12am": "12 AM"
+    }
   },
   "dashboard": {
     "searchPlaceholder": "Search devices, scenes...",
@@ -1878,6 +1888,17 @@
     "offline": "Offline",
     "on": "ON",
     "off": "OFF",
+    "confirm": {
+      "shutdownDevice": "Shut down this device immediately?",
+      "unlinkGateway": "Unlink this gateway? Connected nodes will stop syncing.",
+      "revokeAccess": "Revoke access for this user?",
+      "removePhoto": "Remove your profile photo?",
+      "discardChanges": "Discard unsaved changes?",
+      "generateApiKey": "Generate a new API key? The current key will stop working.",
+      "removeMember": "Remove this team member permanently?",
+      "archiveMember": "Archive this team member?",
+      "deleteActivity": "Delete this activity log entry?"
+    },
     "enabled": "Enabled",
     "disabled": "Disabled",
     "severity": "Severity",

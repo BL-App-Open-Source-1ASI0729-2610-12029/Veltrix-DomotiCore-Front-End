@@ -25,9 +25,11 @@ export class DeviceDashboardComponent implements OnInit {
   readonly showAddModal = signal(false);
   readonly showCategoryModal = signal(false);
   readonly searchQuery = signal('');
+  readonly categoryFilter = signal<SmartDevice['usageCategory'] | 'all'>('all');
   readonly categoryDeviceRoomId = signal('');
   readonly categoryDeviceId = signal('');
   readonly selectedCategory = signal<SmartDevice['usageCategory']>('generic');
+  readonly usageCategories: SmartDevice['usageCategory'][] = ['lighting', 'climate', 'security', 'entertainment', 'generic'];
   newDeviceName = '';
   selectedRoomId = 'living-room';
   selectedDeviceType: NewDeviceType = 'generic';
@@ -72,6 +74,8 @@ export class DeviceDashboardComponent implements OnInit {
   }
 
   roomMatchesSearch(room: Room): boolean {
+    if (this.filterDevices(room.devices).length === 0) return false;
+
     const query = this.searchQuery().trim();
     if (!query) return true;
     if (matchesSearchQuery(room.name, query)) return true;
@@ -80,8 +84,16 @@ export class DeviceDashboardComponent implements OnInit {
 
   filterDevices(devices: SmartDevice[]): SmartDevice[] {
     const query = this.searchQuery().trim();
-    if (!query) return devices;
-    return devices.filter(device => matchesSearchQuery(device.name, query));
+    const category = this.categoryFilter();
+    return devices.filter(device => {
+      if (category !== 'all' && (device.usageCategory ?? 'generic') !== category) return false;
+      if (!query) return true;
+      return matchesSearchQuery(device.name, query);
+    });
+  }
+
+  onFilterCategory(category: SmartDevice['usageCategory'] | 'all'): void {
+    this.categoryFilter.set(category);
   }
 
   onTogglePriority(roomId: string, device: SmartDevice, event: Event): void {

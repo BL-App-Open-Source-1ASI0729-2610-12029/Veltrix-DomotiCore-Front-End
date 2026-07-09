@@ -81,32 +81,40 @@ export class DashboardStore {
 
   devices = signal<DeviceEntity[]>([
     {
+      id: 'living-room-ac',
       nameKey: 'dashboard.devices.livingRoomAc.name',
       statusKey: 'dashboard.devices.livingRoomAc.status',
       active: true,
       icon: GOOGLE_ICONS.acUnit,
-      live: false
+      live: false,
+      usageCategory: 'climate',
     },
     {
+      id: 'kitchen-lights',
       nameKey: 'dashboard.devices.kitchenLights.name',
       statusKey: 'dashboard.devices.kitchenLights.status',
       active: false,
       icon: GOOGLE_ICONS.lightbulb,
-      live: false
+      live: false,
+      usageCategory: 'lighting',
     },
     {
+      id: 'front-porch-cam',
       nameKey: 'dashboard.devices.frontPorchCam.name',
       statusKey: 'dashboard.devices.frontPorchCam.status',
       active: true,
       icon: GOOGLE_ICONS.videocam,
-      live: true
+      live: true,
+      usageCategory: 'security',
     },
     {
+      id: 'garage-door',
       nameKey: 'dashboard.devices.garageDoor.name',
       statusKey: 'dashboard.devices.garageDoor.status',
       active: true,
       icon: GOOGLE_ICONS.door,
-      live: false
+      live: false,
+      usageCategory: 'security',
     }
   ]);
 

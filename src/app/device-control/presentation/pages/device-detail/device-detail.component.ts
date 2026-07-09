@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DeviceDetailStore } from '../../../application/device-detail.store';
 import { DevicesOverviewStore } from '../../../application/devices-overview.store';
 import { MaintenanceStore } from '../../../application/maintenance.store';
+import { SmartDevice } from '../../../domain/model/smart-device.entity';
 import { OperationMode, PowerChartPeriod } from '../../../infrastructure/device-detail-response';
 import { GOOGLE_ICONS, GoogleIconKey } from '../../../../shared/constants/google-icons';
 import { UiFeedbackService } from '../../../../shared/services/ui-feedback.service';
@@ -38,7 +39,10 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   readonly showTimerModal = signal(false);
   readonly showMaintenanceModal = signal(false);
   readonly showRenameModal = signal(false);
+  readonly showCategoryModal = signal(false);
   readonly renameValue = signal('');
+  readonly selectedCategory = signal<SmartDevice['usageCategory']>('generic');
+  readonly usageCategories: SmartDevice['usageCategory'][] = ['lighting', 'climate', 'security', 'entertainment', 'generic'];
   readonly hoveredChartIndex = signal<number | null>(null);
   timerHour = 22;
   timerMinute = 0;
@@ -171,6 +175,35 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
     this.store.renameDevice(name);
     this.closeRenameModal();
     this.feedback.showToast(this.translate.instant('deviceDetail.toast.renamed', { name }), 'success');
+  }
+
+  deviceUsageCategory(): SmartDevice['usageCategory'] | undefined {
+    const overview = this.overviewStore.overview();
+    if (!overview) return undefined;
+    for (const room of overview.rooms) {
+      const device = room.devices.find(item => item.id === this.deviceId);
+      if (device) return device.usageCategory;
+    }
+    return undefined;
+  }
+
+  categoryLabelKey(category: SmartDevice['usageCategory'] | undefined): string {
+    return `myDevices.categories.${category ?? 'generic'}`;
+  }
+
+  openCategoryModal(): void {
+    this.selectedCategory.set(this.deviceUsageCategory() ?? 'generic');
+    this.showCategoryModal.set(true);
+  }
+
+  closeCategoryModal(): void {
+    this.showCategoryModal.set(false);
+  }
+
+  saveCategory(): void {
+    this.overviewStore.setDeviceCategory(this.roomId, this.deviceId, this.selectedCategory());
+    this.closeCategoryModal();
+    this.feedback.showToast(this.translate.instant('myDevices.toast.categorySaved'), 'success');
   }
 
   formatLastState(detail: { lastStateAt?: string; lastStateLabel?: string }): string {

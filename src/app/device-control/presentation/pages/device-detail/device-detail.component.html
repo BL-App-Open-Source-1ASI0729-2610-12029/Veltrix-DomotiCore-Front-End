@@ -41,6 +41,9 @@
           • {{ detail.powerLoadKw }} kW
         </p>
         <p class="last-state-line">{{ formatLastState(detail) }}</p>
+        <p class="usage-category-line" *ngIf="deviceUsageCategory() as category">
+          {{ 'myDevices.classifyLabel' | translate }}: {{ categoryLabelKey(category) | translate }}
+        </p>
         <p class="battery-line" *ngIf="detail.batteryPercent != null">
           {{ 'deviceDetail.battery' | translate }}: {{ detail.batteryPercent }}%
         </p>
@@ -305,6 +308,9 @@
       </div>
 
       <div class="page-actions">
+        <button type="button" mat-stroked-button (click)="openCategoryModal()">
+          {{ 'myDevices.classify' | translate }}
+        </button>
         <button type="button" mat-stroked-button (click)="openRenameModal()">
           {{ 'deviceDetail.renameDevice' | translate }}
         </button>
@@ -400,5 +406,28 @@
         <button type="submit" mat-flat-button color="primary" class="btn-primary" [disabled]="!renameValue().trim()">{{ 'common.save' | translate }}</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showCategoryModal()" (click)="closeCategoryModal()">
+  <div class="timer-modal" (click)="$event.stopPropagation()">
+    <div class="timer-modal__header">
+      <h3>{{ 'myDevices.classifyTitle' | translate }}</h3>
+      <button type="button" mat-icon-button class="timer-close" (click)="closeCategoryModal()" [attr.aria-label]="'common.a11y.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'myDevices.classifyLabel' | translate }}</mat-label>
+      <mat-select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)" name="usageCategory">
+        <mat-option *ngFor="let category of usageCategories" [value]="category">
+          {{ categoryLabelKey(category) | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="timer-modal__actions">
+      <button type="button" mat-stroked-button class="btn-secondary" (click)="closeCategoryModal()">{{ 'common.cancel' | translate }}</button>
+      <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="saveCategory()">{{ 'myDevices.saveCategory' | translate }}</button>
+    </div>
   </div>
 </div>

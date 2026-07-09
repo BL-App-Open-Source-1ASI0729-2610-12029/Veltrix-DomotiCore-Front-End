@@ -460,6 +460,8 @@ export class IntegrationsComponent implements OnInit {
   }
 
   generateNewKey(): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.generateApiKey'))) return;
+
     const suffix = Math.random().toString(36).slice(2, 10);
     this.apiKey.set(`dc_live_${suffix}_regenerated`);
     this.feedback.showToast(this.translate.instant('integrations.toast.keyGenerated'), 'success');

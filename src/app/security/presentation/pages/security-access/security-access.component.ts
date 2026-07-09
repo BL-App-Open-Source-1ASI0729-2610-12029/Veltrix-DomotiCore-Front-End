@@ -184,6 +184,8 @@ export class SecurityAccessComponent implements OnInit {
   }
 
   revokeGuestAccess(userId: string): void {
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.revokeAccess'))) return;
+
     this.store.revokeGuestAccess(userId);
     this.feedback.showToast(this.translate.instant('security.toast.accessRevoked'), 'success');
   }

@@ -54,6 +54,7 @@ export class GatewaySetupComponent implements OnInit {
 
   onUnlinkGateway(): void {
     if (!this.canManage()) return;
+    if (!this.feedback.confirmAction(this.translate.instant('common.confirm.unlinkGateway'))) return;
 
     this.store.unlink().subscribe({
       next: () => this.feedback.showToast(this.translate.instant('gateway.toast.unlinked'), 'info'),
