@@ -59,6 +59,7 @@ export class AutomationStore {
   private clockIntervalId: ReturnType<typeof setInterval> | null = null;
   private apiTimelineSlots: TimelineSlotResponse[] = [];
   private readonly timelinePaused = signal(false);
+  private centerDataLoaded = false;
 
 
 
@@ -102,15 +103,26 @@ export class AutomationStore {
 
 
   readonly selectedTimelineSlot = computed(() => {
-
     const timeline = this.activeTimeline();
-
     const selectedId = this.selectedTimelineSlotId();
+    if (!selectedId) {
+      return null;
+    }
 
-    if (!timeline || !selectedId) return null;
+    const slot = timeline?.slots.find(
+      item => item.id === selectedId || item.ruleId === selectedId,
+    );
+    if (slot) {
+      return slot;
+    }
 
-    return timeline.slots.find(slot => slot.id === selectedId) ?? null;
+    const rule = this.businessRules().find(item => item.id === selectedId);
+    if (!rule) {
+      return null;
+    }
 
+    const currentDecimal = timeline?.currentDecimal ?? new Date().getHours();
+    return this.ruleToTimelineSlot(rule, currentDecimal);
   });
 
 
@@ -119,6 +131,7 @@ export class AutomationStore {
     this.loading.set(true);
     this.loadError.set(false);
     this.startTimelineClock();
+    this.primeTimelineSelectionFromStorage();
 
     forkJoin({
       rules: this.api.getBusinessRules().pipe(catchError(() => of([] as AutomationRule[]))),
@@ -147,12 +160,33 @@ export class AutomationStore {
           this.inactivityMinutes.set(result.prefs.inactivityMinutes);
           this.apiTimelineSlots = this.normalizeApiTimelineSlots(result.timeline?.slots ?? []);
           this.rebuildTimeline();
+          this.centerDataLoaded = true;
         },
         error: () => {
           this.loadError.set(true);
           this.rebuildTimeline();
+          this.centerDataLoaded = true;
         },
       });
+  }
+
+  bootstrapCenter(): void {
+    this.primeTimelineSelectionFromStorage();
+
+    if (this.centerDataLoaded) {
+      this.rebuildTimeline();
+      this.restoreTimelineSelection();
+      return;
+    }
+
+    this.loadAll();
+  }
+
+  primeTimelineSelectionFromStorage(): void {
+    const remembered = sessionStorage.getItem(TIMELINE_SELECTION_KEY);
+    if (remembered) {
+      this.selectedTimelineSlotId.set(remembered);
+    }
   }
 
   setTimelinePaused(paused: boolean): void {
@@ -175,25 +209,36 @@ export class AutomationStore {
 
   rememberTimelineSelection(slotId?: string | null): void {
     const id = slotId ?? this.selectedTimelineSlotId();
-    if (id) {
-      sessionStorage.setItem(TIMELINE_SELECTION_KEY, id);
+    if (!id) {
+      return;
     }
+    this.selectedTimelineSlotId.set(id);
+    sessionStorage.setItem(TIMELINE_SELECTION_KEY, id);
+  }
+
+  consumePendingTimelineRestore(): string | null {
+    return sessionStorage.getItem(TIMELINE_SELECTION_KEY);
   }
 
   private restoreTimelineSelection(): void {
     const remembered = sessionStorage.getItem(TIMELINE_SELECTION_KEY);
-    const candidate = this.selectedTimelineSlotId() ?? remembered;
+    const candidate = remembered ?? this.selectedTimelineSlotId();
     if (!candidate) {
       return;
     }
 
-    const exists = this.activeTimeline()?.slots.some(slot => slot.id === candidate);
-    if (exists) {
-      this.selectedTimelineSlotId.set(candidate);
-      if (remembered) {
-        sessionStorage.removeItem(TIMELINE_SELECTION_KEY);
-      }
+    const timeline = this.activeTimeline();
+    const matchedSlot = timeline?.slots.find(
+      slot => slot.id === candidate || slot.ruleId === candidate,
+    );
+
+    if (matchedSlot) {
+      this.selectedTimelineSlotId.set(matchedSlot.id);
+      sessionStorage.removeItem(TIMELINE_SELECTION_KEY);
+      return;
     }
+
+    this.selectedTimelineSlotId.set(candidate);
   }
 
 
@@ -459,7 +504,7 @@ export class AutomationStore {
 
     const currentTime = formatDecimalHour(currentDecimal);
 
-    const activeRules = this.businessRules().filter(rule => rule.active);
+    const activeRules = this.rulesForTimeline(currentDecimal);
 
     const protocol = this.shutdownProtocol();
 
@@ -467,7 +512,10 @@ export class AutomationStore {
 
     const slots: TimelineSlotResponse[] = activeRules.map(rule => {
 
-      const isRunningNow = currentDecimal >= rule.timeline.startHour && currentDecimal < rule.timeline.endHour;
+      const isRunningNow =
+        rule.active &&
+        currentDecimal >= rule.timeline.startHour &&
+        currentDecimal < rule.timeline.endHour;
 
       const duration = rule.timeline.endHour - rule.timeline.startHour;
 
@@ -571,6 +619,51 @@ export class AutomationStore {
     });
 
     this.restoreTimelineSelection();
+  }
+
+  private rulesForTimeline(currentDecimal: number): AutomationRule[] {
+    const activeRules = this.businessRules().filter(rule => rule.active);
+    const restoreId =
+      this.selectedTimelineSlotId() ?? sessionStorage.getItem(TIMELINE_SELECTION_KEY);
+    if (!restoreId) {
+      return activeRules;
+    }
+
+    const selectedRule = this.businessRules().find(rule => rule.id === restoreId);
+    if (!selectedRule || selectedRule.active) {
+      return activeRules;
+    }
+    if (activeRules.some(rule => rule.id === selectedRule.id)) {
+      return activeRules;
+    }
+    return [...activeRules, selectedRule];
+  }
+
+  private ruleToTimelineSlot(rule: AutomationRule, currentDecimal: number): TimelineSlotResponse {
+    const isRunningNow =
+      rule.active &&
+      currentDecimal >= rule.timeline.startHour &&
+      currentDecimal < rule.timeline.endHour;
+    const duration = rule.timeline.endHour - rule.timeline.startHour;
+    const progressPercent =
+      isRunningNow && duration > 0
+        ? Math.min(100, Math.max(0, ((currentDecimal - rule.timeline.startHour) / duration) * 100))
+        : 0;
+
+    return {
+      id: rule.id,
+      ruleId: rule.id,
+      label: rule.timeline.label,
+      startHour: rule.timeline.startHour,
+      endHour: rule.timeline.endHour,
+      color: rule.timeline.color,
+      category: 'operational',
+      style: 'solid',
+      group: rule.group,
+      description: rule.description,
+      isRunningNow,
+      progressPercent,
+    };
   }
 
   private normalizeApiTimelineSlots(slots: TimelineSlotResponse[]): TimelineSlotResponse[] {

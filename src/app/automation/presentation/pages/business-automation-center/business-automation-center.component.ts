@@ -1,10 +1,13 @@
-import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+
+import { filter } from 'rxjs/operators';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -85,6 +88,7 @@ export class BusinessAutomationCenterComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
 
 
@@ -198,7 +202,35 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.store.loadAll();
+    this.store.bootstrapCenter();
+    this.scheduleDetailFocus();
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(event => {
+        if (!event.urlAfterRedirects.includes('/app/automation/center')) {
+          return;
+        }
+        this.store.bootstrapCenter();
+        this.scheduleDetailFocus();
+      });
+  }
+
+  private scheduleDetailFocus(): void {
+    window.setTimeout(() => this.focusTimelineDetail(), 150);
+  }
+
+  private focusTimelineDetail(): void {
+    if (!this.store.selectedTimelineSlot()) {
+      return;
+    }
+    document.querySelector('.timeline-detail')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    });
   }
 
   editingScheduleRule(): AutomationRule | null {

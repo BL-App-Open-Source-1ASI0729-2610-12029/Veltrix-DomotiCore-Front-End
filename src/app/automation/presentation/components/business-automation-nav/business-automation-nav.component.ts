@@ -16,6 +16,7 @@ import { AutomationStore } from '../../../application/automation.store';
         routerLinkActive="biz-auto-nav__link--active"
         [routerLinkActiveOptions]="{ exact: false }"
         class="biz-auto-nav__link"
+        (click)="onCenterNav()"
       >
         {{ 'automation.navBusinessCenter' | translate }}
       </a>
@@ -62,5 +63,9 @@ export class BusinessAutomationNavComponent {
 
   onZonesNav(): void {
     this.store.rememberTimelineSelection();
+  }
+
+  onCenterNav(): void {
+    this.store.primeTimelineSelectionFromStorage();
   }
 }
