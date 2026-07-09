@@ -33,7 +33,8 @@
             "styles": [
               "src/material-theme.scss",
               "src/material-layout-fixes.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/dark-theme-overrides.css"
             ],
             "outputMode": "static",
             "security": {

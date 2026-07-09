@@ -12,10 +12,6 @@
 }
 
 .account-view--home.account-view--settings {
-  background: #f8f9fb;
-}
-
-:root[data-theme='dark'] .account-view--home.account-view--settings {
   background: var(--background);
 }
 

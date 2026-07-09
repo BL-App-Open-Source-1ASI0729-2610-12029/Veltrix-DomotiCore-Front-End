@@ -1,6 +1,8 @@
-import { Component, HostListener, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../application/auth.service';
 import { ThemeService } from '../../../shared/services/theme.service';
@@ -34,6 +36,8 @@ export class AccountShellComponent implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   private readonly translate = inject(TranslateService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly theme = inject(ThemeService);
   private readonly settingsStore = inject(SettingsStore);
   private readonly teamInvitations = inject(TeamInvitationService);
@@ -52,6 +56,12 @@ export class AccountShellComponent implements OnInit, OnDestroy {
       this.teamMembership.sync();
       this.teamInvitations.startPolling(this.auth.currentUser);
       this.sidebarOpen = window.innerWidth >= 1025;
+      this.router.events
+        .pipe(
+          filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe(() => this.reapplyTheme());
     }
   }
 
@@ -71,6 +81,13 @@ export class AccountShellComponent implements OnInit, OnDestroy {
   onWindowResize(): void {
     if (isPlatformBrowser(this.platformId) && window.innerWidth < 1025) {
       this.sidebarOpen = false;
+    }
+  }
+
+  private reapplyTheme(): void {
+    const mode = this.theme.getCurrent();
+    if (mode) {
+      this.theme.apply(mode);
     }
   }
 

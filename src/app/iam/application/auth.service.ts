@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthFailureReason, AuthLoginResult, AuthRegisterResult } from './auth-result';
 import { SettingsStore } from '../../settings/application/settings.store';
+import { ThemeService } from '../../shared/services/theme.service';
 import { LocalDataCacheService } from '../../shared/services/local-data-cache.service';
 import { TeamInvitationService } from '../../team-management/application/team-invitation.service';
 import { TeamMembershipService } from '../../team-management/application/team-membership.service';
@@ -23,6 +24,7 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly cache = inject(LocalDataCacheService);
   private readonly settingsStore = inject(SettingsStore);
+  private readonly theme = inject(ThemeService);
 
   currentUser: AuthUser | null = null;
 
@@ -183,8 +185,10 @@ export class AuthService {
 
     localStorage.setItem(ACTIVE_SEGMENT_KEY, segment);
     this.clearSegmentScopedCache();
-    this.settingsStore.reset();
-    this.settingsStore.fetchSettings();
+    const themeMode = this.theme.getCurrent();
+    if (themeMode) {
+      this.theme.apply(themeMode);
+    }
     this.router.navigateByUrl(getAccountTypeRoute(segment));
   }
 

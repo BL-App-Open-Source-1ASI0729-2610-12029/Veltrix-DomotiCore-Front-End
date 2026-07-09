@@ -1,0 +1,579 @@
+/*
+ * Global dark theme overrides.
+ * Loaded after component styles to fix hardcoded light surfaces
+ * (panels, segment switcher, SME/Biz pages, modals, tables, nav pills).
+ */
+
+/* ── Host-level token resets (SME / Business pages) ───────────── */
+html[data-theme='dark'] :is(
+  app-operations-hub,
+  app-business-automation-center,
+  app-team-management,
+  app-alerts-history,
+  app-business-reports,
+  app-cost-analysis,
+  app-business-device-management,
+  app-business-profile-api-settings,
+  app-integrations,
+  app-connected-services,
+  app-sync-status,
+  app-zone-configuration,
+  app-automation-center,
+  app-automation-builder,
+  app-history-log,
+  app-notifications-center,
+  app-energy-intelligence,
+  app-gateway-setup,
+  app-maintenance-hub,
+  app-device-explorer,
+  app-business-device-detail,
+  app-security-access,
+  app-dashboard-view
+) {
+  --sme-bg: var(--background);
+  --sme-card: var(--surface);
+  --sme-border: var(--gray-200);
+  --sme-text-muted: var(--gray-500);
+  --sme-navy: #e2e8f0;
+  --sme-navy-dark: #cbd5e1;
+  --sme-peach: rgba(245, 158, 11, 0.15);
+  --biz-bg: var(--background);
+  --biz-border: var(--gray-200);
+  --biz-muted: var(--gray-500);
+  --biz-navy: #e2e8f0;
+  --biz-navy-dark: #cbd5e1;
+  --cost-navy-dark: #cbd5e1;
+  --team-navy: #e2e8f0;
+  --team-navy-dark: #cbd5e1;
+  --team-border: var(--gray-200);
+  --team-muted: var(--gray-500);
+  color: var(--gray-800);
+}
+
+/* ── Shells & main canvas ─────────────────────────────────────── */
+html[data-theme='dark'] .account-view--home,
+html[data-theme='dark'] .account-view--home.account-view--settings,
+html[data-theme='dark'] .account-view--business {
+  background: var(--background) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .account-view__main {
+  color: var(--gray-800);
+}
+
+/* ── Top navbar & segment switcher ─────────────────────────────── */
+html[data-theme='dark'] .segment-switcher {
+  background: rgba(124, 155, 255, 0.14) !important;
+  border-color: rgba(124, 155, 255, 0.22) !important;
+}
+
+html[data-theme='dark'] .segment-switcher__btn {
+  color: var(--gray-500) !important;
+}
+
+html[data-theme='dark'] .segment-switcher__btn--active {
+  background: var(--surface) !important;
+  color: var(--primary-color) !important;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme='dark'] .segment-switcher__btn:hover:not(.segment-switcher__btn--active) {
+  color: var(--primary-color) !important;
+}
+
+/* ── Angular Material surfaces ────────────────────────────────── */
+html[data-theme='dark'] .mat-mdc-card {
+  --mdc-elevated-card-container-color: var(--surface);
+  --mdc-outlined-card-container-color: var(--surface);
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .mat-mdc-text-field-wrapper {
+  background: var(--surface-soft) !important;
+}
+
+html[data-theme='dark'] .mdc-text-field--outlined .mdc-notched-outline__leading,
+html[data-theme='dark'] .mdc-text-field--outlined .mdc-notched-outline__notch,
+html[data-theme='dark'] .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+html[data-theme='dark'] .mat-mdc-input-element,
+html[data-theme='dark'] .mat-mdc-select-value,
+html[data-theme='dark'] .mat-mdc-form-field-label {
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .mat-mdc-tab-group,
+html[data-theme='dark'] .mat-mdc-tab-header {
+  --mat-tab-header-inactive-label-text-color: var(--gray-500);
+  --mat-tab-header-active-label-text-color: var(--primary-color);
+}
+
+html[data-theme='dark'] .mat-mdc-table {
+  background: var(--surface);
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .mat-mdc-header-row,
+html[data-theme='dark'] .mat-mdc-row {
+  background: var(--surface);
+}
+
+html[data-theme='dark'] .mat-mdc-header-cell,
+html[data-theme='dark'] .mat-mdc-cell {
+  color: var(--gray-800);
+  border-bottom-color: var(--gray-200) !important;
+}
+
+/* ── Shared panels, cards & summaries ─────────────────────────── */
+html[data-theme='dark'] .account-view__main :is(
+  .panel,
+  .summary-card,
+  .kpi-card,
+  .content-card,
+  .card,
+  .insights-panel,
+  .timeline-panel,
+  .shutdown-panel,
+  .streams-card,
+  .audit-panel,
+  .roi-card,
+  .peak-panel,
+  .device-tile,
+  .rule-card,
+  .scene-card,
+  .event-card,
+  .integration-card,
+  .status-card:not(.status-card--home):not(.status-card--alert),
+  .inactivity-panel,
+  .team-modal,
+  .biz-modal,
+  .add-modal,
+  .confirm-modal,
+  .access-denied__card,
+  .notifications-panel,
+  .help-dialog
+) {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  strong,
+  .panel__head h2,
+  .summary-card__value,
+  .biz-auto-header__title,
+  .page-header h1,
+  .page-title,
+  .team-page__header h1,
+  .sme-hub__header h1
+) {
+  color: var(--gray-900) !important;
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  p,
+  small,
+  label,
+  .summary-card__label,
+  .summary-card__meta,
+  .panel__head p,
+  .biz-auto-header__subtitle,
+  .page-header p
+) {
+  color: var(--gray-600);
+}
+
+/* ── Search, filters, chips & period pills ────────────────────── */
+html[data-theme='dark'] .search-box,
+html[data-theme='dark'] .page-toolbar .search-box,
+html[data-theme='dark'] .biz-auto-page .search-box {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+}
+
+html[data-theme='dark'] .search-box input {
+  color: var(--gray-800) !important;
+  background: transparent !important;
+}
+
+html[data-theme='dark'] .search-box input::placeholder {
+  color: var(--gray-500) !important;
+}
+
+html[data-theme='dark'] :is(
+  .period-segment,
+  .biz-auto-nav,
+  .automation-nav,
+  .history-nav,
+  .biz-devices-nav,
+  .biz-reports-nav,
+  .biz-users-nav,
+  .time-filter
+) {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+}
+
+html[data-theme='dark'] :is(
+  .period-segment__btn,
+  .biz-auto-nav__link,
+  .automation-nav__link,
+  .history-nav__link,
+  .biz-devices-nav__link,
+  .biz-reports-nav__link,
+  .biz-users-nav__link,
+  .time-btn,
+  .period-btn,
+  .filter-btn,
+  .timeline-controls__btn
+) {
+  color: var(--gray-500) !important;
+  background: transparent !important;
+}
+
+html[data-theme='dark'] :is(
+  .period-segment__btn--active,
+  .biz-auto-nav__link--active,
+  .automation-nav__link--active,
+  .history-nav__link--active,
+  .biz-devices-nav__link--active,
+  .biz-reports-nav__link--active,
+  .biz-users-nav__link--active,
+  .time-btn.active,
+  .period-btn--active,
+  .filter-btn.active,
+  .timeline-controls__btn--active
+) {
+  background: var(--surface) !important;
+  color: var(--primary-color) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28) !important;
+}
+
+html[data-theme='dark'] .period-segment__btn--active .period-segment__text small {
+  color: var(--gray-500) !important;
+}
+
+/* ── Outline / secondary buttons ──────────────────────────────── */
+html[data-theme='dark'] .account-view__main :is(
+  .btn-outline,
+  .btn-secondary,
+  .timeline-controls__btn,
+  .audit-filter__btn,
+  .chip-btn,
+  .category-chip
+) {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-700) !important;
+}
+
+html[data-theme='dark'] .account-view__main .btn-outline:hover,
+html[data-theme='dark'] .account-view__main .btn-secondary:hover {
+  background: var(--surface-muted) !important;
+  border-color: var(--gray-300) !important;
+}
+
+/* ── Tables & lists ───────────────────────────────────────────── */
+html[data-theme='dark'] .account-view__main :is(
+  table,
+  .activity-table,
+  .users-table,
+  .team-table,
+  .alerts-table,
+  .device-table
+) {
+  background: var(--surface) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  th,
+  .activity-table thead,
+  .table-head
+) {
+  background: var(--surface-muted) !important;
+  color: var(--gray-700) !important;
+  border-color: var(--gray-200) !important;
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  td,
+  tr,
+  .activity-table tbody tr,
+  .alerts-list__item,
+  .member-row,
+  .shutdown-steps li
+) {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .account-view__main tbody tr:hover {
+  background: var(--surface-soft) !important;
+}
+
+html[data-theme='dark'] .empty-row,
+html[data-theme='dark'] .empty-feed {
+  color: var(--gray-500) !important;
+}
+
+/* ── Modals & overlays ────────────────────────────────────────── */
+html[data-theme='dark'] .modal-backdrop,
+html[data-theme='dark'] .panel-backdrop {
+  background: rgba(0, 0, 0, 0.68) !important;
+}
+
+html[data-theme='dark'] .menu-dropdown {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+html[data-theme='dark'] .menu-dropdown button {
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .menu-dropdown button:hover {
+  background: var(--surface-soft) !important;
+}
+
+/* ── Timeline & automation specifics ──────────────────────────── */
+html[data-theme='dark'] .timeline__track,
+html[data-theme='dark'] .timeline__track-inner {
+  background: var(--surface-soft) !important;
+}
+
+html[data-theme='dark'] .timeline__past {
+  background: rgba(15, 23, 42, 0.35) !important;
+}
+
+html[data-theme='dark'] .timeline-detail {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+}
+
+html[data-theme='dark'] .timeline__legend {
+  color: var(--gray-600) !important;
+}
+
+html[data-theme='dark'] .facility-map__zone.mat-mdc-outlined-button {
+  background: var(--surface) !important;
+  color: var(--gray-800) !important;
+  --mdc-outlined-button-outline-color: var(--gray-200) !important;
+}
+
+/* ── Forms (non-Material legacy) ──────────────────────────────── */
+html[data-theme='dark'] .account-view__main :is(
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select
+) {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .auth-container .mat-mdc-text-field-wrapper {
+  background: var(--surface-soft) !important;
+}
+
+/* ── Misc light-gray surfaces that stayed white ───────────────── */
+html[data-theme='dark'] .account-view__main :is(
+  .zone-checklist__item,
+  .shutdown-edit-list li,
+  .zone-permission-row,
+  .member-actions-flyout,
+  .audit-filter__menu,
+  .timeline-detail__conflict,
+  .loading-bar
+) {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .loading-bar__fill {
+  background: var(--primary-color) !important;
+}
+
+html[data-theme='dark'] .access-denied__icon {
+  background: rgba(220, 38, 38, 0.15) !important;
+}
+
+html[data-theme='dark'] .access-denied h1 {
+  color: var(--gray-900) !important;
+}
+
+html[data-theme='dark'] .access-denied p {
+  color: var(--gray-600) !important;
+}
+
+/* Keep colored badges readable in dark mode */
+html[data-theme='dark'] .account-view__main :is(
+  .action-badge,
+  .status-pill:not(.status-pill--critical):not(.status-pill--warning):not(.status-pill--success),
+  .status-pill--running,
+  .status-pill--conflict
+) {
+  filter: saturate(0.85) brightness(0.95);
+}
+
+/* ── Catch-all: hardcoded #fff surfaces in component CSS ──────── */
+html[data-theme='dark'] .account-view__main :is(
+  .summary-card,
+  .panel,
+  .kpi-card,
+  .chart-panel,
+  .log-panel,
+  .insight-card,
+  .cta-card,
+  .gateway-card,
+  .device-card,
+  .device-tile,
+  .rule-card,
+  .scene-card,
+  .event-card,
+  .integration-card,
+  .zone-card,
+  .step-card,
+  .cost-card,
+  .report-card,
+  .security-card,
+  .access-card,
+  .member-card,
+  .invite-banner,
+  .schedules-panel,
+  .insights-panel,
+  .shutdown-panel,
+  .builder-canvas,
+  .builder-sidebar,
+  .rule-builder-panel,
+  .biz-modal,
+  .team-modal,
+  .add-modal,
+  .confirm-modal,
+  .tab-list__btn--active,
+  .view-toggle__btn--active,
+  .log-tabs__btn--active,
+  .filters-picker__menu,
+  .date-picker__menu,
+  .actions-menu,
+  .member-actions-flyout,
+  .zone-filter__menu,
+  .btn-white
+) {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  .tab-list,
+  .view-toggle,
+  .timeline-controls__group,
+  .log-tabs,
+  .record,
+  .zone-checklist__item,
+  .shutdown-edit-list li,
+  .timeline-detail__conflict,
+  .insights-panel__stats > div
+) {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+}
+
+html[data-theme='dark'] .account-view__main .btn-outline,
+html[data-theme='dark'] .account-view__main .btn-secondary,
+html[data-theme='dark'] .account-view__main .view-toggle button,
+html[data-theme='dark'] .account-view__main .tab-list__btn,
+html[data-theme='dark'] .account-view__main .log-tabs__btn,
+html[data-theme='dark'] .account-view__main .actions-btn,
+html[data-theme='dark'] .account-view__main .icon-btn {
+  background: var(--surface-soft) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-700) !important;
+}
+
+html[data-theme='dark'] .account-view__main .btn-outline:hover,
+html[data-theme='dark'] .account-view__main .btn-secondary:hover,
+html[data-theme='dark'] .account-view__main .icon-btn:hover {
+  background: var(--surface-muted) !important;
+}
+
+/* ── Page headers & titles (biz / team / sme tokens) ──────────── */
+html[data-theme='dark'] .account-view__main :is(
+  .gateway-page__eyebrow,
+  .biz-auto-header__title,
+  .team-page__header h1,
+  .sme-hub__header h1,
+  .alerts-page__header h1,
+  .explorer-page__header h1,
+  .page-header h1,
+  .gateway-page__header h1
+) {
+  color: var(--gray-900) !important;
+}
+
+html[data-theme='dark'] .account-view__main :is(
+  .gateway-page__subtitle,
+  .team-page__header p,
+  .sme-hub__header p,
+  .explorer-page__header p
+) {
+  color: var(--gray-600) !important;
+}
+
+/* ── Auth pages ───────────────────────────────────────────────── */
+html[data-theme='dark'] .auth-container {
+  background: var(--background) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .auth-container mat-card.content-card {
+  background: var(--surface) !important;
+  color: var(--gray-800);
+}
+
+html[data-theme='dark'] .auth-container .mat-mdc-text-field-wrapper {
+  background: var(--surface-soft) !important;
+}
+
+/* ── Material overlays (dialogs, menus, selects) ──────────────── */
+html[data-theme='dark'] .mat-mdc-dialog-container,
+html[data-theme='dark'] .mat-mdc-dialog-surface {
+  background: var(--surface) !important;
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .mat-mdc-menu-panel,
+html[data-theme='dark'] .mat-mdc-select-panel {
+  background: var(--surface) !important;
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .mat-mdc-option {
+  color: var(--gray-800) !important;
+}
+
+html[data-theme='dark'] .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+html[data-theme='dark'] .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background: var(--surface-soft) !important;
+}
+
+/* ── App overlay (notifications / help) ───────────────────────── */
+html[data-theme='dark'] .app-overlay__panel,
+html[data-theme='dark'] .notifications-panel,
+html[data-theme='dark'] .help-dialog {
+  background: var(--surface) !important;
+  border-color: var(--gray-200) !important;
+  color: var(--gray-800);
+}

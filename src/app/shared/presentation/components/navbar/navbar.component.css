@@ -48,7 +48,7 @@
 }
 
 .segment-switcher__btn--active {
-  background: #fff;
+  background: var(--surface);
   color: var(--primary-600, #3455d1);
   box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
 }

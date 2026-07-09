@@ -59,6 +59,7 @@
 }
 
 :root[data-theme='dark'] {
+  --white: #1e293b;
   --background: #0f172a;
   --surface: #1e293b;
   --surface-soft: #243044;
@@ -100,7 +101,7 @@ body {
   font-size: var(--font-size-base);
   line-height: 1.5;
   color: var(--gray-800);
-  background: linear-gradient(180deg, #eef3fb 0%, #f8fafd 100%);
+  background: var(--background);
 }
 
 button,

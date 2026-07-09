@@ -89,11 +89,13 @@ export class SettingsStore {
     this.api.getProfile().subscribe({
       next: profile => {
         const { id: _id, ...state } = profile;
+        const displayMode = this.theme.getCurrent() ?? state.displayMode;
         this.settings.set({
           ...state,
+          displayMode,
           profilePhoto: state.profilePhoto || DEFAULT_PROFILE_PHOTO,
         });
-        this.theme.apply(state.displayMode);
+        this.theme.apply(displayMode);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
