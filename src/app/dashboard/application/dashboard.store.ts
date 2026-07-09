@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 
 import { GOOGLE_ICONS, GoogleIconKey } from '../../shared/constants/google-icons';
@@ -7,6 +7,9 @@ import { AlertEntity } from '../domain/model/alert.entity';
 import { DeviceEntity } from '../domain/model/device.entity';
 import { StatisticEntity } from '../domain/model/statistic.entity';
 import { DashboardApiService } from '../infrastructure/dashboard-api.service';
+import { DeviceDetailApiService } from '../../device-control/infrastructure/device-detail-api.service';
+import { DeviceBulkControlApiService } from '../../device-control/infrastructure/device-bulk-control-api.service';
+import { createDefaultDeviceDetail } from '../../device-control/domain/model/device-detail.entity';
 
 export interface EnergyDataPoint {
   time: string;
@@ -37,6 +40,8 @@ export interface EnergyData {
 })
 export class DashboardStore {
   private readonly api = inject(DashboardApiService);
+  private readonly detailApi = inject(DeviceDetailApiService);
+  private readonly bulkApi = inject(DeviceBulkControlApiService);
 
   readonly loading = signal(false);
 
@@ -245,6 +250,114 @@ export class DashboardStore {
       return icon;
     }
     return GOOGLE_ICONS[icon as GoogleIconKey] ?? GOOGLE_ICONS.deviceHub;
+  }
+
+  toggleDevice(device: DeviceEntity): Observable<void> {
+    if (!device.id || !this.bulkApi.hasApi()) {
+      device.active = !device.active;
+      this.devices.set([...this.devices()]);
+      return this.reload();
+    }
+
+    return this.detailApi.getById(device.id).pipe(
+      switchMap(detail =>
+        this.detailApi.update({
+          ...detail,
+          active: !detail.active,
+          powerLoadKw: !detail.active ? detail.powerLoadKw || 1.0 : 0,
+        }),
+      ),
+      switchMap(() => this.reload()),
+      map(() => undefined),
+    );
+  }
+
+  turnAllOn(): Observable<string[]> {
+    if (!this.bulkApi.hasApi()) {
+      const failed: string[] = [];
+      this.devices.update(items =>
+        items.map(device => {
+          if (!device.live && !device.active) {
+            failed.push(device.name ?? device.id ?? 'device');
+            return device;
+          }
+          return { ...device, active: true };
+        }),
+      );
+      return this.reload().pipe(map(() => failed));
+    }
+
+    return this.bulkApi.bulkToggle('on').pipe(
+      switchMap(result => this.reload().pipe(map(() => result.failed?.map(item => item.name ?? item.id) ?? []))),
+    );
+  }
+
+  shutdownLiveDevice(): Observable<void> {
+    const devices = this.devices();
+    const target = devices.find(device => device.live) ?? devices.find(device => device.active);
+    if (!target?.id || !this.bulkApi.hasApi()) {
+      if (target) {
+        target.active = false;
+        target.live = false;
+        this.devices.set([...devices]);
+      }
+      return this.reload().pipe(map(() => undefined));
+    }
+
+    return this.detailApi.getById(target.id).pipe(
+      switchMap(detail =>
+        this.detailApi.update({
+          ...detail,
+          active: false,
+          powerLoadKw: 0,
+          connection: 'offline',
+        }),
+      ),
+      switchMap(() => this.reload()),
+      map(() => undefined),
+    );
+  }
+
+  addDevice(name: string, deviceType: string): Observable<void> {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      return this.reload();
+    }
+
+    if (!this.bulkApi.hasApi()) {
+      const iconMap: Record<string, string> = {
+        climate: 'acUnit',
+        lights: 'lightbulb',
+        security: 'videocam',
+        generic: 'deviceHub',
+      };
+      const newDevice: DeviceEntity = {
+        name: trimmed,
+        statusKey: 'dashboard.devices.readyAdded',
+        active: true,
+        icon: this.resolveIcon(iconMap[deviceType] ?? 'deviceHub'),
+        live: false,
+      };
+      this.devices.set([...this.devices(), newDevice]);
+      return this.reload();
+    }
+
+    const id = `dashboard-${Date.now()}`;
+    const icon = deviceType === 'climate' ? 'acUnit' : deviceType === 'lights' ? 'lightbulb' : 'moreHoriz';
+    const detail = createDefaultDeviceDetail(id, 'living-room', 'Living Room', trimmed, icon, deviceType === 'climate' ? 'climate' : 'generic');
+    if (deviceType === 'climate') {
+      detail.active = true;
+      detail.powerLoadKw = 1.2;
+    }
+
+    return this.detailApi.create(detail).pipe(
+      switchMap(() => this.reload()),
+      map(() => undefined),
+    );
+  }
+
+  private reload(): Observable<void> {
+    return this.load();
   }
 
 }

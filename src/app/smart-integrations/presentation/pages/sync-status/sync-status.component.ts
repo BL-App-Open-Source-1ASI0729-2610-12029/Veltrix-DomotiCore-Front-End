@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { GOOGLE_ICONS } from '../../../../shared/constants/google-icons';
 import { IntegrationsApiService } from '../../../infrastructure/integrations-api.service';
@@ -14,10 +15,13 @@ interface SyncActivityPoint {
 @Component({
   selector: 'app-sync-status',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, RouterLink, TranslateModule, ...MATERIAL_IMPORTS],
   template: `
     <div class="energy">
-      <h1>{{ 'pages.syncStatus' | translate }}</h1>
+      <div class="energy-header">
+        <h1>{{ 'pages.syncStatus' | translate }}</h1>
+        <a mat-stroked-button routerLink="/app/smart-integrations/schedules">{{ 'integrations.schedules.title' | translate }}</a>
+      </div>
       <div class="energy-stats">
         <div class="stat-card">
           <h3>{{ 'syncStatus.lastSync' | translate }}</h3>

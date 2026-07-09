@@ -96,7 +96,6 @@ export class HistoryStore {
 
   toggleAutoOptimization(enabled: boolean): void {
     this.autoOptimizationEnabled.set(enabled);
-    localStorage.setItem('domoticore-auto-optimization', enabled ? '1' : '0');
     this.automationApi.patchHomePreferences({ autoOptimizationEnabled: enabled }).subscribe();
   }
 }

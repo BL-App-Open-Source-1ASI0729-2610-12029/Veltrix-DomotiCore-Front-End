@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { ApiClientService } from '../../shared/services/api-client.service';
 import { BusinessDevicesOverviewResponse } from './business-devices-response';
 
@@ -101,6 +103,11 @@ const MOCK_OVERVIEW: BusinessDevicesOverviewResponse = {
 @Injectable({ providedIn: 'root' })
 export class BusinessDevicesApiService {
   private readonly api = inject(ApiClientService);
+  private readonly http = inject(HttpClient);
+
+  hasApi(): boolean {
+    return this.api.hasApi();
+  }
 
   getOverview(): Observable<BusinessDevicesOverviewResponse> {
     if (this.api.hasApi()) {
@@ -109,6 +116,20 @@ export class BusinessDevicesApiService {
         .pipe(catchError(() => this.mockOverview()));
     }
     return this.mockOverview();
+  }
+
+  updateOverview(overview: BusinessDevicesOverviewResponse): Observable<BusinessDevicesOverviewResponse> {
+    if (!this.hasApi()) {
+      return of(overview);
+    }
+
+    return this.http
+      .patch<BusinessDevicesOverviewResponse>(`${this.baseUrl()}/business-devices/overview`, overview)
+      .pipe(catchError(() => of(overview)));
+  }
+
+  private baseUrl(): string {
+    return environment.apiUrl.replace(/\/$/, '');
   }
 
   private mockOverview(): Observable<BusinessDevicesOverviewResponse> {

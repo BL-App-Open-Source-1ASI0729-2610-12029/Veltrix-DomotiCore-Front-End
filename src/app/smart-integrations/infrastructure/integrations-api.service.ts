@@ -82,6 +82,36 @@ export class IntegrationsApiService {
       .pipe(catchError(() => of({ compatible: false, messageKey: 'integrations.compatibility.notFound' })));
   }
 
+  createSchedule(schedule: Omit<IntegrationSchedule, 'id'> & { id?: string }): Observable<IntegrationsData> {
+    if (!this.hasApi()) {
+      return of({ schedules: [schedule as IntegrationSchedule] });
+    }
+
+    return this.http
+      .post<IntegrationsData>(`${this.baseUrl()}/integrations/schedules`, schedule)
+      .pipe(catchError(() => of({ schedules: [schedule as IntegrationSchedule] })));
+  }
+
+  updateSchedule(id: string, patch: Partial<IntegrationSchedule>): Observable<IntegrationsData> {
+    if (!this.hasApi()) {
+      return of({ schedules: [{ id, ...patch } as IntegrationSchedule] });
+    }
+
+    return this.http
+      .patch<IntegrationsData>(`${this.baseUrl()}/integrations/schedules/${id}`, patch)
+      .pipe(catchError(() => of({ schedules: [{ id, ...patch } as IntegrationSchedule] })));
+  }
+
+  deleteSchedule(id: string): Observable<void> {
+    if (!this.hasApi()) {
+      return of(undefined);
+    }
+
+    return this.http
+      .delete<void>(`${this.baseUrl()}/integrations/schedules/${id}`)
+      .pipe(catchError(() => of(undefined)));
+  }
+
   private baseUrl(): string {
     return environment.apiUrl.replace(/\/$/, '');
   }

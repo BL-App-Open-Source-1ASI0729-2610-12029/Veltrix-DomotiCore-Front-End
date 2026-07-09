@@ -15,6 +15,8 @@ import {
 } from '../infrastructure/business-devices-response';
 
 import { BusinessDevicesApiService } from '../infrastructure/business-devices-api.service';
+import { DeviceBulkControlApiService } from '../infrastructure/device-bulk-control-api.service';
+import { AutomationApiService } from '../../automation/infrastructure/automation-api.service';
 
 
 
@@ -49,6 +51,8 @@ export interface BusinessDeviceLookup {
 export class BusinessDevicesStore {
 
   private readonly api = inject(BusinessDevicesApiService);
+  private readonly bulkApi = inject(DeviceBulkControlApiService);
+  private readonly automationApi = inject(AutomationApiService);
 
 
 
@@ -162,6 +166,8 @@ export class BusinessDevicesStore {
 
     });
 
+    this.persistOverview();
+
   }
 
 
@@ -201,6 +207,8 @@ export class BusinessDevicesStore {
       return this.withRecalculatedTotals({ ...current, zones });
 
     });
+
+    this.persistOverview();
 
   }
 
@@ -270,6 +278,8 @@ export class BusinessDevicesStore {
 
     });
 
+    this.persistOverview();
+
   }
 
 
@@ -291,6 +301,12 @@ export class BusinessDevicesStore {
 
       return this.withRecalculatedTotals({ ...current, zones });
     });
+
+    if (this.bulkApi.hasApi()) {
+      this.bulkApi.bulkToggle('off').subscribe(() => this.load().subscribe());
+    } else {
+      this.persistOverview();
+    }
 
     return failed;
   }
@@ -330,6 +346,12 @@ export class BusinessDevicesStore {
       return this.withRecalculatedTotals({ ...current, zones });
     });
 
+    if (this.bulkApi.hasApi()) {
+      this.bulkApi.bulkToggle('on').subscribe(() => this.load().subscribe());
+    } else {
+      this.persistOverview();
+    }
+
     return [...new Set(failed)];
   }
 
@@ -368,6 +390,8 @@ export class BusinessDevicesStore {
       return { ...current, zones };
 
     });
+
+    this.persistOverview();
 
   }
 
@@ -455,6 +479,12 @@ export class BusinessDevicesStore {
 
     });
 
+    if (this.bulkApi.hasApi()) {
+      this.automationApi.activateEcoMode().subscribe(() => this.load().subscribe());
+    } else {
+      this.persistOverview();
+    }
+
   }
 
 
@@ -518,6 +548,8 @@ export class BusinessDevicesStore {
 
       return this.withRecalculatedTotals({ ...current, zones });
     });
+
+    this.persistOverview();
   }
 
   private mapFacilityToBusinessZone(facilityZone: string): string {
@@ -572,6 +604,8 @@ export class BusinessDevicesStore {
       };
 
     });
+
+    this.persistOverview();
 
   }
 
@@ -703,6 +737,16 @@ export class BusinessDevicesStore {
 
     };
 
+  }
+
+  private persistOverview(): void {
+    const current = this.overview();
+    if (!current || !this.api.hasApi()) return;
+
+    this.api.updateOverview(current).subscribe({
+      next: data => this.overview.set(data),
+      error: () => undefined,
+    });
   }
 
 }

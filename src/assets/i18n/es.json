@@ -1413,7 +1413,11 @@
     "title": "Acceso API",
     "description": "Genere claves seguras para conectar sus datos DomotiCore en tiempo real.",
     "primaryMonitoringKey": "CLAVE PRINCIPAL DE MONITOREO",
-    "generateNewKey": "Generar Nueva Clave"
+    "generateNewKey": "Generar Nueva Clave",
+    "validateToken": "Validar acceso API",
+    "validationSuccess": "Acceso API validado para {{email}}",
+    "validationFailed": "No se pudo validar el acceso API",
+    "connectedDevices": "Dispositivos conectados"
   },
   "hooks": {
     "title": "Hooks Activos",
@@ -1569,6 +1573,19 @@
       "keyGenerated": "Nueva clave de monitoreo API generada.",
       "fileUploaded": "\"{{name}}\" subido para revisión.",
       "upgradeSubmitted": "Solicitud de upgrade empresarial enviada. Nuestro equipo te contactará."
+    },
+    "schedules": {
+      "title": "Horarios de integración",
+      "description": "Gestiona horarios de encendido/apagado para integraciones conectadas.",
+      "add": "Agregar horario",
+      "empty": "Aún no hay horarios configurados.",
+      "deviceName": "Nombre del dispositivo",
+      "integrationId": "ID de integración",
+      "onTime": "Hora de encendido",
+      "offTime": "Hora de apagado",
+      "enabled": "Activo",
+      "saved": "Horario guardado.",
+      "deleted": "Horario eliminado."
     }
   },
   "overview": {

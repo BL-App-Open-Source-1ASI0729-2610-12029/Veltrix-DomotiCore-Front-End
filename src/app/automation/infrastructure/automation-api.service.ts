@@ -315,4 +315,59 @@ export class AutomationApiService {
       )
       .pipe(catchError(() => of({ executed: false, sceneId })));
   }
+
+  createRule(payload: {
+    id?: string;
+    name: string;
+    description?: string;
+    group?: string;
+    icon?: string;
+    active?: boolean;
+    status?: 'ACTIVE' | 'INACTIVE';
+    timeline?: { startHour?: number; endHour?: number; label?: string; color?: string };
+  }): Observable<AutomationRuleResponse> {
+    const fallback: AutomationRuleResponse = {
+      id: payload.id ?? `rule-${Date.now()}`,
+      name: payload.name,
+      description: payload.description ?? '',
+      icon: payload.icon ?? 'auto_awesome',
+      active: payload.active ?? true,
+      group: payload.group ?? 'Custom Group',
+      status: payload.status ?? 'ACTIVE',
+      timeline: {
+        startHour: payload.timeline?.startHour ?? 8,
+        endHour: payload.timeline?.endHour ?? 18,
+        label: payload.timeline?.label ?? payload.name,
+        color: payload.timeline?.color ?? '#4263eb',
+      },
+    };
+
+    if (!this.api.hasApi()) {
+      return of(fallback);
+    }
+
+    return this.http
+      .post<AutomationRuleResponse>(`${this.baseUrl()}/automation/rules`, payload)
+      .pipe(catchError(() => of(fallback)));
+  }
+
+  toggleShutdownStep(stepId: string): Observable<ShutdownProtocolResponse> {
+    if (!this.api.hasApi()) {
+      return of(MOCK_PROTOCOL);
+    }
+
+    return this.http
+      .post<ShutdownProtocolResponse>(`${this.baseUrl()}/automation/shutdown-protocol/steps/${stepId}/toggle`, {})
+      .pipe(catchError(() => of(MOCK_PROTOCOL)));
+  }
+
+  dismissSmartSuggestion(): Observable<SmartSuggestionResponse> {
+    if (!this.api.hasApi()) {
+      return of({ ...MOCK_SUGGESTION, visible: false });
+    }
+
+    return this.http
+      .post<SmartSuggestionResponse>(`${this.baseUrl()}/automation/smart-suggestion/dismiss`, {})
+      .pipe(catchError(() => of({ ...MOCK_SUGGESTION, visible: false })));
+  }
 }

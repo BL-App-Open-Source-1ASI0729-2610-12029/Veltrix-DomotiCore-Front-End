@@ -304,26 +304,8 @@ export class SmeOperationsHubStore {
         this.sustainabilityScore.set(snapshot.sustainabilityScore);
         this.criticalAlertCount.set(snapshot.criticalAlertCount);
         this.highlightedLoadKw.set(snapshot.highlightedLoadKw);
-        this.dataRefreshing.set(false);
-        return;
       }
-
-      this.refreshTimer = setTimeout(() => {
-        if (this.selectedRange() !== range) {
-          this.dataRefreshing.set(false);
-          this.refreshTimer = null;
-          return;
-        }
-
-        const local = HUB_SNAPSHOTS[range];
-        this.kpis.set(cloneKpis(local.kpis));
-        this.loadBars.set(cloneLoadBars(local.loadBars));
-        this.sustainabilityScore.set(local.sustainabilityScore);
-        this.criticalAlertCount.set(local.criticalAlertCount);
-        this.highlightedLoadKw.set(local.highlightedLoadKw);
-        this.dataRefreshing.set(false);
-        this.refreshTimer = null;
-      }, 320);
+      this.dataRefreshing.set(false);
     });
   }
 

@@ -1413,7 +1413,11 @@
     "title": "API Access",
     "description": "Generate secure keys to pipe your real-time DomotiCore data into external ERP or monitoring dashboards.",
     "primaryMonitoringKey": "PRIMARY MONITORING KEY",
-    "generateNewKey": "Generate New Key"
+    "generateNewKey": "Generate New Key",
+    "validateToken": "Validate API Access",
+    "validationSuccess": "API access validated for {{email}}",
+    "validationFailed": "API access validation failed",
+    "connectedDevices": "Connected Devices"
   },
   "hooks": {
     "title": "Active Hooks",
@@ -1569,6 +1573,19 @@
       "keyGenerated": "New API monitoring key generated.",
       "fileUploaded": "\"{{name}}\" uploaded for review.",
       "upgradeSubmitted": "Enterprise upgrade request submitted. Our team will contact you."
+    },
+    "schedules": {
+      "title": "Integration Schedules",
+      "description": "Manage on/off schedules for connected integrations.",
+      "add": "Add Schedule",
+      "empty": "No schedules configured yet.",
+      "deviceName": "Device name",
+      "integrationId": "Integration ID",
+      "onTime": "On time",
+      "offTime": "Off time",
+      "enabled": "Enabled",
+      "saved": "Schedule saved.",
+      "deleted": "Schedule deleted."
     }
   },
   "overview": {

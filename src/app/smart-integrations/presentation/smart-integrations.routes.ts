@@ -14,6 +14,13 @@ export const smartIntegrationsRoutes: Routes = [
     loadComponent: () => import('./pages/sync-status/sync-status.component').then(m => m.SyncStatusComponent)
   },
   {
+    path: 'schedules',
+    loadComponent: () =>
+      import('./pages/integration-schedules/integration-schedules.component').then(
+        m => m.IntegrationSchedulesComponent,
+      ),
+  },
+  {
     path: 'compatibility',
     loadComponent: () =>
       import('./pages/compatibility-checker/compatibility-checker.component').then(

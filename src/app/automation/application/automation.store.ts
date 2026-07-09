@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 
 import { AutomationApiService } from '../infrastructure/automation-api.service';
+import { AutomationAssembler } from '../infrastructure/automation-assembler';
 
 import { AutomationRule } from '../domain/model/automation-rule.entity';
 
@@ -148,6 +149,14 @@ export class AutomationStore {
 
     this.api.getSmartSuggestion().subscribe(suggestion => this.smartSuggestion.set(suggestion));
 
+    this.api.getActiveRuleTimeline().subscribe(timeline => {
+      if (timeline?.slots?.length) {
+        this.activeTimeline.set(timeline);
+      } else {
+        this.rebuildTimeline();
+      }
+    });
+
     this.api.getHomePreferences().subscribe(prefs => {
       this.inactivityAutoOffEnabled.set(prefs.inactivityAutoOffEnabled);
       this.inactivityMinutes.set(prefs.inactivityMinutes);
@@ -220,6 +229,8 @@ export class AutomationStore {
 
     this.smartSuggestion.update(suggestion => (suggestion ? { ...suggestion, visible: false } : suggestion));
 
+    this.api.dismissSmartSuggestion().subscribe();
+
   }
 
 
@@ -246,47 +257,52 @@ export class AutomationStore {
 
   addBusinessRule(name: string, description: string, group: string): AutomationRule {
 
-    const id = `rule-${Date.now()}`;
+    const payload = {
+      name: name.trim(),
+      description: description.trim() || 'Custom facility automation scenario.',
+      group: group.trim() || 'Custom Group',
+      icon: 'auto_awesome',
+      active: true,
+      status: 'ACTIVE' as const,
+      timeline: { startHour: 8, endHour: 18, label: name.trim(), color: '#4263eb' },
+    };
 
-    const rule = new AutomationRule(
+    this.api.createRule(payload).subscribe(dto => {
+      const rule = new AutomationRule(
+        dto.id,
+        dto.name,
+        dto.description,
+        dto.icon,
+        dto.active,
+        dto.group,
+        dto.status,
+        {
+          startHour: dto.timeline.startHour,
+          endHour: dto.timeline.endHour,
+          label: dto.timeline.label,
+          color: dto.timeline.color,
+        },
+      );
+      this.businessRules.update(rules => [...rules, rule]);
+      this.rebuildTimeline();
+      this.selectedTimelineSlotId.set(rule.id);
+    });
 
-      id,
-
-      name.trim(),
-
-      description.trim() || 'Custom facility automation scenario.',
-
-      'auto_awesome',
-
+    return new AutomationRule(
+      `rule-pending`,
+      payload.name,
+      payload.description,
+      payload.icon,
       true,
-
-      group.trim() || 'Custom Group',
-
+      payload.group,
       'ACTIVE',
-
       {
-
         startHour: 8,
-
         endHour: 18,
-
-        label: name.trim(),
-
+        label: payload.name,
         color: '#4263eb',
-
       },
-
     );
-
-
-
-    this.businessRules.update(rules => [...rules, rule]);
-
-    this.rebuildTimeline();
-
-    this.selectedTimelineSlotId.set(id);
-
-    return rule;
 
   }
 
@@ -318,6 +334,11 @@ export class AutomationStore {
 
       );
 
+    });
+
+    this.api.toggleShutdownStep(stepId).subscribe(protocol => {
+      this.shutdownProtocol.set(AutomationAssembler.toShutdownProtocol(protocol));
+      this.rebuildTimeline();
     });
 
   }
@@ -530,30 +551,19 @@ export class AutomationStore {
 
   }
 
-  readonly inactivityAutoOffEnabled = signal<boolean>(this.readInactivityEnabled());
+  readonly inactivityAutoOffEnabled = signal<boolean>(false);
 
-  readonly inactivityMinutes = signal<number>(this.readInactivityMinutes());
+  readonly inactivityMinutes = signal<number>(30);
 
   toggleInactivityAutoOff(enabled: boolean): void {
     this.inactivityAutoOffEnabled.set(enabled);
-    localStorage.setItem('domoticore-inactivity-enabled', enabled ? '1' : '0');
     this.api.patchHomePreferences({ inactivityAutoOffEnabled: enabled }).subscribe();
   }
 
   setInactivityMinutes(minutes: number): void {
     const safe = Math.min(180, Math.max(5, minutes));
     this.inactivityMinutes.set(safe);
-    localStorage.setItem('domoticore-inactivity-minutes', String(safe));
     this.api.patchHomePreferences({ inactivityMinutes: safe }).subscribe();
-  }
-
-  private readInactivityEnabled(): boolean {
-    return localStorage.getItem('domoticore-inactivity-enabled') === '1';
-  }
-
-  private readInactivityMinutes(): number {
-    const raw = Number(localStorage.getItem('domoticore-inactivity-minutes'));
-    return Number.isFinite(raw) ? raw : 30;
   }
 
 }

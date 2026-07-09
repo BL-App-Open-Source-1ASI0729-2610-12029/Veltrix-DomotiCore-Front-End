@@ -87,21 +87,14 @@ export class DashboardComponent implements OnInit {
     this.shutdownPending.set(true);
     this.feedback.showToast(this.translate.instant('dashboard.toast.shutdownInitiated'), 'warning');
 
-    const devices = this.devices();
-    const target = devices.find(device => device.live) ?? devices.find(device => device.active);
-    if (target) {
-      target.active = false;
-      target.live = false;
-      target.statusKey = 'dashboard.devices.shutdown';
-      this.devices.set([...devices]);
-    }
-
-    this.alerts.update(items => items.filter(alert => !alert.danger));
-
-    setTimeout(() => {
-      this.shutdownPending.set(false);
-      this.feedback.showToast(this.translate.instant('dashboard.toast.shutdownSuccess'), 'success');
-    }, 1500);
+    this.dashboardStore.shutdownLiveDevice().subscribe({
+      next: () => {
+        this.alerts.update(items => items.filter(alert => !alert.danger));
+        this.shutdownPending.set(false);
+        this.feedback.showToast(this.translate.instant('dashboard.toast.shutdownSuccess'), 'success');
+      },
+      error: () => this.shutdownPending.set(false),
+    });
   }
 
   onViewAllAlerts() {
@@ -131,15 +124,16 @@ export class DashboardComponent implements OnInit {
   }
 
   onDeviceToggle(device: DeviceEntity) {
-    device.active = !device.active;
-    this.devices.set([...this.devices()]);
-    this.feedback.showToast(
-      this.translate.instant('dashboard.toast.deviceToggled', {
-        name: this.deviceLabel(device),
-        status: this.translate.instant(device.active ? 'common.on' : 'common.off'),
-      }),
-      device.active ? 'success' : 'info'
-    );
+    const nextActive = !device.active;
+    this.dashboardStore.toggleDevice(device).subscribe(() => {
+      this.feedback.showToast(
+        this.translate.instant('dashboard.toast.deviceToggled', {
+          name: this.deviceLabel(device),
+          status: this.translate.instant(nextActive ? 'common.on' : 'common.off'),
+        }),
+        nextActive ? 'success' : 'info'
+      );
+    });
   }
 
   onDeviceClick(device: DeviceEntity) {
@@ -156,27 +150,13 @@ export class DashboardComponent implements OnInit {
   submitAddDevice() {
     if (!this.newDeviceName.trim()) return;
 
-    const iconMap: Record<string, string> = {
-      climate: GOOGLE_ICONS.acUnit,
-      lights: GOOGLE_ICONS.lightbulb,
-      security: GOOGLE_ICONS.videocam,
-      generic: GOOGLE_ICONS.deviceHub,
-    };
-
-    const newDevice: DeviceEntity = {
-      name: this.newDeviceName.trim(),
-      statusKey: 'dashboard.devices.readyAdded',
-      active: true,
-      icon: iconMap[this.newDeviceType] ?? GOOGLE_ICONS.deviceHub,
-      live: false,
-    };
-
-    this.devices.set([...this.devices(), newDevice]);
-    this.closeAddDeviceModal();
-    this.feedback.showToast(
-      this.translate.instant('dashboard.toast.deviceAdded', { name: newDevice.name }),
-      'success'
-    );
+    this.dashboardStore.addDevice(this.newDeviceName, this.newDeviceType).subscribe(() => {
+      this.closeAddDeviceModal();
+      this.feedback.showToast(
+        this.translate.instant('dashboard.toast.deviceAdded', { name: this.newDeviceName.trim() }),
+        'success'
+      );
+    });
   }
 
   onViewEnergySaverDetails() {
@@ -270,33 +250,16 @@ export class DashboardComponent implements OnInit {
   onTurnAllOn(): void {
     if (!this.feedback.confirmAction(this.translate.instant('dashboard.confirm.turnAllOn'))) return;
 
-    const devices = this.devices();
-    const failed: string[] = [];
-    const updated = devices.map(device => {
-      if (!device.active && !device.live) {
-        failed.push(this.deviceLabel(device));
-        return device;
+    this.dashboardStore.turnAllOn().subscribe(failed => {
+      if (failed.length) {
+        this.feedback.showToast(
+          this.translate.instant('dashboard.toast.turnAllOnPartial', { devices: failed.join(', ') }),
+          'warning',
+        );
+        return;
       }
-
-      return {
-        ...device,
-        active: true,
-        statusKey: device.statusKey === 'dashboard.devices.shutdown' ? undefined : device.statusKey,
-        status: device.statusKey === 'dashboard.devices.shutdown' ? this.translate.instant('common.on') : device.status,
-      };
+      this.feedback.showToast(this.translate.instant('dashboard.toast.turnAllOn'), 'success');
     });
-
-    this.devices.set(updated);
-
-    if (failed.length) {
-      this.feedback.showToast(
-        this.translate.instant('dashboard.toast.turnAllOnPartial', { devices: failed.join(', ') }),
-        'warning',
-      );
-      return;
-    }
-
-    this.feedback.showToast(this.translate.instant('dashboard.toast.turnAllOn'), 'success');
   }
 
   navigateToDevices() {

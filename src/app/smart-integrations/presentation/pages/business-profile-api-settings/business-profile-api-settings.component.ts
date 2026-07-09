@@ -9,6 +9,7 @@ import { UiFeedbackService } from '../../../../shared/services/ui-feedback.servi
 import { downloadTextFile } from '../../../../shared/utils/download-file.util';
 import { MATERIAL_IMPORTS } from '../../../../shared/material';
 import { BusinessProfileStore } from '../../../application/business-profile.store';
+import { DeveloperApiService, DeveloperDeviceStatus } from '../../../infrastructure/developer-api.service';
 import {
   BusinessProfile,
   DEFAULT_BUSINESS_PROFILE,
@@ -166,6 +167,15 @@ type ProfileModal = 'connection' | 'backup' | 'sync' | 'webhook' | 'upgrade' | n
 
             <button mat-stroked-button type="button" class="btn-white btn-press" (click)="generateNewKey()" [disabled]="!canEditProfile()">{{ 'apiAccess.generateNewKey' | translate }}</button>
             <button mat-button color="primary" type="button" class="btn-copy-key btn-press" (click)="copyApiKey()">{{ 'businessProfile.copyApiKey' | translate }}</button>
+            <button mat-stroked-button type="button" class="btn-white btn-press" (click)="validateDeveloperAccess()">{{ 'apiAccess.validateToken' | translate }}</button>
+
+            <div class="developer-devices" *ngIf="developerDevices().length">
+              <h4>{{ 'apiAccess.connectedDevices' | translate }}</h4>
+              <div class="developer-device-row" *ngFor="let device of developerDevices()">
+                <span>{{ device.name }}</span>
+                <span [class.online]="device.connection === 'online'">{{ device.connection }}</span>
+              </div>
+            </div>
           </section>
 
           <section class="widget hooks-widget">
@@ -1388,6 +1398,9 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly profileStore = inject(BusinessProfileStore);
   private readonly permissions = inject(RolePermissionService);
+  private readonly developerApi = inject(DeveloperApiService);
+
+  readonly developerDevices = signal<DeveloperDeviceStatus[]>([]);
 
   readonly canEditProfile = computed(() => this.permissions.canEditBusinessProfile());
 
@@ -1642,6 +1655,20 @@ export class BusinessProfileApiSettingsComponent implements OnInit {
     this.profileStore.regenerateApiKey().subscribe(profile => {
       this.apiKey.set(profile.apiKey);
       this.feedback.showToast(this.translate.instant('businessProfile.toast.keyGenerated'), 'success');
+    });
+  }
+
+  validateDeveloperAccess(): void {
+    this.developerApi.validateToken().subscribe(result => {
+      if (!result.valid) {
+        this.feedback.showToast(this.translate.instant('apiAccess.validationFailed'), 'error');
+        return;
+      }
+      this.feedback.showToast(
+        this.translate.instant('apiAccess.validationSuccess', { email: result.accountEmail ?? '' }),
+        'success',
+      );
+      this.developerApi.listDevices().subscribe(devices => this.developerDevices.set(devices));
     });
   }
 
