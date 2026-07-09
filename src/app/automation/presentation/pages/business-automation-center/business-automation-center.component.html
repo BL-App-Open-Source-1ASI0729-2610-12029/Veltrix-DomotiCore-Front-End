@@ -31,9 +31,13 @@
     </div>
   </header>
 
-  <div *ngIf="store.loading()" class="loading-bar">
+  <div *ngIf="store.loading()" class="loading-bar" role="progressbar" aria-busy="true">
     <div class="loading-bar__fill"></div>
   </div>
+
+  <p *ngIf="store.loadError()" class="load-error-hint">
+    {{ 'automation.timeline.loadPartial' | translate }}
+  </p>
 
   <section class="top-grid" *ngIf="store.activeTimeline() as timeline">
     <article class="panel timeline-panel">
@@ -118,6 +122,7 @@
       </div>
 
       <div class="timeline">
+        <p class="timeline__intro">{{ 'automation.timeline.purpose' | translate }}</p>
         <div class="timeline__legend">
           <span>{{ 'automation.timeline.operationalRules' | translate }}</span>
           <span>{{ 'automation.timeline.securityProtocols' | translate }}</span>
@@ -163,8 +168,8 @@
               [style.background]="slot.style === 'dashed' ? 'transparent' : slot.color"
               [style.borderColor]="slot.color"
               [style.color]="slot.style === 'dashed' ? slot.color : '#fff'"
-              [attr.aria-label]="slot.label"
-              [title]="slot.label"
+              [attr.aria-label]="slotTooltip(slot)"
+              [title]="slotTooltip(slot)"
               (click)="onTimelineSlotClick(slot)"
               (mouseenter)="onTimelineSlotHover(slot)"
               (mouseleave)="onTimelineSlotHover(null)"
@@ -189,6 +194,8 @@
         <div class="timeline__hours">
           <span *ngFor="let hour of timelineHours()">{{ formatHour(hour) }}</span>
         </div>
+
+        <p class="timeline__hint">{{ 'automation.timeline.interactionHint' | translate }}</p>
       </div>
 
       <div class="timeline-detail" *ngIf="store.selectedTimelineSlot() as selectedSlot">
@@ -421,20 +428,22 @@
 
 <div class="modal-backdrop" *ngIf="showShutdownModal() && store.shutdownProtocol() as protocol" (click)="closeShutdownModal()">
   <div class="biz-modal" (click)="$event.stopPropagation()">
-    <h3>{{ protocol.name }}</h3>
+    <h3>{{ 'automation.editShutdownProtocol' | translate }}</h3>
     <p>{{ 'automation.shutdownModalHint' | translate }}</p>
     <ul class="shutdown-edit-list">
-      <li *ngFor="let step of protocol.steps">
+      <li *ngFor="let step of shutdownStepDraft()">
         <label>
-          <input type="checkbox" [checked]="!step.disabled" (change)="onToggleShutdownStep(step.id)" />
+          <input type="checkbox" [checked]="!step.disabled" (change)="onToggleShutdownStepDraft(step.id)" />
           <span [class.shutdown-edit-list__disabled]="step.disabled">{{ shutdownStepLabel(step) }}</span>
         </label>
       </li>
     </ul>
     <div class="biz-modal__actions">
-      <button type="button" mat-stroked-button class="btn-outline" (click)="closeShutdownModal()">{{ 'buttons.cancel' | translate }}</button>
-      <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="onSaveShutdownProtocol()">
-        {{ 'automation.modal.saveLogic' | translate }}
+      <button type="button" mat-stroked-button class="btn-outline" (click)="closeShutdownModal()" [disabled]="savingShutdown()">
+        {{ 'buttons.cancel' | translate }}
+      </button>
+      <button type="button" mat-flat-button color="primary" class="btn-primary" (click)="onSaveShutdownProtocol()" [disabled]="savingShutdown()">
+        {{ savingShutdown() ? ('automation.modal.saving' | translate) : ('automation.modal.saveLogic' | translate) }}
       </button>
     </div>
   </div>

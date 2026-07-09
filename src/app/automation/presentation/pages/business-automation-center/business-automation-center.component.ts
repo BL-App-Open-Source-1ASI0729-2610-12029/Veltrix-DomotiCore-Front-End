@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AutomationStore } from '../../../application/automation.store';
 
 import { AutomationRule } from '../../../domain/model/automation-rule.entity';
+import { ShutdownStep } from '../../../domain/model/shutdown-protocol.entity';
 
 import { TimelineSlotResponse } from '../../../infrastructure/automation-response';
 
@@ -88,10 +89,10 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   readonly showNewRuleModal = signal(false);
-
   readonly showShutdownModal = signal(false);
-
+  readonly savingShutdown = signal(false);
   readonly hoveredSlotId = signal<string | null>(null);
+  readonly shutdownStepDraft = signal<ShutdownStep[]>([]);
 
 
 
@@ -352,33 +353,22 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   onTimelineSlotClick(slot: TimelineSlotResponse): void {
-
     this.store.selectTimelineSlot(slot.id);
 
-
-
     if (slot.ruleId) {
-
       window.setTimeout(() => {
-
         document.getElementById(`rule-${slot.ruleId}`)?.scrollIntoView({
-
           behavior: 'smooth',
-
           block: 'nearest',
-
         });
-
       }, 80);
-
-      return;
-
     }
+  }
 
-
-
-    this.showShutdownModal.set(true);
-
+  slotTooltip(slot: TimelineSlotResponse): string {
+    const range = this.formatSlotRange(slot);
+    const status = this.translate.instant(this.slotStatusKey(slot));
+    return `${slot.label} · ${range} · ${status}`;
   }
 
 
@@ -534,25 +524,34 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
   onEditShutdownProtocol(): void {
+    const protocol = this.store.shutdownProtocol();
+    if (!protocol) return;
 
+    this.shutdownStepDraft.set(protocol.steps.map(step => ({ ...step })));
+    this.store.setTimelinePaused(true);
     this.showShutdownModal.set(true);
-
   }
-
-
 
   closeShutdownModal(): void {
-
     this.showShutdownModal.set(false);
-
+    this.savingShutdown.set(false);
+    this.store.setTimelinePaused(false);
   }
 
-
-
   onSaveShutdownProtocol(): void {
-    this.store.saveShutdownProtocol();
-    this.closeShutdownModal();
-    this.feedback.showToast(this.translate.instant('automation.toast.shutdownSaved'), 'success');
+    if (this.savingShutdown()) return;
+
+    this.savingShutdown.set(true);
+    this.store.saveShutdownProtocol(this.shutdownStepDraft()).subscribe({
+      next: () => {
+        this.closeShutdownModal();
+        this.feedback.showToast(this.translate.instant('automation.toast.shutdownSaved'), 'success');
+      },
+      error: () => {
+        this.savingShutdown.set(false);
+        this.feedback.showToast(this.translate.instant('automation.toast.shutdownSaveFailed'), 'error');
+      },
+    });
   }
 
 
@@ -567,10 +566,23 @@ export class BusinessAutomationCenterComponent implements OnInit {
 
 
 
-  onToggleShutdownStep(stepId: string): void {
+  onToggleShutdownStepDraft(stepId: string): void {
+    this.shutdownStepDraft.update(steps =>
+      steps.map(step =>
+        step.id === stepId ? { ...step, disabled: !step.disabled } : step,
+      ),
+    );
+  }
 
-    this.store.toggleShutdownStep(stepId);
-
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.showShutdownModal()) {
+      this.closeShutdownModal();
+      return;
+    }
+    if (this.showNewRuleModal()) {
+      this.closeNewRuleModal();
+    }
   }
 
 

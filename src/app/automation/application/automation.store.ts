@@ -1,11 +1,13 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
+import { forkJoin, of, Observable } from 'rxjs';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AutomationApiService } from '../infrastructure/automation-api.service';
 import { AutomationAssembler } from '../infrastructure/automation-assembler';
 
 import { AutomationRule } from '../domain/model/automation-rule.entity';
 
-import { ShutdownProtocol } from '../domain/model/shutdown-protocol.entity';
+import { ShutdownProtocol, ShutdownStep } from '../domain/model/shutdown-protocol.entity';
 
 import {
 
@@ -54,6 +56,8 @@ export class AutomationStore {
   private readonly api = inject(AutomationApiService);
 
   private clockIntervalId: ReturnType<typeof setInterval> | null = null;
+  private apiTimelineSlots: TimelineSlotResponse[] = [];
+  private readonly timelinePaused = signal(false);
 
 
 
@@ -76,6 +80,7 @@ export class AutomationStore {
   readonly viewMode = signal<ViewMode>('grid');
 
   readonly loading = signal<boolean>(false);
+  readonly loadError = signal<boolean>(false);
 
   readonly searchQuery = signal<string>('');
 
@@ -110,49 +115,47 @@ export class AutomationStore {
 
 
   loadAll(): void {
-
     this.loading.set(true);
-
+    this.loadError.set(false);
     this.startTimelineClock();
 
+    forkJoin({
+      rules: this.api.getBusinessRules().pipe(catchError(() => of([] as AutomationRule[]))),
+      protocol: this.api.getShutdownProtocol().pipe(catchError(() => of(null))),
+      schedules: this.api.getGroupSchedules().pipe(catchError(() => of([] as GroupScheduleResponse[]))),
+      insights: this.api.getEfficiencyInsights().pipe(catchError(() => of(null))),
+      timeline: this.api.getActiveRuleTimeline().pipe(catchError(() => of(null))),
+      scenes: this.api.getActiveScenes().pipe(catchError(() => of([] as ActiveSceneResponse[]))),
+      events: this.api.getUpcomingEvents().pipe(catchError(() => of([] as UpcomingEventResponse[]))),
+      suggestion: this.api.getSmartSuggestion().pipe(catchError(() => of(null))),
+      prefs: this.api.getHomePreferences().pipe(
+        catchError(() => of({ inactivityAutoOffEnabled: false, inactivityMinutes: 30 })),
+      ),
+    })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: result => {
+          this.businessRules.set(result.rules);
+          this.shutdownProtocol.set(result.protocol);
+          this.groupSchedules.set(result.schedules);
+          this.efficiencyInsights.set(result.insights);
+          this.activeScenes.set(result.scenes);
+          this.upcomingEvents.set(result.events);
+          this.smartSuggestion.set(result.suggestion);
+          this.inactivityAutoOffEnabled.set(result.prefs.inactivityAutoOffEnabled);
+          this.inactivityMinutes.set(result.prefs.inactivityMinutes);
+          this.apiTimelineSlots = this.normalizeApiTimelineSlots(result.timeline?.slots ?? []);
+          this.rebuildTimeline();
+        },
+        error: () => {
+          this.loadError.set(true);
+          this.rebuildTimeline();
+        },
+      });
+  }
 
-
-    this.api.getBusinessRules().subscribe(rules => {
-
-      this.businessRules.set(rules);
-
-      this.rebuildTimeline();
-
-      this.loading.set(false);
-
-    });
-
-
-
-    this.api.getShutdownProtocol().subscribe(protocol => {
-
-      this.shutdownProtocol.set(protocol);
-
-      this.rebuildTimeline();
-
-    });
-
-
-
-    this.api.getGroupSchedules().subscribe(schedules => this.groupSchedules.set(schedules));
-
-    this.api.getEfficiencyInsights().subscribe(insights => this.efficiencyInsights.set(insights));
-
-    this.api.getActiveScenes().subscribe(scenes => this.activeScenes.set(scenes));
-
-    this.api.getUpcomingEvents().subscribe(events => this.upcomingEvents.set(events));
-
-    this.api.getSmartSuggestion().subscribe(suggestion => this.smartSuggestion.set(suggestion));
-
-    this.api.getHomePreferences().subscribe(prefs => {
-      this.inactivityAutoOffEnabled.set(prefs.inactivityAutoOffEnabled);
-      this.inactivityMinutes.set(prefs.inactivityMinutes);
-    });
+  setTimelinePaused(paused: boolean): void {
+    this.timelinePaused.set(paused);
   }
 
 
@@ -301,57 +304,40 @@ export class AutomationStore {
 
 
 
-  toggleShutdownStep(stepId: string): void {
-
-    this.shutdownProtocol.update(protocol => {
-
-      if (!protocol) return protocol;
-
-
-
-      return new ShutdownProtocol(
-
-        protocol.id,
-
-        protocol.name,
-
-        protocol.description,
-
-        protocol.triggersInMinutes,
-
-        protocol.steps.map(step =>
-
-          step.id === stepId ? { ...step, disabled: !step.disabled } : step,
-
-        ),
-
-      );
-
-    });
-
-    this.rebuildTimeline();
-    this.api.toggleShutdownStep(stepId).subscribe();
-
-  }
-
-  saveShutdownProtocol(): void {
+  saveShutdownProtocol(steps: ShutdownStep[]): Observable<void> {
     const protocol = this.shutdownProtocol();
-    if (!protocol) return;
+    if (!protocol) {
+      return of(void 0);
+    }
 
+    const updated = new ShutdownProtocol(
+      protocol.id,
+      protocol.name,
+      protocol.description,
+      protocol.triggersInMinutes,
+      steps,
+    );
+    this.shutdownProtocol.set(updated);
     this.rebuildTimeline();
-    this.api.saveShutdownProtocol({
-      id: protocol.id,
-      name: protocol.name,
-      description: protocol.description,
-      triggersInMinutes: protocol.triggersInMinutes,
-      steps: protocol.steps.map(step => ({
-        id: step.id,
-        label: step.label,
-        icon: step.icon,
-        disabled: step.disabled,
-        labelKey: step.labelKey,
-      })),
-    }).subscribe();
+
+    return this.api
+      .saveShutdownProtocol({
+        id: protocol.id,
+        name: protocol.name,
+        description: protocol.description,
+        triggersInMinutes: protocol.triggersInMinutes,
+        steps: steps.map(step => ({
+          id: step.id,
+          label: step.label,
+          icon: step.icon,
+          disabled: step.disabled,
+          labelKey: step.labelKey,
+        })),
+      })
+      .pipe(
+        tap(response => this.shutdownProtocol.set(AutomationAssembler.toShutdownProtocol(response))),
+        map(() => void 0),
+      );
   }
 
 
@@ -392,8 +378,11 @@ export class AutomationStore {
 
 
 
-    this.clockIntervalId = setInterval(() => this.rebuildTimeline(), 30_000);
-
+    this.clockIntervalId = setInterval(() => {
+      if (!this.timelinePaused()) {
+        this.rebuildTimeline();
+      }
+    }, 30_000);
   }
 
 
@@ -473,66 +462,23 @@ export class AutomationStore {
 
 
       slots.push({
-
         id: 'closing-time',
-
         label: `${protocol.name} Protocol`,
-
         startHour: shutdownStart,
-
         endHour: TIMELINE_END_HOUR,
-
         color: '#e8590c',
-
         isAlert: true,
-
         category: 'security',
-
         style: 'solid',
-
         group: 'Facility Security',
-
         description: protocol.description,
-
         isRunningNow: false,
-
         endsInMinutes: protocol.triggersInMinutes,
-
       });
-
-      slots.push({
-
-        id: 'perimeter-lockdown',
-
-        label: 'Perimeter Lockdown (Group)',
-
-        startHour: currentDecimal,
-
-        endHour: TIMELINE_END_HOUR,
-
-        color: '#c92a2a',
-
-        isAlert: true,
-
-        category: 'security',
-
-        style: 'dashed',
-
-        group: 'Perimeter',
-
-        description: 'Automated lockdown sequence for all external access points.',
-
-        isRunningNow: true,
-
-        progressPercent: 8,
-
-      });
-
     }
 
-
-
-    const layoutedSlots = layoutTimelineSlots(slots);
+    const mergedSlots = this.mergeTimelineSlots(slots, this.apiTimelineSlots);
+    const layoutedSlots = layoutTimelineSlots(mergedSlots);
 
     const runningNowCount = layoutedSlots.filter(slot => slot.isRunningNow).length;
 
@@ -550,7 +496,7 @@ export class AutomationStore {
 
       currentDecimal,
 
-      activeCount: activeRules.length + (protocol ? 2 : 0),
+      activeCount: layoutedSlots.length,
 
       runningNowCount,
 
@@ -560,6 +506,40 @@ export class AutomationStore {
 
     });
 
+  }
+
+  private normalizeApiTimelineSlots(slots: TimelineSlotResponse[]): TimelineSlotResponse[] {
+    return slots.map(slot => ({
+      ...slot,
+      category: slot.category === 'security' ? 'security' : 'operational',
+      style: slot.style ?? 'solid',
+      color: slot.color ?? (slot.category === 'security' ? '#c92a2a' : '#4263eb'),
+    }));
+  }
+
+  private mergeTimelineSlots(
+    clientSlots: TimelineSlotResponse[],
+    apiSlots: TimelineSlotResponse[],
+  ): TimelineSlotResponse[] {
+    if (!apiSlots.length) {
+      return clientSlots;
+    }
+
+    const merged = [...clientSlots];
+    const existingIds = new Set(clientSlots.map(slot => slot.id));
+
+    for (const slot of apiSlots) {
+      if (existingIds.has(slot.id)) {
+        const index = merged.findIndex(item => item.id === slot.id);
+        if (index >= 0) {
+          merged[index] = { ...merged[index], ...slot };
+        }
+        continue;
+      }
+      merged.push(slot);
+    }
+
+    return merged;
   }
 
   readonly inactivityAutoOffEnabled = signal<boolean>(false);

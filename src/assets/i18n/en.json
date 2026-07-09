@@ -1251,6 +1251,9 @@
       "shutdownRacks": "Shut down server racks"
     },
     "timeline": {
+      "purpose": "Hourly view of active rules and protocols. The red line is the current time; bars show when each automation runs.",
+      "interactionHint": "Click a bar for details. Use “Edit closing protocol” to change shutdown steps.",
+      "loadPartial": "Some data took longer to load. The timeline is showing what is available.",
       "operationalRules": "Operational rules",
       "securityProtocols": "Security protocols",
       "zoom": "Timeline zoom",
@@ -1290,6 +1293,7 @@
       "action": "Action",
       "create": "Create",
       "saveLogic": "Save Logic",
+      "saving": "Saving…",
       "startHour": "Start hour",
       "endHour": "End hour",
       "triggerOptions": {
@@ -1312,6 +1316,7 @@
       "invalidSchedule": "End hour must be later than start hour.",
       "shutdownPostponed": "Shutdown postponed by 15 minutes.",
       "shutdownSaved": "Shutdown protocol saved.",
+      "shutdownSaveFailed": "Could not save the protocol. Please try again.",
       "openingBuilder": "Opening automation builder...",
       "openingSchedule": "Opening schedule for {{group}}..."
     },

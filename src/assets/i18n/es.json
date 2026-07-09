@@ -1251,6 +1251,9 @@
       "shutdownRacks": "Apagar racks de servidores"
     },
     "timeline": {
+      "purpose": "Vista horaria de reglas y protocolos activos. La línea roja marca la hora actual; las barras muestran cuándo se ejecuta cada automatización.",
+      "interactionHint": "Haz clic en una barra para ver detalles. Usa «Editar protocolo de cierre» para modificar los pasos del cierre.",
+      "loadPartial": "Algunos datos tardaron en cargar. La línea de tiempo usa la información disponible.",
       "operationalRules": "Reglas operativas",
       "securityProtocols": "Protocolos de seguridad",
       "zoom": "Zoom de línea de tiempo",
@@ -1290,6 +1293,7 @@
       "action": "Acción",
       "create": "Crear",
       "saveLogic": "Guardar Lógica",
+      "saving": "Guardando…",
       "startHour": "Hora de inicio",
       "endHour": "Hora de fin",
       "triggerOptions": {
@@ -1312,6 +1316,7 @@
       "invalidSchedule": "La hora de fin debe ser posterior a la hora de inicio.",
       "shutdownPostponed": "Cierre pospuesto 15 minutos.",
       "shutdownSaved": "Protocolo de cierre guardado.",
+      "shutdownSaveFailed": "No se pudo guardar el protocolo. Inténtalo de nuevo.",
       "openingBuilder": "Abriendo constructor de automatización...",
       "openingSchedule": "Abriendo horario de {{group}}..."
     },
