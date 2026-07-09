@@ -1,220 +1,228 @@
-# DomotiCore - Frontend
+# DomotiCore — Frontend
 
-DomotiCore es una aplicación web frontend desarrollada en Angular para la gestión de domótica, seguridad e integraciones inteligentes. Ofrece **dos experiencias** según el tipo de cuenta:
+Aplicación web en **Angular 21** para gestión de domótica, seguridad, automatización e integraciones. Ofrece dos experiencias según el tipo de cuenta:
 
-- **Hogares Inteligentes** — panel residencial con dashboard, seguridad, dispositivos, automatización e historial.
-- **Pequeños Negocios y Emprendedores** — hub operativo, gestión de dispositivos, reportes, integraciones, automatización y equipo.
+- **Hogar Inteligente** — panel residencial (dashboard, seguridad, dispositivos, automatización, historial).
+- **Pequeño Negocio** — panel empresarial (hub operativo, dispositivos, reportes, integraciones, automatización, equipo).
 
-Tras el login, un **asistente de onboarding** permite elegir el tipo de cuenta y personalizar la navegación. La selección queda **persistida** en el repositorio local de usuarios para que no se repita en futuros accesos.
+---
 
-## Características Principales
+## Despliegues en vivo
 
-### Identidad y Acceso (IAM)
-- Login, registro y cierre de sesión
-- Guards de autenticación y onboarding
-- Selección de tipo de cuenta (`smart-home` | `small-business`)
-- Layouts especializados por perfil (shell de hogar vs. negocio)
-- Persistencia de `accountType` y `onboardingCompleted` en sesión y repositorio
+| Servicio | URL |
+| --- | --- |
+| **Frontend (Vercel)** | [https://veltrix-domoti-core-front-end-omega.vercel.app](https://veltrix-domoti-core-front-end-omega.vercel.app) |
+| **API REST (Render)** | [https://domoticore-api.onrender.com/api/v1](https://domoticore-api.onrender.com/api/v1) |
+| **Swagger UI (Render)** | [https://domoticore-api.onrender.com/swagger-ui/index.html](https://domoticore-api.onrender.com/swagger-ui/index.html) |
+| **OpenAPI JSON** | [https://domoticore-api.onrender.com/v3/api-docs](https://domoticore-api.onrender.com/v3/api-docs) |
 
-### Hogares Inteligentes
-- **Dashboard** — resumen del hogar y métricas clave
-- **Seguridad** — cámaras, cerraduras inteligentes, usuarios autorizados y registro de accesos
-- **Dispositivos** — panel por habitaciones y detalle por dispositivo (clima, consumo, modos)
-- **Automatización** — centro de reglas, configuración de zonas y constructor visual
-- **Historial** — notificaciones, actividad y análisis energético
-- **Configuración** — preferencias de usuario y apariencia
+El frontend en Vercel consume la API de Render (`NG_APP_API_URL`). Para probar en local, usa `npm start` en `http://localhost:4200`.
 
-### Pequeños Negocios
-- **Hub de operaciones** — vista central del negocio (KPIs, mapa, sostenibilidad)
-- **Dispositivos** — gestión empresarial y explorador de dispositivos
-- **Reportes** — comparativos, análisis de costos e historial de alertas
-- **Integraciones inteligentes** — servicios conectados, sincronización y perfil/API
-- **Automatización** — timeline, reglas operativas y horarios por grupo
-- **Usuarios** — gestión de equipo y perfil de negocio
-- **Configuración** — ajustes compartidos con el perfil residencial
+---
 
-### Experiencia compartida
-- **Internacionalización** — español e inglés (`@ngx-translate`)
-- **Tema claro/oscuro** — persistido en `localStorage`, integrado con Angular Material M3
-- **Datos híbridos** — API local con fallback automático a mock estático
-- **Componentes reutilizables** — sidebars, overlays, toolbar y switcher de idioma
-- **Feedback de UI** — notificaciones con `MatSnackBar` vía `UiFeedbackService`
+## Inicio rápido
+
+```bash
+git clone <url-del-repositorio>
+cd Veltrix-DomotiCore-Front-End
+npm install
+npm start
+```
+
+Abre **http://localhost:4200** e inicia sesión con una de las cuentas de abajo.
+
+> **Contraseña para todas las cuentas demo:** `SecurePass123`
+
+---
+
+## Cuentas de demostración
+
+Usa estas credenciales para probar cada perfil. Los datos están en `public/mock-data/users.json` y también funcionan contra el backend en Render si las cuentas existen allí.
+
+| Perfil | Email | Rol | Segmento | Para qué sirve |
+| --- | --- | --- | --- | --- |
+| **Administrador** | `admin@domoticore.local` | Admin | **Ambos** (conmutador Hogar ↔ Negocio) | Acceso total: ambos segmentos, equipo, perfil de negocio, ajustes de sistema, exportación, integraciones y vista global de actividad |
+| **Usuario hogar** | `home@domoticore.local` | User | Hogar Inteligente | Experiencia residencial completa; **no** accede a rutas de Pequeño Negocio ni gestión de equipo |
+| **Usuario negocio** | `business@domoticore.local` | User | Pequeño Negocio | Panel SME operativo; **no** gestiona equipo ni configuración avanzada |
+| **Moderador / Gerente** | `mod@domoticore.local` | Moderator | Pequeño Negocio | Gestión de equipo (invitar, editar), integraciones y exportación; **no** elimina miembros ni edita perfil de negocio |
+
+### Qué puede hacer cada rol
+
+#### Administrador (`admin@domoticore.local`)
+
+- Cambiar entre **Hogar Inteligente** y **Pequeño Negocio** desde el conmutador superior.
+- Ver **toda** la actividad en Flujos de Actividad (acciones de todos los usuarios).
+- Gestionar equipo: agregar, editar, archivar y **eliminar** miembros.
+- Acceder a **Perfil de negocio**, **Integraciones**, **Ajustes → Privacidad (sistema)** y **Usuarios autorizados**.
+- Registrar mantenimiento, gestionar gateways, exportar datos y eliminar dispositivos.
+
+#### Moderador / Gerente (`mod@domoticore.local`)
+
+- Panel de **Pequeño Negocio** completo (hub, dispositivos, reportes, automatización).
+- **Usuarios → Gestión de equipo**: invitar miembros, editar, archivar y reenviar invitaciones.
+- Integraciones, exportación de reportes, gateways y mantenimiento.
+- **No puede:** eliminar miembros del equipo, editar perfil de negocio ni acceder a ajustes de sistema (privacidad).
+
+#### Usuario estándar — Hogar (`home@domoticore.local`)
+
+- Dashboard, seguridad, dispositivos, automatización e historial del hogar.
+- Flujos de actividad: **solo ve sus propias acciones** (por ejemplo, al agregar un dispositivo en Inteligencia Energética).
+- Configuración personal (idioma, tema, notificaciones).
+- **No puede:** cambiar a Pequeño Negocio, gestionar equipo ni ver actividad de otros usuarios.
+
+#### Usuario estándar — Negocio (`business@domoticore.local`)
+
+- Hub operativo, dispositivos, reportes, automatización e integraciones de lectura.
+- Recibe **notificaciones de invitación** si un admin/moderador lo agrega al equipo.
+- **No puede:** abrir `/app/users/team` (redirige a acceso denegado), editar perfil corporativo ni exportar en áreas restringidas.
+
+### Registro de cuentas nuevas
+
+También puedes registrarte en `/auth/register`. Tras el primer acceso, el **asistente de onboarding** define si tu cuenta es Hogar Inteligente o Pequeño Negocio. Las cuentas nuevas reciben rol **User** por defecto.
+
+---
+
+## Novedades recientes del proyecto
+
+| Área | Mejora |
+| --- | --- |
+| **IAM y roles** | Permisos por rol (Admin / Moderator / User), pantalla de acceso denegado y guards en rutas sensibles |
+| **Segmentos** | Conmutador Hogar ↔ Negocio solo para Admin; usuarios normales quedan en su segmento |
+| **Flujos de actividad** | Registro por usuario; Admin ve actividad global; usuarios solo la propia |
+| **Automatización (negocio)** | Línea de tiempo de reglas sincronizada al crear/editar; horario en modal de nueva regla; protocolo de cierre editable |
+| **Automatización (hogar)** | Apagado por inactividad configurable; escenas y eventos programados mejorados |
+| **Gestión de equipo** | Invitar desde usuarios registrados; notificación in-app según rol asignado (administrator / manager / viewer) |
+| **Gateway IoT** | Configuración de gateway y nodos en `/app/devices/gateway` |
+| **Dashboard hogar** | PICO interactivo, sidebar de seguridad dinámico, próximos eventos y consumo total |
+| **Pequeño negocio** | KPIs con iconos Material, selector de periodo en pills, tarjetas enriquecidas en alertas e integraciones |
+| **Energía e historial** | Inteligencia energética, optimización automática, sugerencias de ahorro y anomalías de consumo |
+| **UI / i18n** | Español e inglés; tema claro/oscuro; Angular Material 21 con layouts custom |
+
+---
+
+## Características por segmento
+
+### Hogar Inteligente
+
+| Módulo | Funcionalidad |
+| --- | --- |
+| Dashboard | Resumen del hogar, PICO, encendido masivo, clima y consumo |
+| Seguridad | Cámaras, cerraduras, usuarios autorizados, registro de accesos |
+| Dispositivos | Panel por habitaciones, detalle, gateway IoT |
+| Automatización | Escenas, eventos programados, apagado por inactividad, constructor de reglas |
+| Historial | Notificaciones, flujos de actividad, inteligencia energética |
+| Configuración | Idioma, tema, notificaciones, usuarios autorizados |
+
+### Pequeño Negocio
+
+| Módulo | Funcionalidad |
+| --- | --- |
+| Hub operativo | KPIs, mapa de instalación, sostenibilidad, selector de periodo |
+| Dispositivos | Gestión empresarial, explorador, gateway, mantenimiento |
+| Reportes | Comparativos, análisis de costos, historial de alertas |
+| Integraciones | Servicios conectados, sincronización, identidad corporativa y API |
+| Automatización | Timeline de reglas, protocolo de cierre, horarios por grupo |
+| Usuarios | Gestión de equipo, invitaciones, perfil de negocio (Admin) |
+| Configuración | Ajustes compartidos con controles según rol |
+
+---
+
+## Conexión con el backend
+
+La app usa un modelo **híbrido**: intenta la API primero y, si falla, usa mock estático + caché en el navegador.
+
+| Entorno | URL API |
+| --- | --- |
+| Desarrollo (por defecto) | `https://domoticore-api.onrender.com/api/v1` |
+| Backend local | `http://localhost:8080/api/v1` |
+| Solo mock (sin backend) | `apiUrl: ''` en `src/environments/environment.ts` |
+
+```typescript
+// src/environments/environment.ts
+apiUrl: 'https://domoticore-api.onrender.com/api/v1',
+```
+
+- Login y registro pueden ir al **Spring Boot** en Render (token JWT en peticiones).
+- Flujos de actividad, equipo e invitaciones combinan API + **caché compartida** en `localStorage` para demos fluidas.
+- Si cambias de modo mock a API real, **cierra sesión** o limpia `localStorage` para evitar sesiones incompatibles.
+
+Los datos de prueba viven en `data/db.json` y se exportan a `public/mock-data/` con:
+
+```bash
+npm run export-mock-data
+```
+
+---
 
 ## Arquitectura
 
-El proyecto sigue **Bounded Contexts** (contextos acotados) con capas `domain`, `application`, `infrastructure` y `presentation` en la raíz de `src/`:
+El proyecto sigue **Bounded Contexts** con capas `domain`, `application`, `infrastructure` y `presentation`:
 
 ```
 src/
-├── iam/                    # Autenticación, onboarding y shells por tipo de cuenta
-├── dashboard/              # Panel principal (Smart Home)
+├── iam/                    # Autenticación, onboarding, roles y shells
+├── dashboard/              # Panel principal (Hogar)
 ├── security/               # Seguridad y accesos
 ├── device-control/         # Dispositivos (hogar y negocio)
+├── gateway-management/     # Gateway y nodos IoT
 ├── automation/             # Reglas, zonas y builder
 ├── history/                # Notificaciones, actividad, energía y reportes
 ├── smart-integrations/     # Integraciones y perfil API (negocio)
 ├── sme-operations-hub/     # Hub operativo (negocio)
-├── team-management/        # Equipo y perfil empresarial
+├── team-management/        # Equipo, invitaciones y perfil empresarial
 ├── settings/               # Configuración global
-├── shared/                 # Servicios, componentes, layouts, Material barrel y utilidades
-│   ├── layouts/            # Shells de router (auth-layout)
-│   └── material/           # MATERIAL_IMPORTS (barrel de módulos Material)
-├── material-theme.scss     # Tema M3 (claro/oscuro)
-├── material-layout-fixes.css  # Overrides para layouts custom + Material
-├── assets/                 # i18n, iconos (smart-home/, small-business/, shared/)
-└── environments/           # Configuración de API
+└── shared/                 # Servicios, componentes, Material, utilidades
 ```
 
-Cada contexto expone sus rutas de forma lazy-loaded desde `app.routes.ts` y los shells correspondientes.
-
-## Contextos acotados
-
-| Contexto | Descripción |
+| Contexto | Responsabilidad |
 | --- | --- |
-| IAM | Login, registro, onboarding y protección de rutas |
+| IAM | Login, registro, onboarding, permisos y protección de rutas |
 | Dashboard | Resumen y estadísticas del hogar |
-| Security | Cámaras, cerraduras, usuarios autorizados y logs |
+| Security | Cámaras, cerraduras, usuarios autorizados |
 | Device Control | Control y exploración de dispositivos |
+| Gateway Management | Vinculación de gateway y registro de nodos |
 | Automation | Centro de automatización, zonas y builder |
-| History | Notificaciones, actividad, energía y reportes empresariales |
-| Smart Integrations | Integraciones, servicios conectados y API |
+| History | Notificaciones, actividad, energía y reportes |
+| Smart Integrations | Integraciones, servicios y API corporativa |
 | SME Operations Hub | Panel operativo para pequeños negocios |
-| Team Management | Usuarios del equipo y perfil de negocio |
+| Team Management | Equipo, invitaciones y perfil de negocio |
 | Settings | Preferencias, idioma y tema |
+
+---
 
 ## Tecnologías
 
-| Tecnología | Uso en el proyecto |
+| Tecnología | Uso |
 | --- | --- |
-| **Angular 21** | Standalone components, signals, lazy loading |
-| **TypeScript 5.9** | Tipado estricto en dominio, stores e infraestructura |
-| **HTML5 + CSS3** | Layouts con Grid/Flexbox, variables CSS, estilos por componente |
-| **Angular Material 21** | Botones, formularios, cards, tablas, tabs, snackbar, sidenav, chips, dialogs, ripple |
-| **Material Design 3** | Tema personalizado (`#3455d1`), Roboto, Material Icons |
-| **@ngx-translate** | i18n (es / en) |
-| **RxJS 7** | Flujos asíncronos en servicios y stores |
-| **Vitest** | Pruebas unitarias |
-| **Client hydration** | `provideClientHydration(withEventReplay())` |
+| Angular 21 | Standalone components, signals, lazy loading |
+| TypeScript 5.9 | Dominio, stores e infraestructura tipados |
+| Angular Material 21 | Formularios, tablas, snackbar, sidenav, chips |
+| Material Design 3 | Tema `#3455d1`, modo claro/oscuro |
+| @ngx-translate | Internacionalización (es / en) |
+| RxJS 7 | Flujos asíncronos en servicios y stores |
+| Vitest | Pruebas unitarias |
 
-### Integración Angular Material
+---
 
-La app usa un enfoque **híbrido** que cumple la rúbrica de Material Design sin sacrificar layouts complejos:
-
-- **`src/material-theme.scss`** — tema M3 con paleta primaria `#3455d1`, soporte claro/oscuro vía `html[data-theme='dark']`.
-- **`src/shared/material/index.ts`** — barrel `MATERIAL_IMPORTS` para importar módulos Material en componentes standalone.
-- **`src/material-layout-fixes.css`** — correcciones globales cuando un control custom (tarjetas, chips, timeline) no debe usar `mat-stroked-button` por conflictos de layout.
-- **`src/styles.css`** — estilos compartidos para auth, cards, snackbars y formularios outline.
-
-**Patrón recomendado en el proyecto:**
-
-| Caso | Componente Material |
-| --- | --- |
-| Botones estándar, modales, tabs | `mat-flat-button`, `mat-stroked-button`, `mat-button` |
-| Formularios | `mat-form-field appearance="outline"` + `matInput` / `mat-select` |
-| Tarjetas con layout custom (grid, absolute, badges) | `<button matRipple class="...">` en lugar de `mat-stroked-button` |
-| Feedback al usuario | `MatSnackBar` (`UiFeedbackService`) |
-| Navegación / layout | `mat-card`, `mat-sidenav`, `mat-toolbar`, `mat-icon-button` |
-
-> **Nota:** La landing page pública puede vivir en un proyecto separado; este repositorio contiene la aplicación autenticada (panel DomotiCore).
-
-## Instalación
-
-### Prerrequisitos
-
-- Node.js 18+
-- npm 10+ (el proyecto fija `npm@10.9.3` como package manager)
-
-### Pasos
-
-1. Clona el repositorio e ingresa al directorio de la app:
-
-```bash
-git clone <url-del-repositorio>
-cd Veltrix-DomotiCore-Front-End/DomotiCore
-```
-
-2. Instala dependencias:
-
-```bash
-npm install
-```
-
-3. Inicia el servidor de desarrollo:
-
-```bash
-npm start
-```
-
-4. Abre `http://localhost:4200`
-
-### Scripts disponibles
+## Scripts disponibles
 
 | Script | Descripción |
 | --- | --- |
 | `npm start` | Servidor de desarrollo (`ng serve`) |
 | `npm run build` | Build de producción |
-| `npm run build:vercel` | Genera env, exporta mock data y compila para Vercel |
+| `npm run build:vercel` | Env + mock data + build para Vercel |
 | `npm run export-mock-data` | Exporta `data/db.json` → `public/mock-data/` |
-| `npm test` | Ejecuta pruebas con Vitest |
-| `npm run watch` | Build en modo watch (development) |
+| `npm test` | Pruebas con Vitest |
+| `npm run watch` | Build en modo watch |
 
-## API local
+### Prerrequisitos
 
-En desarrollo la app apunta al backend desplegado en Render:
+- Node.js 18+
+- npm 10+ (el proyecto fija `npm@10.9.3`)
 
-```typescript
-apiUrl: 'https://domoticore-api.onrender.com/api/v1',
-```
+---
 
-(`src/environments/environment.ts`)
-
-Para usar el backend Spring Boot local en su lugar:
-
-```typescript
-apiUrl: 'http://localhost:8080/api/v1',
-```
-
-Si `apiUrl` está vacío, la app usa únicamente los JSON estáticos en `public/mock-data/` (ideal para demos sin backend).
-
-**Importante:** si antes usaste la app en modo mock, limpia el almacenamiento del navegador (`localStorage`) o cierra sesión antes de probar con la API real. Las sesiones mock (`local-*`) no son compatibles con el backend.
-
-Los datos de prueba se mantienen en `data/db.json` y se exportan a `public/mock-data/` con `npm run export-mock-data`.
-
-El servicio `ApiClientService` intenta la API primero y hace **fallback automático** a mock data si la petición falla.
-
-## Despliegue en Vercel
-
-1. Importa el repositorio en [Vercel](https://vercel.com).
-2. **Root Directory**: `DomotiCore`
-3. **Build Command**: `npm run build:vercel` (configurado en `vercel.json`)
-4. **Output Directory**: `dist/domoticore/browser`
-
-La build de Vercel ejecuta:
-
-- `scripts/generate-env.js` — inyecta `NG_APP_API_URL` en `environment.production.ts`
-- `scripts/export-mock-data.js` — sincroniza mock data desde `data/db.json`
-- `ng build` — compilación estática
-
-### Conectar API externa (opcional)
-
-En Vercel → Settings → Environment Variables:
-
-```
-NG_APP_API_URL=https://domoticore-api.onrender.com/api/v1
-```
-
-Si no se define, el build de Vercel usa por defecto la URL de Render anterior.
-
-| Área | Sin API (Vercel) | Con API (local) |
-| --- | --- | --- |
-| Login / registro | ✅ mock + caché local | ✅ Spring Boot |
-| Dispositivos | ✅ | ✅ lectura/escritura |
-| Seguridad | ✅ | ✅ |
-| Historial / reportes | ✅ | ✅ |
-| Automatización | ✅ | ✅ |
-| Dashboard / settings | ✅ | ✅ |
-
-## Estructura de rutas
+## Rutas principales
 
 ### Autenticación
 
@@ -222,32 +230,34 @@ Si no se define, el build de Vercel usa por defecto la URL de Render anterior.
 | --- | --- |
 | `/auth/login` | Inicio de sesión |
 | `/auth/register` | Registro |
-| `/auth/onboarding` | Asistente de tipo de cuenta (post-login) |
+| `/auth/onboarding` | Elección de segmento (post-login) |
 
-### Hogares Inteligentes (`/app/...`)
+### Hogar Inteligente (`/app/...`)
 
 | Ruta | Descripción |
 | --- | --- |
 | `/app/dashboard` | Panel principal |
 | `/app/security` | Seguridad y accesos |
 | `/app/devices` | Dispositivos por habitación |
+| `/app/devices/gateway` | Configuración de gateway IoT |
 | `/app/devices/:roomId/:deviceId` | Detalle de dispositivo |
 | `/app/automation/center` | Centro de automatización |
 | `/app/automation/zones` | Configuración de zonas |
 | `/app/automation/builder` | Constructor de reglas |
 | `/app/history/notifications` | Centro de notificaciones |
-| `/app/history/activity` | Registro de actividad |
+| `/app/history/activity` | Flujos de actividad |
 | `/app/history/energy` | Inteligencia energética |
 | `/app/settings` | Configuración |
+| `/app/access-denied` | Acceso denegado (rol o segmento) |
 
-### Pequeños Negocios (`/app/...`)
+### Pequeño Negocio (`/app/...`)
 
 | Ruta | Descripción |
 | --- | --- |
 | `/app/operations-hub` | Hub operativo |
 | `/app/devices/management` | Gestión de dispositivos |
 | `/app/devices/explorer` | Explorador de dispositivos |
-| `/app/devices/:roomId/:deviceId` | Detalle de dispositivo |
+| `/app/devices/gateway` | Gateway IoT |
 | `/app/reports/comparative` | Reportes comparativos |
 | `/app/reports/cost-analysis` | Análisis de costos |
 | `/app/reports/alerts-history` | Historial de alertas |
@@ -257,71 +267,58 @@ Si no se define, el build de Vercel usa por defecto la URL de Render anterior.
 | `/app/smart-integrations/business-profile-api-settings` | Perfil y API |
 | `/app/automation/center` | Centro de automatización |
 | `/app/automation/zones` | Configuración de zonas |
-| `/app/automation/builder` | Constructor de reglas |
-| `/app/users/team` | Gestión de equipo |
-| `/app/users/business-profile` | Perfil de negocio |
+| `/app/users/team` | Gestión de equipo *(Admin / Moderator)* |
+| `/app/users/business-profile` | Perfil de negocio *(solo Admin)* |
 | `/app/settings` | Configuración |
 
-> Tras el login, la app redirige a `/app/dashboard` (hogar) o `/app/operations-hub` (negocio) según el tipo de cuenta elegido en onboarding.
+Tras el login, la app redirige a `/app/dashboard` (hogar) o `/app/operations-hub` (negocio) según el tipo de cuenta.
+
+---
+
+## Despliegue en Vercel
+
+1. Importa el repositorio en [Vercel](https://vercel.com).
+2. **Root Directory:** raíz del repo (`Veltrix-DomotiCore-Front-End`).
+3. **Build Command:** `npm run build:vercel`
+4. **Output Directory:** `dist/domoticore/browser`
+
+Variable de entorno opcional:
+
+```
+NG_APP_API_URL=https://domoticore-api.onrender.com/api/v1
+```
+
+---
 
 ## Internacionalización
 
-Traducciones en `src/assets/i18n/es.json` y `en.json`. El idioma por defecto es **español**; si el navegador está en inglés, se selecciona automáticamente. También puedes cambiarlo desde Configuración.
+Traducciones en `src/assets/i18n/es.json` y `en.json`. Idioma por defecto: **español**. Cambio manual desde Configuración o detección del navegador.
 
-Claves i18n relevantes añadidas o corregidas recientemente:
-- `automation.overtimeTypes.*` — etiquetas completas en horarios por grupo
-- `zoneConfiguration.schedule.overtime.*` — reglas overtime en configuración de zonas
-- Textos de Business Profile, Automation Builder y Device Detail
-
-## Credenciales de prueba
-
-- **Email:** `admin@domoticore.local`
-- **Password:** `SecurePass123`
-
-También puedes registrarte con una cuenta nueva. Tras el primer acceso, completa el onboarding para elegir el tipo de cuenta.
-
-## Mejoras recientes de UI/UX
-
-Correcciones aplicadas durante la migración a Angular Material:
-
-| Área | Problema resuelto |
-| --- | --- |
-| Auth / onboarding | Layout de login, registro y wizard de segmento |
-| Operations Hub | Tarjeta de sostenibilidad y zonas del mapa |
-| Automation Center | Tarjeta "New Scenario", badges de horarios, timeline |
-| Automation Builder | Selección de triggers/acciones (bordes y checkmarks) |
-| Device Detail | Botones de modo, stats, timer; flecha de retroceso |
-| Business Profile | Formularios outline, headers de tarjetas, botones dashed |
-| Settings | Footer "Save All Changes" superpuesto, display mode |
+---
 
 ## Convenciones de código
 
-- Componentes standalone con imports explícitos (`MATERIAL_IMPORTS` donde aplique)
-- Separación por capas dentro de cada bounded context
-- Stores en `application/` para estado de UI
-- Servicios API en `infrastructure/` con ensambladores de respuesta
-- Estilos modulares por componente (CSS) + tema Material global (SCSS)
-- Lazy loading de rutas y componentes
-- No usar `mat-stroked-button` en controles con layout tipo tarjeta/grid; preferir `matRipple`
-- No aplicar clases de formulario legacy (`.form-group` con flex) sobre `mat-form-field`
+- Componentes standalone con imports explícitos (`MATERIAL_IMPORTS` donde aplique).
+- Stores en `application/`; servicios API en `infrastructure/`.
+- Lazy loading de rutas y bounded contexts.
+- En tarjetas con layout custom, preferir `matRipple` sobre `mat-stroked-button`.
+- Formularios con `mat-form-field appearance="outline"`.
 
-## Cumplimiento de rúbrica (frontend)
-
-| Requisito | Estado |
-| --- | --- |
-| Angular + TypeScript | ✅ |
-| HTML5 + CSS3 | ✅ |
-| Material Design / Angular Material | ✅ (híbrido: Material + layouts custom con `matRipple`) |
+---
 
 ## Contribución
 
-1. Crea una rama: `git checkout -b feature/nueva-funcionalidad`
-2. Realiza tus cambios y commits
-3. Push: `git push origin feature/nueva-funcionalidad`
+1. `git checkout -b feature/nueva-funcionalidad`
+2. Realiza cambios y commits
+3. `git push origin feature/nueva-funcionalidad`
 4. Abre un Pull Request
 
-## Recursos adicionales
+---
 
-- [Angular CLI — Overview and Command Reference](https://angular.dev/tools/cli)
+## Recursos
+
+- [Angular CLI](https://angular.dev/tools/cli)
 - [Angular Material](https://material.angular.dev/)
 - [Material Design 3](https://m3.material.io/)
+
+> La landing page pública puede vivir en un repositorio separado. Este repo contiene la **aplicación autenticada** (panel DomotiCore).
