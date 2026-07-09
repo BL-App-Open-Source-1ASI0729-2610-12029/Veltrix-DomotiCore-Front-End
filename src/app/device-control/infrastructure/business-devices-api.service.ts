@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, delay } from 'rxjs/operators';
+import { catchError, delay, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiClientService } from '../../shared/services/api-client.service';
 import { BusinessDevicesOverviewResponse } from './business-devices-response';
@@ -112,9 +112,24 @@ export class BusinessDevicesApiService {
   getOverview(): Observable<BusinessDevicesOverviewResponse> {
     if (this.api.hasApi()) {
       return this.api
-        .getObjectWithParams<BusinessDevicesOverviewResponse>('business-devices/overview', {});
+        .getObjectWithParams<BusinessDevicesOverviewResponse>('business-devices/overview', {})
+        .pipe(
+          map(response => this.normalizeOverview(response)),
+        );
     }
     return this.mockOverview();
+  }
+
+  private normalizeOverview(
+    response: BusinessDevicesOverviewResponse,
+  ): BusinessDevicesOverviewResponse {
+    return {
+      ...response,
+      zones: response?.zones ?? [],
+      activeDeviceCount: response?.activeDeviceCount ?? 0,
+      zoneCount: response?.zoneCount ?? response?.zones?.length ?? 0,
+      totalConsumptionKw: response?.totalConsumptionKw ?? 0,
+    };
   }
 
   updateOverview(overview: BusinessDevicesOverviewResponse): Observable<BusinessDevicesOverviewResponse> {

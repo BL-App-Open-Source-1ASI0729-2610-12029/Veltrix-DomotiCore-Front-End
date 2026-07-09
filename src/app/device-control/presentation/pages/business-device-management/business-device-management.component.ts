@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { forkJoin } from 'rxjs';
 import { BusinessDevicesStore } from '../../../application/business-devices.store';
 import { TeamMembershipService } from '../../../../team-management/application/team-membership.service';
 import {
@@ -49,7 +50,10 @@ export class BusinessDeviceManagementComponent implements OnInit {
   }
 
   private loadDevices(): void {
-    this.store.load().subscribe({
+    forkJoin({
+      membership: this.membership.sync$(),
+      overview: this.store.load(),
+    }).subscribe({
       error: () =>
         this.feedback.showToast(this.translate.instant('businessDevices.toast.loadFailed'), 'error'),
     });

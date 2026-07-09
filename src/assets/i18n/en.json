@@ -760,6 +760,7 @@
     "loading": "Loading devices…",
     "loadFailed": "Could not load devices. Check your connection and try again.",
     "retry": "Retry",
+    "noZones": "No device zones are available for your role. Ask the administrator for global access or a specific zone.",
     "subtitle": "Manage {{count}} active devices across {{zones}} primary zones.",
     "totalConsumption": "TOTAL CONSUMPTION",
     "turnAllOff": "Turn All OFF",

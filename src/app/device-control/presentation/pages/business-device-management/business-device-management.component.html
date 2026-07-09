@@ -42,6 +42,10 @@
     <div class="loading-bar__fill"></div>
   </div>
 
+  <section class="zone-section zone-section--empty" *ngIf="overview.zones.length === 0">
+    <p>{{ 'businessDevices.noZones' | translate }}</p>
+  </section>
+
   <section class="zone-section" *ngFor="let zone of overview.zones" [hidden]="!zoneVisible(zone, zoneDeviceNames(zone))">
     <div class="zone-section__head">
       <h2>{{ zoneTitle(zone) }}</h2>

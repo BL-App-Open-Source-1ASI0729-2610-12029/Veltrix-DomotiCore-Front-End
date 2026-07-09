@@ -760,6 +760,7 @@
     "loading": "Cargando dispositivos…",
     "loadFailed": "No se pudieron cargar los dispositivos. Verifica tu conexión e intenta de nuevo.",
     "retry": "Reintentar",
+    "noZones": "No hay zonas de dispositivos disponibles para tu rol. Pide al administrador acceso global o a una zona específica.",
     "subtitle": "Administra {{count}} dispositivos activos en {{zones}} zonas principales.",
     "totalConsumption": "CONSUMO TOTAL",
     "turnAllOff": "Apagar Todo",
